@@ -1,0 +1,10 @@
+#signUpCard{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2;
+}
+
+#signUpCard #card{
+  height: 90%;
+}

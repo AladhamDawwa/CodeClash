@@ -1,8 +1,8 @@
-import './style.css'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import Button from '@mui/material/Button';
 
 import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAVExKbsjFpfkaTgTBxSOHVJfODnlXwUVM",
   authDomain: "code--clash.firebaseapp.com",
@@ -10,14 +10,15 @@ const firebaseConfig = {
   storageBucket: "code--clash.appspot.com",
   messagingSenderId: "966466853907",
   appId: "1:966466853907:web:ec833ec576006a3e31f3e6",
-  measurementId: "G-R5SK1W3E7N"
+  measurementId: "G-R5SK1W3E7N",
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
-function x() {
+export function signInWithGoogle() {
   signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -28,7 +29,8 @@ function x() {
       console.log(result);
       // IdP data available using getAdditionalUserInfo(result)
       // ...
-    }).catch((error) => {
+    })
+    .catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -39,16 +41,3 @@ function x() {
       // ...
     });
 }
-
-const GoogleAuth = () => {
-  return (
-    <div onClick={x} id='GoogleAuth'>
-      <Button variant="contained">
-        <img width={'15%'} src='./assets/google.svg' alt='google'></img>
-        <span>Sign in with Google</span>
-      </Button>
-    </div>
-  )
-}
-export default GoogleAuth
-export{app};
