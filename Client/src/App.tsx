@@ -1,10 +1,12 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider, redirect} from "react-router-dom";
-import _404 from "./components/404";
-import SignIn from './components/Auth/SignIn';
-import SignUp from "./components/Auth/SignUp";
-import HomePage from "./components/HomePage";
+import SignUp from "./components/SignUp";
+// import _404 from "./components/404";
+// import SignIn from './components/Auth/SignIn';
+// import HomePage from "./components/HomePage";
 import Landing from "./components/Landing";
+import SignIn from './components/Auth/SignIn/SignIn';
+import _404 from './components/404/404';
 
 let isUserAuthenticated = false;
 
@@ -16,10 +18,10 @@ const router = createBrowserRouter([
       return isUserAuthenticated ? redirect("/home") : null;
     },
   },
-  {
-    path: "/home",
-    element: <HomePage/>,
-  },
+    // {
+    //   path: "/home",
+    //   element: <HomePage/>,
+    // },
   {
     path: "/signIn",
     element: <SignIn/>,
@@ -36,9 +38,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div id='main'>
-      <RouterProvider router={router} />
-    </div>
+    <RouterProvider router={router} />
   )
 }
 
