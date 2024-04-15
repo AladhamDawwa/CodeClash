@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase-admin/firestore";
+import { Filter, Timestamp } from "firebase-admin/firestore";
 import { db } from "../firebase";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -15,7 +15,7 @@ export type User = {
   image?: string;
   last_name?: string;
   level?: number;
-  password_digest?: string;
+  password?: string;
   rank_points?: number;
   rank_tier?: number;
   registeration_date?: Timestamp;
@@ -38,7 +38,7 @@ const converter = {
       image: data.image,
       last_name: data.last_name,
       level: data.level,
-      password_digest: data.password_digest,
+      password: data.password,
       rank_points: data.rank_points,
       rank_tier: data.rank_tier,
       registeration_date: data.registeration_date,
@@ -62,22 +62,15 @@ export class Users {
     email: string,
     username: string,
     password: string,
-  ): Promise<string> {
-    const salt_rounds = "" + SALT_ROUNDS;
-    const password_digest = bcrypt.hashSync(
-      password + PEPPER,
-      parseInt(salt_rounds),
-    );
+  ): Promise<User> {
+    const salt_rounds = SALT_ROUNDS!;
+    password = bcrypt.hashSync(password + PEPPER, parseInt(salt_rounds));
+    const user_creation_args = this.create_user_args(first_name,last_name,email,username,password)
     const ref = await users_collection.add(
-      this.create_user_args(
-        first_name,
-        last_name,
-        email,
-        username,
-        password_digest,
-      ),
+      this.create_user_args(first_name, last_name, email, username, password),
     );
-    return ref.id;
+    delete user_creation_args.password
+    return user_creation_args;
   }
 
   static async user_exists(username: string | undefined): Promise<boolean> {
@@ -98,12 +91,44 @@ export class Users {
     return true;
   }
 
+  static async login(username_or_email: string, password: string): Promise<User | null> {
+    const snapshot = await users_collection
+      .where(
+        Filter.or(
+          Filter.where('username', '==', username_or_email),
+          Filter.where('email', '==', username_or_email)
+        )
+      ).get()
+    
+    if (!snapshot.empty) {
+      const user = snapshot.docs[0].data();
+      if (bcrypt.compareSync(password + PEPPER, user.password!)) {
+        return user;
+      }
+    }
+
+    return null;
+  }
+
+  static async update(new_user: User, username: string): Promise<User> {
+    if('password' in new_user) {
+      const salt_rounds = SALT_ROUNDS!;
+      new_user.password = bcrypt.hashSync(new_user.password! + PEPPER, parseInt(salt_rounds));
+    }
+    const snapshot = await users_collection.where('username', '==', username).get()
+    const user_doc = snapshot.docs[0]
+    const res = await users_collection.doc(user_doc.id).update(
+        new_user     
+    )
+    return new_user
+  }
+
   private static create_user_args(
     first_name: string,
     last_name: string,
     email: string,
     username: string,
-    password_digest: string,
+    password: string,
   ): User {
     return {
       email: email,
@@ -111,7 +136,7 @@ export class Users {
       first_name: first_name,
       last_name: last_name,
       level: 0,
-      password_digest: password_digest,
+      password: password,
       rank_points: 0,
       rank_tier: 0,
       registeration_date: Timestamp.now(),
