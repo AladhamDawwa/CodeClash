@@ -1,0 +1,92 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Users = void 0;
+const firestore_1 = require("firebase-admin/firestore");
+const firebase_1 = require("../firebase");
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const { SALT_ROUNDS, PEPPER } = process.env;
+const converter = {
+    toFirestore: (data) => {
+        const { doc_id } = data, userData = __rest(data, ["doc_id"]);
+        return userData;
+    },
+    fromFirestore: (snap) => {
+        const data = snap.data();
+        return {
+            doc_id: snap.id, // Include doc_id from the document snapshot
+            description: data.description,
+            email: data.email,
+            exp: data.exp,
+            first_name: data.first_name,
+            image: data.image,
+            last_name: data.last_name,
+            level: data.level,
+            password_digest: data.password_digest,
+            rank_points: data.rank_points,
+            rank_tier: data.rank_tier,
+            registeration_date: data.registeration_date,
+            username: data.username
+        };
+    }
+};
+const users_collection = firebase_1.db.users.withConverter(converter);
+class Users {
+    index() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield users_collection.get();
+            const users = snapshot.docs.map((doc) => doc.data());
+            return users;
+        });
+    }
+    create(first_name, last_name, email, user_name, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const salt_rounds = '' + SALT_ROUNDS;
+            const password_digest = bcrypt_1.default.hashSync(password + PEPPER, parseInt(salt_rounds));
+            const ref = yield users_collection.add(this.create_user_args(first_name, last_name, email, user_name, password_digest));
+            return ref.id;
+        });
+    }
+    create_user_args(first_name, last_name, email, user_name, password_digest) {
+        return {
+            doc_id: "",
+            description: "",
+            email: email,
+            exp: 0,
+            first_name: first_name,
+            image: "",
+            last_name: last_name,
+            level: 0,
+            password_digest: password_digest,
+            rank_points: 0,
+            rank_tier: 0,
+            registeration_date: firestore_1.Timestamp.now(),
+            username: user_name
+        };
+    }
+}
+exports.Users = Users;
