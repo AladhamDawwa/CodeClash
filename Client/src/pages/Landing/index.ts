@@ -1,2 +1,2 @@
-import _ from "./Landing";
+import _ from './Landing';
 export default _;

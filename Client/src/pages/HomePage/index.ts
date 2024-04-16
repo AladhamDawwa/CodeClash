@@ -1,2 +1,2 @@
-import _ from "./home";
+import _ from './home';
 export default _;

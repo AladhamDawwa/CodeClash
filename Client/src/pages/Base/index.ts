@@ -1,2 +1,2 @@
-import _ from "./Base";
+import _ from './Base';
 export default _;

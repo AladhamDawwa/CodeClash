@@ -1,22 +1,22 @@
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import { ChangeEvent, FormEvent } from "react";
-import { redirect } from "react-router-dom";
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { ChangeEvent, FormEvent } from 'react';
+import { redirect } from 'react-router-dom';
 
 function signUp(event: FormEvent<HTMLFormElement>) {
   event.preventDefault();
 
   const formData = new FormData(event.target as HTMLFormElement);
 
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
-  const userName = formData.get("userName") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const firstName = formData.get('firstName') as string;
+  const lastName = formData.get('lastName') as string;
+  const userName = formData.get('userName') as string;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
 
-  redirect("/");
-  console.log("Signed up");
+  redirect('/');
+  console.log('Signed up');
 }
 
 const SignUp = () => {
@@ -26,20 +26,20 @@ const SignUp = () => {
 
   function validateEmail(event: ChangeEvent<HTMLInputElement>): void {
     console.log(event.target.value);
-    const regex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
+    const regex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
     if (regex.test(event.target.value)) {
-      console.log("Valid email");
+      console.log('Valid email');
     } else {
-      console.log("Invalid email");
+      console.log('Invalid email');
     }
   }
 
   function validatePassword(event: ChangeEvent<HTMLInputElement>): void {
     console.log(event.target.value);
     if (event.target.value.length < 8) {
-      console.log("Password too short");
+      console.log('Password too short');
     } else {
-      console.log("Password long enough");
+      console.log('Password long enough');
     }
   }
 

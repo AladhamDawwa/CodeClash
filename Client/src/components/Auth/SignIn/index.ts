@@ -1,2 +1,2 @@
-import _ from "./SignIn";
+import _ from './SignIn';
 export default _;

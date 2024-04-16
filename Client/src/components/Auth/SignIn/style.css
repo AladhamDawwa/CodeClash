@@ -1,10 +1,10 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-#body{
+#body {
   height: 100vh;
   width: 100%;
   display: flex;
@@ -12,11 +12,11 @@
   background: linear-gradient(45deg, #24243e, #302b63, #0f0c29);
 }
 
-#logo{
+#logo {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  flex : 1;
+  flex: 1;
 }
 
 @media screen and (max-width: 600px) {
@@ -25,19 +25,19 @@
   }
 }
 
-#logo img{
+#logo img {
   width: 75%;
   min-width: 200px;
 }
 
-#logInCard{
+#logInCard {
   display: flex;
   justify-content: center;
   align-items: center;
   flex: 2;
 }
 
-#card{
+#card {
   background-color: #f9f1f1;
   height: 75%;
   width: 50%;
@@ -51,24 +51,24 @@
   min-height: 500px;
 }
 
-#breaker{
+#breaker {
   width: 100%;
   position: relative;
   display: flex;
   justify-content: center;
 }
 
-#breaker p{
+#breaker p {
   position: absolute;
   top: -10px;
   background-color: #f9f1f1;
 }
 
-hr{
+hr {
   width: 100%;
 }
 
-#title hr{
+#title hr {
   width: 50%;
   border: 3px solid black;
   margin: 5px auto;
