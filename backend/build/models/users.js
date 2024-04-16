@@ -38,7 +38,7 @@ const converter = {
     fromFirestore: (snap) => {
         const data = snap.data();
         return {
-            doc_id: snap.id, // Include doc_id from the document snapshot
+            doc_id: snap.id,
             description: data.description,
             email: data.email,
             exp: data.exp,
@@ -46,13 +46,13 @@ const converter = {
             image: data.image,
             last_name: data.last_name,
             level: data.level,
-            password_digest: data.password_digest,
+            password: data.password,
             rank_points: data.rank_points,
             rank_tier: data.rank_tier,
             registeration_date: data.registeration_date,
-            username: data.username
+            username: data.username,
         };
-    }
+    },
 };
 const users_collection = firebase_1.db.users.withConverter(converter);
 class Users {
@@ -65,33 +65,72 @@ class Users {
     }
     static create(first_name, last_name, email, username, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const salt_rounds = '' + SALT_ROUNDS;
-            const password_digest = bcrypt_1.default.hashSync(password + PEPPER, parseInt(salt_rounds));
-            const ref = yield users_collection.add(this.create_user_args(first_name, last_name, email, username, password_digest));
-            return ref.id;
+            const salt_rounds = SALT_ROUNDS;
+            password = bcrypt_1.default.hashSync(password + PEPPER, parseInt(salt_rounds));
+            const user_creation_args = this.create_user_args(first_name, last_name, email, username, password);
+            const ref = yield users_collection.add(this.create_user_args(first_name, last_name, email, username, password));
+            delete user_creation_args.password;
+            return user_creation_args;
         });
     }
     static user_exists(username) {
         return __awaiter(this, void 0, void 0, function* () {
-            const snapshot = yield users_collection.where('username', '==', username).get();
+            const snapshot = yield users_collection
+                .where("username", "==", username)
+                .get();
             if (snapshot.empty) {
                 return false;
             }
             return true;
         });
     }
-    static create_user_args(first_name, last_name, email, username, password_digest) {
+    static email_exists(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield users_collection.where("email", "==", email).get();
+            if (snapshot.empty) {
+                return false;
+            }
+            return true;
+        });
+    }
+    static login(username_or_email, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield users_collection
+                .where(firestore_1.Filter.or(firestore_1.Filter.where('username', '==', username_or_email), firestore_1.Filter.where('email', '==', username_or_email))).get();
+            if (!snapshot.empty) {
+                const user = snapshot.docs[0].data();
+                if (bcrypt_1.default.compareSync(password + PEPPER, user.password)) {
+                    delete user.password;
+                    return user;
+                }
+            }
+            return null;
+        });
+    }
+    static update(new_user, username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if ('password' in new_user) {
+                const salt_rounds = SALT_ROUNDS;
+                new_user.password = bcrypt_1.default.hashSync(new_user.password + PEPPER, parseInt(salt_rounds));
+            }
+            const snapshot = yield users_collection.where('username', '==', username).get();
+            const user_doc = snapshot.docs[0];
+            const res = yield users_collection.doc(user_doc.id).update(new_user);
+            return new_user;
+        });
+    }
+    static create_user_args(first_name, last_name, email, username, password) {
         return {
             email: email,
             exp: 0,
             first_name: first_name,
             last_name: last_name,
             level: 0,
-            password_digest: password_digest,
+            password: password,
             rank_points: 0,
             rank_tier: 0,
             registeration_date: firestore_1.Timestamp.now(),
-            username: username
+            username: username,
         };
     }
 }

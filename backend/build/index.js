@@ -11,7 +11,7 @@ const port = process.env.PORT || 8080;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 // routes
-users_1.UsersController.user_routes(app);
+users_1.UsersController.routes(app);
 app.listen(port, () => {
     console.log(`Listening on port : ${port}`);
 });
