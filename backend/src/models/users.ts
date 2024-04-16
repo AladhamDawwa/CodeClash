@@ -103,6 +103,7 @@ export class Users {
     if (!snapshot.empty) {
       const user = snapshot.docs[0].data();
       if (bcrypt.compareSync(password + PEPPER, user.password!)) {
+        delete user.password
         return user;
       }
     }
