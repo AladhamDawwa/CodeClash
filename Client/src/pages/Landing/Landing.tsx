@@ -18,6 +18,6 @@ const Landing = () => {
         </a>
       </Toolbar> */}
     </div>
-  )
-}
-export default Landing
+  );
+};
+export default Landing;
