@@ -41,7 +41,7 @@ class UsersController {
     static login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let username_or_email;
-            if ('email' in req.body) {
+            if ("email" in req.body) {
                 username_or_email = req.body.email;
             }
             else {
@@ -49,7 +49,9 @@ class UsersController {
             }
             const user = yield users_1.Users.login(username_or_email, req.body.password);
             if (!user) {
-                return res.status(401).json({ error: "username/email or passowrd is incorrect" });
+                return res
+                    .status(401)
+                    .json({ error: "username/email or passowrd is incorrect" });
             }
             const token = jsonwebtoken_1.default.sign({ username: user.username }, TOKEN_SECRET);
             res.json({ user: user, token: token });

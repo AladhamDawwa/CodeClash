@@ -20,12 +20,12 @@ const { TOKEN_SECRET } = process.env;
 const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const header = req.headers.authorization;
-        const token = header.split(' ')[1];
+        const token = header.split(" ")[1];
         const payload = jsonwebtoken_1.default.verify(token, TOKEN_SECRET);
         req.body.username = payload.username;
     }
     catch (err) {
-        res.status(401).json({ error: 'Acess denied, invalid token' });
+        res.status(401).json({ error: "Acess denied, invalid token" });
         return;
     }
     next();
