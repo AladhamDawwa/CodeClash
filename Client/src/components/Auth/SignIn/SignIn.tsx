@@ -1,29 +1,23 @@
-import './style.css';
-import Card from '@mui/material/Card';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import { MouseEvent, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
-import {
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import { MouseEvent, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { signInAction } from '../../../store/actions/authAction';
+import { RootState } from '../../../store/store';
+import './style.css';
 
 const SignIn = () => {
   const dispatch = useDispatch();
   const authState = useSelector((state: RootState) => state.auth);
 
-  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,7 +28,8 @@ const SignIn = () => {
   };
 
   const handleLogin = () => {
-    dispatch(signInAction({ usernameOrEmail, password }));
+    dispatch(signInAction({ username, password }));
+    console.log('authState:', authState);
   };
 
   return (
@@ -49,8 +44,8 @@ const SignIn = () => {
             <hr />
           </div>
           <TextField
-            value={usernameOrEmail}
-            onChange={e => setUsernameOrEmail(e.target.value)}
+            value={username}
+            onChange={e => setUsername(e.target.value)}
             required
             className="inputs"
             label="Email"

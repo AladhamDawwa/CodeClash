@@ -1,9 +1,13 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+
+interface ResponseData {
+  error?: string;
+}
 
 export const signInAction = createAsyncThunk(
   'auth/signIn',
-  async (credentials: { usernameOrEmail: string; password: string }) => {
+  async (credentials: { username: string; password: string }) => {
     try {
       const response = await axios.post(
         'http://localhost:5000/users/login',
@@ -15,7 +19,10 @@ export const signInAction = createAsyncThunk(
 
       return response.data.user; // Replace with the actual data structure
     } catch (error) {
-      throw new Error('Login failed'); // Handle errors appropriately
+      const err = error as AxiosError;
+      const errorData = err.response?.data as ResponseData;
+
+      throw new Error(errorData.error);
     }
   },
 );
