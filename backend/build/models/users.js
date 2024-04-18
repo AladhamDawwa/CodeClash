@@ -27,6 +27,7 @@ exports.Users = void 0;
 const firestore_1 = require("firebase-admin/firestore");
 const firebase_1 = require("../firebase");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const rank_tier_1 = require("../utils/definitions/rank_tier");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const { SALT_ROUNDS, PEPPER } = process.env;
@@ -96,7 +97,8 @@ class Users {
     static login(username_or_email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const snapshot = yield users_collection
-                .where(firestore_1.Filter.or(firestore_1.Filter.where('username', '==', username_or_email), firestore_1.Filter.where('email', '==', username_or_email))).get();
+                .where(firestore_1.Filter.or(firestore_1.Filter.where("username", "==", username_or_email), firestore_1.Filter.where("email", "==", username_or_email)))
+                .get();
             if (!snapshot.empty) {
                 const user = snapshot.docs[0].data();
                 if (bcrypt_1.default.compareSync(password + PEPPER, user.password)) {
@@ -109,11 +111,13 @@ class Users {
     }
     static update(new_user, username) {
         return __awaiter(this, void 0, void 0, function* () {
-            if ('password' in new_user) {
+            if ("password" in new_user) {
                 const salt_rounds = SALT_ROUNDS;
                 new_user.password = bcrypt_1.default.hashSync(new_user.password + PEPPER, parseInt(salt_rounds));
             }
-            const snapshot = yield users_collection.where('username', '==', username).get();
+            const snapshot = yield users_collection
+                .where("username", "==", username)
+                .get();
             const user_doc = snapshot.docs[0];
             const res = yield users_collection.doc(user_doc.id).update(new_user);
             return new_user;
@@ -128,7 +132,7 @@ class Users {
             level: 0,
             password: password,
             rank_points: 0,
-            rank_tier: 0,
+            rank_tier: rank_tier_1.RankTier.Bronze,
             registeration_date: firestore_1.Timestamp.now(),
             username: username,
         };

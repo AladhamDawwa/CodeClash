@@ -35,35 +35,34 @@ export class UsersController {
   }
 
   static async login(req: Request, res: Response) {
-      let username_or_email: string
-      if('email' in req.body)
-      {
-        username_or_email = req.body.email
-      }
-      else 
-      {
-        username_or_email = req.body.username
-      }
-      const user = await Users.login(username_or_email,req.body.password)
-      if(!user) {
-        return res.status(401).json({error: "username/email or passowrd is incorrect"}) 
-      }
-      const token = jwt.sign({username: user.username}, TOKEN_SECRET!)
-      res.json({user:user, token: token})
+    let username_or_email: string;
+    if ("email" in req.body) {
+      username_or_email = req.body.email;
+    } else {
+      username_or_email = req.body.username;
+    }
+    const user = await Users.login(username_or_email, req.body.password);
+    if (!user) {
+      return res
+        .status(401)
+        .json({ error: "username/email or passowrd is incorrect" });
+    }
+    const token = jwt.sign({ username: user.username }, TOKEN_SECRET!);
+    res.json({ user: user, token: token });
   }
 
   static async update(req: Request, res: Response) {
-    let new_user: User = req.body.new_user
+    let new_user: User = req.body.new_user;
 
-    let username = req.body.username
-    new_user = await Users.update(new_user, username)
+    let username = req.body.username;
+    new_user = await Users.update(new_user, username);
 
-    res.json({user: new_user})
+    res.json({ user: new_user });
   }
 
   static routes(app: express.Application) {
     app.post("/users/signup", this.signup);
-    app.post("/users/login", this.login)
-    app.put("/users",authenticate,this.update)
+    app.post("/users/login", this.login);
+    app.put("/users", authenticate, this.update);
   }
 }
