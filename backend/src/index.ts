@@ -4,8 +4,7 @@ import {createServer} from 'http'
 import { Server } from 'socket.io'
 import cors from 'cors'
 import { UsersController } from './controllers/users'
-import { MatchMakerHandler } from './handlers/match_maker'
-
+import { MatchMakerSocketController } from './socket_controllers/match_maker'
 dotenv.config()
 
 const port = process.env.PORT || 8080
@@ -21,7 +20,7 @@ UsersController.routes(app)
 const server = createServer(app)
 const io = new Server(server)
 io.on('connection', (socket) => {
-  new MatchMakerHandler(io,socket).register_events()
+  new MatchMakerSocketController(io,socket).register_events()
 
 })
 

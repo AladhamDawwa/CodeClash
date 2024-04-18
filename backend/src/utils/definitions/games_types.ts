@@ -1,10 +1,10 @@
-export enum GameMode {
+export enum GameType {
   OneVsOne,
   TeamVsTeam,
   LastManStanding
 }
 
-export enum GameType {
+export enum GameMode {
   Normal,
   Ranked
 }

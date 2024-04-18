@@ -80,6 +80,14 @@ export class Users {
     return user_creation_args;
   }
 
+  static async get_rank(username: string): Promise<RankTier> {
+    const snapshot = await users_collection
+      .where("username", "==", username)
+      .get();
+    const user = snapshot.docs[0].data();
+    return user.rank_tier!
+  }
+
   static async user_exists(username: string | undefined): Promise<boolean> {
     const snapshot = await users_collection
       .where("username", "==", username)
