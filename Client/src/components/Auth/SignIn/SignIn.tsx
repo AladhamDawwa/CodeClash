@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signInAction } from '../../../store/actions/authAction';
 import { clearError } from '../../../store/reducers/authReducer';
-import { RootState } from '../../../store/store';
+import store, { RootState } from '../../../store/store';
 import './style.css';
 
 const SignIn = () => {
@@ -79,11 +79,21 @@ const SignIn = () => {
     }
 
     if (username && password) {
-      dispatch<any>(signInAction({ username, password }));
-      setUsername('');
-      setPassword('');
-
-      navigate('/home');
+      dispatch<any>(signInAction({ username, password }))
+        .then(() => {
+          const state = store.getState();
+          if (state.auth.error) {
+            console.log(state.auth.error);
+          } else {
+            setUsername('');
+            setPassword('');
+            navigate('/home');
+            dispatch(clearError());
+          }
+        })
+        .catch((error: Error) => {
+          console.log(error);
+        });
     }
   };
 
