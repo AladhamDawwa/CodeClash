@@ -1,44 +1,35 @@
+import { useSelector } from 'react-redux';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
-import {
-  createBrowserRouter,
-  RouterProvider,
-  redirect,
-} from 'react-router-dom';
-import SignUp from './components/Auth/SignUp';
-import Landing from './pages/Landing';
-import SignIn from './components/Auth/SignIn/SignIn';
 import _404 from './components/404/404';
-
-let isUserAuthenticated = false;
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Landing />,
-    loader: () => {
-      return isUserAuthenticated ? redirect('/home') : null;
-    },
-  },
-  // {
-  //   path: "/home",
-  //   element: <HomePage/>,
-  // },
-  {
-    path: '/signIn',
-    element: <SignIn />,
-  },
-  {
-    path: '/signUp',
-    element: <SignUp />,
-  },
-  {
-    path: '*',
-    element: <_404 />,
-  },
-]);
+import SignIn from './components/Auth/SignIn/SignIn';
+import SignUp from './components/Auth/SignUp';
+import HomePage from './pages/HomePage/home';
+import Landing from './pages/Landing';
+import { RootState } from './store/store';
 
 function App() {
-  return <RouterProvider router={router} />;
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? <Navigate to="/home" replace /> : <Landing />
+          }
+        />
+        <Route
+          path="/home"
+          element={isAuthenticated ? <HomePage /> : <Navigate to="/" replace />}
+        />
+        <Route path="/signIn" element={<SignIn />} />
+        <Route path="/signUp" element={<SignUp />} />
+        <Route path="*" element={<_404 />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

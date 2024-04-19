@@ -1,5 +1,5 @@
 export interface IAuthState {
-  user: string | null;
+  user: any;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
