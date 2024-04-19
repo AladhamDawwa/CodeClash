@@ -16,7 +16,7 @@ function signUp(event: FormEvent<HTMLFormElement>) {
   const password = formData.get('password') as string;
 
   redirect('/');
-  console.log('Signed up');
+  console.log('Signed up test');
 }
 
 const SignUp = () => {
