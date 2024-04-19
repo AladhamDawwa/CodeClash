@@ -79,21 +79,14 @@ const SignIn = () => {
     }
 
     if (username && password) {
-      dispatch<any>(signInAction({ username, password }))
-        .then(() => {
-          const state = store.getState();
-          if (state.auth.error) {
-            console.log(state.auth.error);
-          } else {
-            setUsername('');
-            setPassword('');
-            navigate('/home');
-            dispatch(clearError());
-          }
-        })
-        .catch((error: Error) => {
-          console.log(error);
-        });
+      dispatch<any>(signInAction({ username, password })).then(() => {
+        const state = store.getState();
+        if (!state.auth.error) {
+          setUsername('');
+          setPassword('');
+          navigate('/home');
+        }
+      });
     }
   };
 

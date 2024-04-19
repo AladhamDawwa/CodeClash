@@ -17,7 +17,7 @@ export const signInAction = createAsyncThunk(
         },
       );
 
-      return response.data.user;
+      return response.data;
     } catch (error) {
       const err = error as AxiosError;
       const errorData = err.response?.data as ResponseData;
