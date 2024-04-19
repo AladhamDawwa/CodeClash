@@ -74,6 +74,15 @@ class Users {
             return user_creation_args;
         });
     }
+    static get_rank(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield users_collection
+                .where("username", "==", username)
+                .get();
+            const user = snapshot.docs[0].data();
+            return user.rank_tier;
+        });
+    }
     static user_exists(username) {
         return __awaiter(this, void 0, void 0, function* () {
             const snapshot = yield users_collection
