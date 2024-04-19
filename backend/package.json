@@ -8,6 +8,7 @@
     "start": "tsc && node build/.",
     "watch": "nodemon src/index.ts",
     "format": "prettier --write src/**/*.ts",
+    "console": "ts-node src/console",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix"
   },

@@ -3,6 +3,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { MatchMakerRequest } from "../utils/definitions/match_maker";
 import { GameMode, GameType } from "../utils/definitions/games_types";
 import { MatchMakerService } from "../services/match_maker";
+import { UserSocketInfo } from "../utils/definitions/user_socket_info";
 type SocketType = Socket<
   DefaultEventsMap,
   DefaultEventsMap,
@@ -26,14 +27,11 @@ export class MatchMakerSocketController {
     if (match_maker_request.game_type == GameType.OneVsOne) {
       this.find_one_v_one(match_maker_request);
     }
-    // this.socket.emit("match_maker_client:found_match", { message: "some_message" });
   }
 
   async find_one_v_one(match_maker_request: MatchMakerRequest) {
-    const match = await MatchMakerService.find_one_v_one(
-      match_maker_request.username,
-      this.socket.id,
-    );
+    const user_socket_info: UserSocketInfo = {username: match_maker_request.username, socket_id: this.socket.id}
+    const match = await MatchMakerService.find_one_v_one(user_socket_info);
     console.log("Matched!:", match);
   }
 

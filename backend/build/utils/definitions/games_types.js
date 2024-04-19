@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GameType = exports.GameMode = void 0;
-var GameMode;
-(function (GameMode) {
-    GameMode[GameMode["OneVsOne"] = 0] = "OneVsOne";
-    GameMode[GameMode["TeamVsTeam"] = 1] = "TeamVsTeam";
-    GameMode[GameMode["LastManStanding"] = 2] = "LastManStanding";
-})(GameMode || (exports.GameMode = GameMode = {}));
+exports.GameMode = exports.GameType = void 0;
 var GameType;
 (function (GameType) {
-    GameType[GameType["Normal"] = 0] = "Normal";
-    GameType[GameType["Ranked"] = 1] = "Ranked";
+    GameType[GameType["OneVsOne"] = 0] = "OneVsOne";
+    GameType[GameType["TeamVsTeam"] = 1] = "TeamVsTeam";
+    GameType[GameType["LastManStanding"] = 2] = "LastManStanding";
 })(GameType || (exports.GameType = GameType = {}));
+var GameMode;
+(function (GameMode) {
+    GameMode[GameMode["Normal"] = 0] = "Normal";
+    GameMode[GameMode["Ranked"] = 1] = "Ranked";
+})(GameMode || (exports.GameMode = GameMode = {}));

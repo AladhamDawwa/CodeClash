@@ -2,7 +2,6 @@ import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
 const firebase_config = require("./config/firebase").firebase
-
 initializeApp({
   credential: cert(firebase_config)
 })

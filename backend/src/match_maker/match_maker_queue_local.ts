@@ -1,4 +1,5 @@
 import { RankTier } from "../utils/definitions/rank_tier";
+import { UserSocketInfo } from "../utils/definitions/user_socket_info";
 import { MatchMakerQueue } from "./match_maker_queue";
 import { Queue } from "queue-typescript";
 
@@ -7,7 +8,7 @@ export class MatchMakerQueueLocal implements MatchMakerQueue {
   constructor() {
     this.queues = new Map<
       RankTier,
-      Queue<{ username: string; socket_id: string }>
+      Queue<UserSocketInfo>
     >();
   }
   is_empty(rank_tier: RankTier): boolean {
@@ -19,7 +20,7 @@ export class MatchMakerQueueLocal implements MatchMakerQueue {
     }
     return false;
   }
-  get_front(rank_tier: RankTier): { username: string; socket_id: string } {
+  get_front(rank_tier: RankTier): UserSocketInfo {
     return this.queues.get(rank_tier)?.front!;
   }
 
@@ -27,15 +28,15 @@ export class MatchMakerQueueLocal implements MatchMakerQueue {
     this.queues.get(rank_tier)?.dequeue();
   }
 
-  push(rank_tier: RankTier, username: string, socket_id: string): void {
+  push(rank_tier: RankTier, user_socket_info: UserSocketInfo): void {
     if (this.queues.get(rank_tier) == undefined) {
       this.queues.set(
         rank_tier,
-        new Queue<{ username: string; socket_id: string }>(),
+        new Queue<UserSocketInfo>(),
       );
     }
     this.queues
       .get(rank_tier)
-      ?.enqueue({ username: username, socket_id: socket_id });
+      ?.enqueue(user_socket_info);
   }
 }
