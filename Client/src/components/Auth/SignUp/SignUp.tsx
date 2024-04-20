@@ -1,25 +1,47 @@
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { ChangeEvent, FormEvent } from 'react';
-import { redirect } from 'react-router-dom';
-
-function signUp(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault();
-
-  const formData = new FormData(event.target as HTMLFormElement);
-
-  const firstName = formData.get('firstName') as string;
-  const lastName = formData.get('lastName') as string;
-  const userName = formData.get('userName') as string;
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-
-  redirect('/');
-  console.log('Signed up test');
-}
+import { ChangeEvent, FormEvent, MouseEvent, useState } from 'react';
+import { redirect, useNavigate } from 'react-router-dom';
+import {
+  Card,
+  CircularProgress,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
+import './style.css';
 
 const SignUp = () => {
+  const dispatch = useDispatch();
+  const authState = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+
+  const { loading, error } = authState;
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(show => !show);
+  };
+
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
   function validateUserName(event: ChangeEvent<HTMLInputElement>): void {
     console.log(event.target.value);
   }
@@ -44,73 +66,178 @@ const SignUp = () => {
   }
 
   return (
-    <div className="h-full flex items-center justify-center">
-      <div className="justify-center items-center flex-[2] hidden sm:flex">
-        <img src="./assets/logo.svg" alt="logo" className="w-1/2"></img>
+    <div id="body">
+      <div id="logo">
+        <img src="./assets/logo.svg" alt="logo"></img>
       </div>
-      <div className="flex-[3] flex justify-center">
-        <Paper
-          elevation={24}
-          className="h-[650px] w-3/4 max-w-md py-6 flex flex-col justify-between items-center !rounded-3xl"
-        >
-          <div className="flex flex-col items-center w-fit">
-            <p className="text-2xl font-bold">Sign Up</p>
-            <hr className="border-black border-2 w-1/2 m-[1px]" />
+      <div id="logInCard">
+        <Card id="card" variant="outlined">
+          <div id="title">
+            <h1>Sign Up</h1>
           </div>
-          <form
-            onSubmit={signUp}
-            className="flex flex-col justify-evenly items-center flex-[6]"
+          <TextField
+            value={firstName}
+            // onChange={handleFirstNameChange}
+            required
+            // error={usernameError}
+            // helperText={usernameError ? 'Username or Email is required' : ''}
+            label="First Name"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            disabled={loading}
+            sx={{
+              '& .MuiInputLabel-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiOutlinedInput-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiFormHelperText-root': {
+                fontSize: '1.2rem',
+              },
+            }}
+          />
+          <TextField
+            value={lastName}
+            // onChange={handleFirstNameChange}
+            required
+            // error={usernameError}
+            // helperText={usernameError ? 'Username or Email is required' : ''}
+            label="Last Name"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            disabled={loading}
+            sx={{
+              '& .MuiInputLabel-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiOutlinedInput-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiFormHelperText-root': {
+                fontSize: '1.2rem',
+              },
+            }}
+          />
+          <TextField
+            value={userName}
+            // onChange={handleFirstNameChange}
+            required
+            // error={usernameError}
+            // helperText={usernameError ? 'Username or Email is required' : ''}
+            label="Username"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            disabled={loading}
+            sx={{
+              '& .MuiInputLabel-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiOutlinedInput-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiFormHelperText-root': {
+                fontSize: '1.2rem',
+              },
+            }}
+          />
+          <TextField
+            value={email}
+            // onChange={handleFirstNameChange}
+            required
+            // error={usernameError}
+            // helperText={usernameError ? 'Username or Email is required' : ''}
+            label="Email"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            disabled={loading}
+            sx={{
+              '& .MuiInputLabel-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiOutlinedInput-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiFormHelperText-root': {
+                fontSize: '1.2rem',
+              },
+            }}
+          />
+          <FormControl
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            required
+            disabled={loading}
+            // error={passwordError}
+            sx={{
+              '& .MuiInputLabel-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiOutlinedInput-root': {
+                fontSize: '1.5rem',
+              },
+              '& .MuiFormHelperText-root': {
+                fontSize: '1.2rem',
+              },
+              mb: '1.8rem',
+            }}
           >
-            <TextField
-              name="firstName"
-              required
-              label="First Name"
-              variant="outlined"
-            />
-            <TextField
-              name="lastName"
-              required
-              label="Last Name"
-              variant="outlined"
-            />
-            <TextField
-              onChange={validateUserName}
-              name="userName"
-              required
-              label="Username"
-              variant="outlined"
-            />
-            <TextField
-              onChange={validateEmail}
-              name="email"
-              required
-              label="Email"
-              variant="outlined"
-            />
-            <TextField
-              onChange={validatePassword}
-              name="password"
-              required
-              type="password"
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              // onChange={handlePasswordChange}
               label="Password"
-              variant="outlined"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    sx={{ '& svg': { fontSize: '2rem' } }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
-            <TextField
-              required
-              type="password"
-              label="Confirm Password"
-              variant="outlined"
-            />
-            <Button
-              variant="contained"
-              type="submit"
-              className="w-fit"
-              disabled={false}
-            >
-              Sign up
-            </Button>
-          </form>
-        </Paper>
+            {/* {passwordError && (
+              <FormHelperText>Password is required</FormHelperText>
+            )} */}
+          </FormControl>
+
+          <Button
+            variant="contained"
+            // onClick={handleLogin}
+            size="large"
+            sx={{
+              mb: '1.5rem',
+              fontSize: '1.5rem',
+              ...(loading && {
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }),
+              textTransform: 'capitalize',
+            }}
+            disableElevation
+            disableRipple
+            fullWidth
+            disabled={loading}
+            endIcon={loading && <CircularProgress size={20} />}
+          >
+            Sign up
+          </Button>
+        </Card>
       </div>
     </div>
   );

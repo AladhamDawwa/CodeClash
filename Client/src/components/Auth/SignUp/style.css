@@ -1,0 +1,42 @@
+#logo {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+}
+
+@media screen and (max-width: 600px) {
+  #logo {
+    display: none;
+  }
+}
+
+#logo img {
+  width: 75%;
+  min-width: 20rem;
+}
+
+#logInCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2;
+}
+
+#card {
+  background-color: #f9f1f1;
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2.5rem;
+  min-width: 35rem;
+  padding: 2rem;
+  min-height: fit-content;
+}
+
+#title {
+  font-size: 2rem;
+  font-weight: 700;
+}

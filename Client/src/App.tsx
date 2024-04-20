@@ -5,7 +5,6 @@ import _404 from './components/404/404';
 import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
 import HomePage from './pages/HomePage/home';
-import Landing from './pages/Landing';
 import { RootState } from './store/store';
 
 function App() {

@@ -201,6 +201,7 @@ const SignIn = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }),
+              textTransform: 'capitalize',
             }}
             disableElevation
             disableRipple
