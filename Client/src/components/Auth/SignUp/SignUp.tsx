@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signUpAction } from '../../../store/actions/authAction';
 import { clearError } from '../../../store/reducers/authReducer';
-import store, { RootState } from '../../../store/store';
+import { store, RootState } from '../../../store/store';
 import './style.css';
 
 const SignUp = () => {
