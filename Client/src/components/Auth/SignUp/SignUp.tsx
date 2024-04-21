@@ -1,8 +1,5 @@
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Alert,
   Card,
@@ -15,14 +12,15 @@ import {
   OutlinedInput,
   Snackbar,
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import store, { RootState } from '../../../store/store';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Visibility from '@mui/icons-material/Visibility';
-import './style.css';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { signUpAction } from '../../../store/actions/authAction';
 import { clearError } from '../../../store/reducers/authReducer';
+import store, { RootState } from '../../../store/store';
+import './style.css';
 
 const SignUp = () => {
   const dispatch = useDispatch();

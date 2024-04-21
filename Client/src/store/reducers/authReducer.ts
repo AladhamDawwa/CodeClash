@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { signInAction, signUpAction } from '../actions/authAction';
+import { createSlice } from '@reduxjs/toolkit';
 import { IAuthState } from '../../interfaces/IAuthState';
+import { signInAction, signUpAction } from '../actions/authAction';
 
 const initialState: IAuthState = {
   user: null,
