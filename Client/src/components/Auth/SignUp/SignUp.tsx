@@ -361,11 +361,11 @@ const SignUp = () => {
               mb: '1.8rem',
             }}
           >
-            <InputLabel htmlFor="outlined-adornment-password">
+            <InputLabel htmlFor="outlined-adornment-confirm-password">
               Confirm Password
             </InputLabel>
             <OutlinedInput
-              id="outlined-adornment-password"
+              id="outlined-adornment-confirm-password"
               type={showConfirmPassword ? 'text' : 'password'}
               value={passwordConfirm}
               onChange={handlePasswordConfirmChange}
