@@ -3,15 +3,47 @@ import {
   Action,
   ThunkAction,
   UnknownAction,
+  combineReducers,
   configureStore,
 } from '@reduxjs/toolkit';
 import authReducer from './reducers/authReducer';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
+
+const authPersistConfig = {
+  key: 'auth',
+  storage: storage,
+};
+
+const anotherPersistConfig = {
+  key: 'another',
+  storage: storage,
+};
+
+const rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, authReducer),
+  // another: persistReducer(anotherPersistConfig, anotherReducer),
+});
 
 const store = configureStore({
-  reducer: {
-    auth: authReducer,
-  },
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
+
+const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk<ReturnType = void> = ThunkAction<
@@ -21,4 +53,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   UnknownAction
 >;
 export type AppDispatch = typeof store.dispatch;
-export default store;
+
+export { store, persistor };
