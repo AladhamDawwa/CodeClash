@@ -98,13 +98,6 @@ const SignIn = () => {
   useEffect(() => {
     if (error) {
       setOpenSnackbar(true);
-
-      const timeout = setTimeout(() => {
-        dispatch(clearError());
-        setOpenSnackbar(false);
-      }, 5000);
-
-      return () => clearTimeout(timeout);
     }
   }, [dispatch, error]);
 
@@ -231,6 +224,7 @@ const SignIn = () => {
           variant="filled"
           sx={{
             width: '100%',
+            alignItems: 'center',
             '& .MuiAlert-message': {
               fontSize: '1.5rem',
             },

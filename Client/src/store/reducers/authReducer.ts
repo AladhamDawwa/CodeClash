@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { signInAction } from '../actions/authAction';
+import { signInAction, signUpAction } from '../actions/authAction';
 import { IAuthState } from '../../interfaces/IAuthState';
 
 const initialState: IAuthState = {
@@ -30,6 +30,19 @@ const authSlice = createSlice({
       })
       .addCase(signInAction.rejected, (state, action) => {
         state.error = action.error.message || 'Login Failed';
+        state.loading = false;
+      })
+      .addCase(signUpAction.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signUpAction.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isAuthenticated = true;
+        state.loading = false;
+      })
+      .addCase(signUpAction.rejected, (state, action) => {
+        state.error = action.error.message || 'Sign Up Failed';
         state.loading = false;
       });
   },
