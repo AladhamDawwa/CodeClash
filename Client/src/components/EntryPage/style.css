@@ -1,0 +1,31 @@
+img {
+  width: 10rem;
+  height: 12rem;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.Flexh1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.GameModes {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.img {
+  width: 12rem;
+  margin-left: auto;
+  max-width: 100%;
+  height: auto;
+}
+.system {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
