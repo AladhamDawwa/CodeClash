@@ -1,4 +1,11 @@
+import CodeEditor from '../../components/CodeEditor';
+
 const HomePage = () => {
-  return <h1>Home Page is under development</h1>;
+  return (
+    <div className="container">
+      <h1>Home Page</h1>
+      <CodeEditor />
+    </div>
+  );
 };
 export default HomePage;

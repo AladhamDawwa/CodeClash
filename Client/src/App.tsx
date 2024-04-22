@@ -9,6 +9,7 @@ import { RootState } from './store/store';
 
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  console.log(isAuthenticated ? 'Authenticated' : 'Not Authenticated');
 
   return (
     <BrowserRouter>
