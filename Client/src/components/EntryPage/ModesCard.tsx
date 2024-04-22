@@ -25,10 +25,15 @@ export default function ModesCard({ header, image, para, alt }: cardprops) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          padding: '2.5rem 2.5rem',
         }}
       >
-        <div>
-          <Typography sx={{ fontSize: 32 }} color="white" gutterBottom>
+        <div style={{ width: '50%' }}>
+          <Typography
+            sx={{ fontSize: 32, fontWeight: 'bold' }}
+            color="white"
+            gutterBottom
+          >
             {header}
           </Typography>
           <Typography

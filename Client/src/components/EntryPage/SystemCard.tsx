@@ -26,9 +26,10 @@ export default function SystemCard({ img, para, alt }: CardType) {
           alignItems: 'center',
           justifyContent: 'center',
           gap: '3rem',
+          padding: '2.5rem 2.5rem',
         }}
       >
-        <img src={img} alt={alt} />
+        <img src={img} alt={alt} className="header-img" />
         <Typography
           variant="body1"
           sx={{ fontSize: 18, textTransform: 'capitalize' }}

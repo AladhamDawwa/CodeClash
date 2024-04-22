@@ -23,7 +23,7 @@ const EntryPage = () => {
   return (
     <Container>
       <div className="header">
-        <img src="../../../public/assets/logo.svg" />
+        <img src="../../../public/assets/logo.svg" className="header-img" />
         <Button
           onClick={() => {
             // navigate('/signUp');
@@ -41,64 +41,76 @@ const EntryPage = () => {
           join
         </Button>
       </div>
-      <div className="Flexh1">
-        <Typography variant="h2" sx={{ color: 'white', my: '5rem' }}>
+      <div className="flex-h1">
+        <Typography
+          variant="h2"
+          sx={{ color: 'white', my: '5rem', fontWeight: 'bold' }}
+        >
           Game Modes
         </Typography>
       </div>
-      <div className="GameModes">
+      <div className="game-modes">
         <ModesCard
           header="1 vs 1"
-          image="../../../public/assets/1vs1.png"
+          image="/assets/1vs1.png"
           para={oneVSone}
           alt="one vs one cartoon image"
         />
         <ModesCard
           header="3 vs 3"
-          image="../../../public/assets/3vs3.png"
+          image="/assets/3vs3.png"
           para={threeVSthree}
           alt="three vs three cartoon image"
         />
         <ModesCard
           header="TOURNAMENT"
-          image="../../../public/assets/tournament.png"
+          image="/assets/tournament.png"
           para={tournament}
           alt="tournament image"
         />
 
         <ModesCard
           header="LAST MAN STANDING"
-          image="../../../public/assets/lastman.png"
+          image="/assets/lastman.png"
           para={lastMan}
           alt="last man standing image"
         />
       </div>
-      <div className="Flexh1">
-        <Typography variant="h2" sx={{ color: 'white', my: '5rem' }}>
+      <div className="flex-h1">
+        <Typography
+          variant="h2"
+          sx={{ color: 'white', my: '5rem', fontWeight: 'bold' }}
+        >
           Systems
         </Typography>
       </div>
       <div className="system">
         <div>
-          <div className="Flexh1">
-            <Typography variant="h4" sx={{ color: 'white', my: '5rem' }}>
+          <div className="flex-h1">
+            <Typography
+              variant="h4"
+              sx={{ color: 'white', my: '5rem', fontWeight: 'bold' }}
+            >
               Ranked System
             </Typography>
           </div>
           <SystemCard
-            img="../../../public/assets/ranked.png"
+            img="/assets/ranked.png"
             alt="image for ranks"
             para={ranked}
           />
         </div>
         <div>
-          <div className="Flexh1">
-            <Typography variant="h4" sx={{ color: 'white', my: '5rem' }}>
+          <div className="flex-h1">
+            <Typography
+              variant="h4"
+              sx={{ color: 'white', my: '5rem', fontWeight: 'bold' }}
+            >
               Leveling System
             </Typography>
           </div>
           <SystemCard
-            img="../../../public/assets/leveling.png"
+            img="/assets/leveling.png"
             para={leveling}
             alt="image for levels"
           />
