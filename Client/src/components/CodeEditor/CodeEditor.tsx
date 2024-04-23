@@ -1,19 +1,24 @@
-import Editor from '@monaco-editor/react';
+import Editor, { useMonaco } from '@monaco-editor/react';
+import 'monaco-themes/themes/Blackboard.json';
 import { useEffect, useState } from 'react';
-import blackboardTheme from '../../styles/codeEditorTheme';
 
 const CodeEditor = ({ language }: { language: string }) => {
   const [code, setCode] = useState(`// Write your ${language} code here`);
-
-  function handleEditorWillMount(monaco: any) {
-    monaco.editor.defineTheme('blackboard', blackboardTheme);
-  }
+  const monaco = useMonaco();
 
   useEffect(() => {
     setCode(
       `${language === 'python' ? '#' : '//'} Write your ${language} code here`,
     );
-  }, [language]);
+    if (monaco) {
+      console.log('here is the monaco isntance:', monaco);
+      import('monaco-themes/themes/Blackboard.json')
+        .then((data: any) => {
+          monaco.editor.defineTheme('Blackboard', data);
+        })
+        .then(_ => monaco.editor.setTheme('Blackboard'));
+    }
+  }, [monaco, language]);
 
   const handleEditorChange = (value: string | undefined, event: any) => {
     // TODO: Handle code change and send it to the server
@@ -29,7 +34,6 @@ const CodeEditor = ({ language }: { language: string }) => {
       value={code}
       onChange={handleEditorChange}
       theme="blackboard"
-      beforeMount={handleEditorWillMount}
     />
   );
 };

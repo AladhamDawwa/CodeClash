@@ -6,6 +6,7 @@ import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
 import HomePage from './pages/HomePage/home';
 import { RootState } from './store/store';
+import GamePage from './pages/GamePage/GamePage';
 
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -27,6 +28,10 @@ function App() {
         <Route
           path="/home"
           element={isAuthenticated ? <HomePage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/gameSession"
+          element={isAuthenticated ? <GamePage /> : <Navigate to="/" replace />}
         />
         <Route path="/signIn" element={<SignIn />} />
         <Route
