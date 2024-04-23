@@ -102,7 +102,7 @@ const SignIn = () => {
   }, [dispatch, error]);
 
   return (
-    <div id="body">
+    <div className="container">
       <div id="logo">
         <img src="./assets/logo.svg" alt="logo"></img>
       </div>
