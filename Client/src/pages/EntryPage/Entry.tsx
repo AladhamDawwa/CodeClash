@@ -1,13 +1,13 @@
-import './style.css';
+import './styles.css';
 import '../../index.css';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import ModesCard from './ModesCard';
-import SystemCard from './SystemCard';
+import ModesCard from '../../components/EntryPage/ModesCard';
+import SystemCard from '../../components/EntryPage/SystemCard';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 const EntryPage = () => {
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const oneVSone =
     'compete against your opponent in an intense problem solving game and show-off your skills!';
   const threeVSthree =
@@ -26,7 +26,7 @@ const EntryPage = () => {
         <img src="../../../public/assets/logo.svg" className="header-img" />
         <Button
           onClick={() => {
-            // navigate('/signUp');
+            navigate('/signIn');
           }}
           variant="contained"
           size="large"

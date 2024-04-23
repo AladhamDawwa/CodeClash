@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 import { useTheme } from '@mui/material/styles';
-import './style.css';
+import '../../pages/EntryPage/styles.css';
 type cardprops = {
   header: string;
   image: string;
