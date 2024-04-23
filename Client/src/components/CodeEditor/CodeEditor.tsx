@@ -1,49 +1,35 @@
-import Editor, { useMonaco } from '@monaco-editor/react';
-import { useEffect } from 'react';
+import Editor from '@monaco-editor/react';
+import { useEffect, useState } from 'react';
+import blackboardTheme from '../../styles/codeEditorTheme';
 
-const CodeEditor = () => {
-  // const handleEditorChange = (value: any, event: any) => {
-  //   // here is the current value
-  //   console.log('handleEditorChange value', value);
-  //   console.log('handleEditorChange event', event);
-  // };
+const CodeEditor = ({ language }: { language: string }) => {
+  const [code, setCode] = useState(`// Write your ${language} code here`);
 
-  // function handleEditorDidMount(editor: any, monaco: any) {
-  //   console.log('onMount: the editor instance:', editor);
-  //   console.log('onMount: the monaco instance:', monaco);
-  // }
-
-  // function handleEditorWillMount(monaco: any) {
-  //   console.log('beforeMount: the monaco instance:', monaco);
-  // }
-
-  // function handleEditorValidation(markers: any) {
-  //   // model markers
-  //   markers.forEach((marker: any) =>
-  //     console.log('onValidate:', marker.message),
-  //   );
-  // }
-
-  const monaco = useMonaco();
+  function handleEditorWillMount(monaco: any) {
+    monaco.editor.defineTheme('blackboard', blackboardTheme);
+  }
 
   useEffect(() => {
-    // do conditional chaining
-    monaco?.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-    // or make sure that it exists by other ways
-    if (monaco) {
-      console.log('here is the monaco instance:', monaco);
-    }
-  }, [monaco]);
+    setCode(
+      `${language === 'python' ? '#' : '//'} Write your ${language} code here`,
+    );
+  }, [language]);
+
+  const handleEditorChange = (value: string | undefined, event: any) => {
+    // TODO: Handle code change and send it to the server
+    console.log('handleEditorChange value', value);
+  };
 
   return (
     <Editor
-      height="90vh"
-      defaultLanguage="javascript"
-      defaultValue="// some comment"
-      // onChange={handleEditorChange}
-      // onMount={handleEditorDidMount}
-      // beforeMount={handleEditorWillMount}
-      // onValidate={handleEditorValidation}
+      height="50%"
+      width="50%"
+      defaultLanguage="cpp"
+      language={language}
+      value={code}
+      onChange={handleEditorChange}
+      theme="blackboard"
+      beforeMount={handleEditorWillMount}
     />
   );
 };
