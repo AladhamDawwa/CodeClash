@@ -10,6 +10,7 @@ import EntryPage from './pages/EntryPage/Entry';
 
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  console.log(isAuthenticated ? 'Authenticated' : 'Not Authenticated');
 
   return (
     <BrowserRouter>
