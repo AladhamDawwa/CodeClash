@@ -6,6 +6,7 @@ import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
 import HomePage from './pages/HomePage/home';
 import { RootState } from './store/store';
+import EntryPage from './pages/EntryPage/Entry';
 import GamePage from './pages/GamePage/GamePage';
 
 function App() {
@@ -15,13 +16,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/entry" element={<EntryPage />} />
         <Route
           path="/"
           element={
             isAuthenticated ? (
               <Navigate to="/home" replace />
             ) : (
-              <Navigate to="/signin" replace />
+              <Navigate to="/entry" replace />
             )
           }
         />
