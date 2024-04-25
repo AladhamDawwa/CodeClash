@@ -21,6 +21,7 @@ export type User = {
   rank_tier?: RankTier;
   registeration_date?: Timestamp;
   username?: string;
+  mmr?: number;
 };
 
 const converter = {
@@ -44,6 +45,7 @@ const converter = {
       rank_tier: data.rank_tier,
       registeration_date: data.registeration_date,
       username: data.username,
+      mmr: data.mmr,
     };
   },
 };
@@ -80,12 +82,20 @@ export class Users {
     return user_creation_args;
   }
 
+  static async get_by_username(username: string) {
+    const snapshot = await users_collection
+      .where("username", "==", username)
+      .get();
+    const user = snapshot.docs[0].data();
+    return user;
+  }
+
   static async get_rank(username: string): Promise<RankTier> {
     const snapshot = await users_collection
       .where("username", "==", username)
       .get();
     const user = snapshot.docs[0].data();
-    return user.rank_tier!
+    return user.rank_tier!;
   }
 
   static async user_exists(username: string | undefined): Promise<boolean> {
@@ -164,6 +174,7 @@ export class Users {
       rank_tier: RankTier.Bronze,
       registeration_date: Timestamp.now(),
       username: username,
+      mmr: 800,
     };
   }
 }
