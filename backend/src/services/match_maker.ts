@@ -1,24 +1,18 @@
-import { MatchMakerQueue } from "../match_maker/match_maker_queue";
-import { MatchMakerQueueLocal } from "../match_maker/match_maker_queue_local";
-import { Users } from "../models/users";
-import { RankTier } from "../utils/definitions/rank_tier";
-import { UserSocketInfo } from "../utils/definitions/user_socket_info";
+import { IMatchMakerQueue } from "../match_maker/queue/match_maker_queue";
+import { MatchMakerQueueLocal } from "../match_maker/queue/match_maker_queue_local";
+import { User, Users } from "../models/users";
+import { MatchMakerRequest } from "../utils/definitions/match_maker";
 
 export class MatchMakerService {
-  static match_maker_queue: MatchMakerQueue = new MatchMakerQueueLocal();
+  static match_maker_queue: IMatchMakerQueue = new MatchMakerQueueLocal();
 
-  static async find_one_v_one(user_socket_info: UserSocketInfo) {
-    const user_rank: RankTier = await Users.get_rank(user_socket_info.username);
-    if (this.match_maker_queue.is_empty(user_rank)) {
-      this.match_maker_queue.push(user_rank, user_socket_info);
-      return null;
+  static async find_one_v_one(match_maker_request: MatchMakerRequest) {
+    const user = await Users.get_by_username(match_maker_request.username!);
+    const matched_user = this.match_maker_queue.find_best(user);
+    if (matched_user) {
+      return matched_user;
     }
-    const matched_user_socket_info =
-      this.match_maker_queue.get_front(user_rank);
-    this.match_maker_queue.pop(user_rank);
-    return [
-      user_socket_info,
-      matched_user_socket_info,
-    ];
+    this.match_maker_queue.push(user);
+    return null;
   }
 }
