@@ -1,2 +1,2 @@
-import _ from './HomePage';
+import _ from './Home';
 export default _;

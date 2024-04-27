@@ -7,7 +7,7 @@ export default function TeamsList() {
     <Paper
       sx={{
         width: '35rem',
-        height: '6.5rem',
+        minHeight: '6.5rem',
         backgroundColor: '#24243e',
       }}
     >

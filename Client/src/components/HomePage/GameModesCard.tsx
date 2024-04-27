@@ -11,8 +11,7 @@ export default function GameModesCard({ type }: ModeType) {
       sx={{
         width: '60rem',
         height: '27rem',
-        background:
-          'linear-gradient(to bottom right, #302b63 5% , #818196 80% )',
+        background: 'linear-gradient(to bottom right, #24243e  , #818196  )',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

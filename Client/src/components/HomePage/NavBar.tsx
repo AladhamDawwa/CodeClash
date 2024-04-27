@@ -1,12 +1,17 @@
 import '../../pages/HomePage/styles.css';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
 type NavBar = {
   rankImg: string;
   rankAmount: number;
   userImg: string;
 };
 export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
+  const navigate = useNavigate();
+  const handleLogoClick = () => {
+    navigate('/');
+  };
   return (
     <Paper
       elevation={2}
@@ -22,7 +27,12 @@ export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
       }}
     >
       <div>
-        <img src="../../../public/assets/logo.svg" className="logo" />
+        <img
+          style={{ cursor: 'pointer' }}
+          src="../../../public/assets/logo.svg"
+          className="logo"
+          onClick={handleLogoClick}
+        />
       </div>
       <div
         style={{

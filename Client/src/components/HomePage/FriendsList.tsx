@@ -8,12 +8,16 @@ type ListType = {
 
 export default function FriendsList({ type }: ListType) {
   let textColor: string;
-  if (type === 'Online') {
-    textColor = '#2cbb5d';
-  } else if (type === 'Offline') {
-    textColor = '#9ca0a7';
-  } else {
-    textColor = '#fff';
+  switch (type) {
+    case 'Online':
+      textColor = '#2cbb5d';
+      break;
+    case 'Offline':
+      textColor = '#9ca0a7';
+      break;
+    default:
+      textColor = '#fff';
+      break;
   }
 
   return (
