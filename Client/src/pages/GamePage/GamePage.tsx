@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import CodeEditor from '../../components/CodeEditor/CodeEditor';
+import Timer from '../../components/Timer/Timer';
 
 const GamePage = () => {
   const [language, setLanguage] = useState('cpp');
@@ -18,7 +19,7 @@ const GamePage = () => {
 
   return (
     <div className="container">
-      <Box sx={{ minWidth: 120 }}>
+      <Box display="flex" flexDirection="column" width="100%">
         <FormControl fullWidth>
           <InputLabel id="select-label-language">Language</InputLabel>
           <Select
@@ -36,8 +37,9 @@ const GamePage = () => {
             <MenuItem value={'cpp'}>C++</MenuItem>
           </Select>
         </FormControl>
+        <CodeEditor language={language} />
+        <Timer />
       </Box>
-      <CodeEditor language={language} />
     </div>
   );
 };

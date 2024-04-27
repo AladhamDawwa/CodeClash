@@ -4,10 +4,10 @@ import './App.css';
 import _404 from './components/404/404';
 import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
-import HomePage from './pages/HomePage/home';
+import HomePage from './pages/HomePage/HomePage';
 import { RootState } from './store/store';
-import GamePage from './pages/GamePage/GamePage';
 import EntryPage from './pages/EntryPage/Entry';
+import GamePage from './pages/GamePage/GamePage';
 
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);

@@ -1,0 +1,8 @@
+import { RankTier } from "../../utils/definitions/rank_tier";
+import { User } from "../../models/users";
+export interface IMatchMakerQueue {
+  is_empty(): boolean;
+  find_best(user: User): (User | null)
+  push(user: User): void
+  remove(user: User): void
+}
