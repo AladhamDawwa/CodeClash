@@ -12,7 +12,16 @@ import data from './users.json';
 import FriendsList from '../../components/HomePage/FriendsList';
 import TeamsList from '../../components/HomePage/TeamsList';
 import Button from '@mui/material/Button';
+import { useState } from 'react';
 const Home = () => {
+  const [openList, setOpenList] = useState(-1);
+  const handleListToggle = (index: number) => {
+    setOpenList(openList === index ? -1 : index);
+  };
+  const [openTeam, setOpenTeam] = useState(-1);
+  const handleTeamToggle = (index: number) => {
+    setOpenTeam(openTeam === index ? -1 : index);
+  };
   return (
     <>
       <NavBar
@@ -56,7 +65,6 @@ const Home = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: '5rem',
-                marginBottom: '10rem',
               }}
             >
               <Typography
@@ -109,7 +117,7 @@ const Home = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '3rem',
+                gap: '5rem',
               }}
             >
               <Typography
@@ -129,55 +137,86 @@ const Home = () => {
                   justifyContent: 'space-around',
                 }}
               >
-                <FriendsList type="All" />
-                <FriendsList type="Offline" />
-                <FriendsList type="Online" />
-                <div className="teams">
+                <FriendsList
+                  type="All"
+                  open={openList === 0}
+                  onClick={() => handleListToggle(0)}
+                />
+                <FriendsList
+                  type="Offline"
+                  open={openList === 1}
+                  onClick={() => handleListToggle(1)}
+                />
+                <FriendsList
+                  type="Online"
+                  open={openList === 2}
+                  onClick={() => handleListToggle(2)}
+                />
+                <div className="home-teams">
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      color: 'white',
+                      marginBottom: '3rem',
+                      fontWeight: '500',
+                    }}
+                  >
+                    Teams
+                  </Typography>
                   <Paper
                     sx={{
                       backgroundColor: '#0f0c29',
                       width: '40rem',
-                      height: '46rem',
+                      height: '35rem',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '3rem',
                       overflowY: 'auto',
                       scrollbarWidth: 'none',
+                      gap: '4rem',
+                      padding: '3rem 0',
                     }}
                   >
-                    <Typography
-                      variant="h2"
-                      sx={{
-                        color: 'white',
-                        marginTop: '3rem',
-                        fontWeight: '500',
-                      }}
-                    >
-                      Teams
-                    </Typography>
-                    <TeamsList />
-                    <TeamsList />
-                    <TeamsList />
-                    <TeamsList />
-                    <TeamsList />
-                    <Button
-                      variant="contained"
-                      size="large"
-                      sx={{
-                        marginBottom: '3rem',
-                        px: '1rem',
-                        fontSize: '1.5rem',
-                        textTransform: 'capitalize',
-                        backgroundColor: '#24243e',
-                      }}
-                      disableRipple
-                      disableElevation
-                    >
-                      Create Team
-                    </Button>
+                    <TeamsList
+                      open={openTeam === 0}
+                      onClick={() => handleTeamToggle(0)}
+                    />
+                    <TeamsList
+                      open={openTeam === 1}
+                      onClick={() => handleTeamToggle(1)}
+                    />
+                    <TeamsList
+                      open={openTeam === 2}
+                      onClick={() => handleTeamToggle(2)}
+                    />
+                    <TeamsList
+                      open={openTeam === 3}
+                      onClick={() => handleTeamToggle(3)}
+                    />
+                    <TeamsList
+                      open={openTeam === 4}
+                      onClick={() => handleTeamToggle(4)}
+                    />
+                    <TeamsList
+                      open={openTeam === 5}
+                      onClick={() => handleTeamToggle(5)}
+                    />
                   </Paper>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      margin: '3rem',
+                      p: '1.5rem',
+                      fontSize: '1.5rem',
+                      textTransform: 'capitalize',
+                      backgroundColor: '#0f0c29',
+                    }}
+                    disableRipple
+                    disableElevation
+                  >
+                    Create Team
+                  </Button>
                 </div>
               </Paper>
               <Box height="2rem" />
