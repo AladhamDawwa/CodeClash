@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { socket } from '../../socket';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
+import { io } from 'socket.io-client';
 
 const MatchMaker = () => {
   const [matchFound, setMatchFound] = useState(false);
@@ -10,29 +10,50 @@ const MatchMaker = () => {
   const auth = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    socket.on('match_maker:found_match', () => {
-      setMatchFound(true);
+    const { user } = auth;
+
+    const socket = io('http://localhost:5000', {
+      extraHeaders: {
+        token: user.token,
+      },
+    });
+
+    socket.on('connect', () => {
+      console.log('connected', socket.id);
+    });
+
+    socket.emit(
+      'match_maker_server:find_match',
+      JSON.stringify({
+        game_type: '0',
+        game_mode: '0',
+      }),
+    );
+
+    // I need to print if the connection is closed or there is an error
+    socket.on('disconnect', () => {
+      console.log('disconnected');
     });
 
     return () => {
-      socket.off('match_maker:found_match');
+      socket.disconnect();
     };
-  }, []);
+  }, [auth]);
 
-  const findMatch = () => {
-    const { user } = auth;
+  // const findMatch = () => {
+  //   const { user } = auth;
 
-    const token = user.token;
+  //   const token = user.token;
 
-    socket.emit('match_maker_server:find_match', { token });
-  };
+  //   socket.emit('match_maker_server:find_match', { token });
+  // };
 
   return (
     <div>
       {matchFound ? (
         <p>Match found! You're ready to play.</p>
       ) : (
-        <Button onClick={findMatch}>Find Match</Button>
+        <Button>Find Match</Button>
       )}
     </div>
   );
