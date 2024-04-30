@@ -13,6 +13,7 @@ import TeamsList from '../../components/HomePage/TeamsList';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
 import NavBar from '../../components/NavBar/NavBar';
+//TODO when the user clicks on his image it navigate him to his profile page
 const Home = () => {
   const [openList, setOpenList] = useState(-1);
   const handleListToggle = (index: number) => {

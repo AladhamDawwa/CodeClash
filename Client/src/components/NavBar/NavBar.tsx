@@ -7,6 +7,7 @@ type NavBar = {
   rankAmount: number;
   userImg: string;
 };
+// TODO : apply useEffects to get the user info instead of props
 export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
   const navigate = useNavigate();
   const handleLogoClick = () => {
