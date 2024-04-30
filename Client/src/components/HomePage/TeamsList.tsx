@@ -2,7 +2,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Statues from '@mui/icons-material/FiberManualRecord';
@@ -24,6 +23,7 @@ export default function TeamsList({ open, onClick }: TeamType) {
           width: '35rem',
           minHeight: '6.5rem',
           backgroundColor: '#24243e',
+          borderRadius: '0.5rem 0.5rem 0 0',
         }}
       >
         <div
@@ -51,7 +51,7 @@ export default function TeamsList({ open, onClick }: TeamType) {
               }}
             />
             {open && (
-              <ListItemButton>
+              <ListItemButton disableRipple>
                 <DeleteIcon
                   sx={{
                     color: 'red',
@@ -61,7 +61,7 @@ export default function TeamsList({ open, onClick }: TeamType) {
                 />
               </ListItemButton>
             )}
-            <ListItemButton onClick={onClick}>
+            <ListItemButton disableRipple onClick={onClick}>
               {open ? (
                 <ExpandLessIcon
                   sx={{
@@ -87,7 +87,7 @@ export default function TeamsList({ open, onClick }: TeamType) {
           sx={{
             width: '35rem',
             backgroundColor: '#24243e',
-            borderRadius: '0',
+            borderRadius: '0 0 0.5rem 0.5rem',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -110,6 +110,7 @@ export default function TeamsList({ open, onClick }: TeamType) {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   margin: '2rem',
+                  borderRadius: '0.5rem',
                 }}
               >
                 <p

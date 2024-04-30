@@ -1,4 +1,4 @@
-import '../../pages/HomePage/styles.css';
+import './style.css';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';

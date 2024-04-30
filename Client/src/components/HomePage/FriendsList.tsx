@@ -37,19 +37,20 @@ export default function FriendsList({ type, open, onClick }: ListType) {
           height: '6.5rem',
           backgroundColor: '#0f0c29',
           display: 'flex',
+          alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '1rem',
+          borderRadius: '1rem 1rem 0 0',
         }}
       >
         <Typography
           variant="h4"
-          sx={{ color: textColor }}
-          style={{ marginTop: '1rem' }}
+          sx={{ color: textColor, marginLeft: '2rem' }}
         >{`${type} (10)`}</Typography>
-        <ListItemButton onClick={onClick}>
+        <ListItemButton disableRipple onClick={onClick}>
           {open ? (
             <ExpandLessIcon
               sx={{ color: 'white', fontSize: '4rem', marginLeft: 'auto' }}
+              className="expand-icon"
             />
           ) : (
             <ExpandMoreIcon
@@ -69,9 +70,9 @@ export default function FriendsList({ type, open, onClick }: ListType) {
               flexDirection: 'column',
               alignItems: 'center',
               padding: '0 2rem',
-              borderRadius: '0',
               overflowY: 'auto',
               scrollbarWidth: 'none',
+              borderRadius: '0 0 1rem 1rem',
             }}
           >
             <List sx={{ width: '100%' }} component="div">

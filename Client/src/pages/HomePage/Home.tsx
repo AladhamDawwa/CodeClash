@@ -3,7 +3,6 @@ import '../../index.css';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import NavBar from '../../components/HomePage/NavBar';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import GameModesCard from '../../components/HomePage/GameModesCard';
@@ -13,6 +12,7 @@ import FriendsList from '../../components/HomePage/FriendsList';
 import TeamsList from '../../components/HomePage/TeamsList';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
+import NavBar from '../../components/NavBar/NavBar';
 const Home = () => {
   const [openList, setOpenList] = useState(-1);
   const handleListToggle = (index: number) => {
