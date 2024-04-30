@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from 'react';
 import Typography from '@mui/material/Typography';
 import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
@@ -15,7 +16,9 @@ type ListType = {
   onClick: () => void;
 };
 
-export default function FriendsList({ type, open, onClick }: ListType) {
+export default function FriendsList({ type }: ListType) {
+  const [open, setOpen] = useState(false);
+
   let textColor: string;
   switch (type) {
     case 'Online':
@@ -29,9 +32,25 @@ export default function FriendsList({ type, open, onClick }: ListType) {
       break;
   }
 
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (listRef.current && !listRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div style={{ position: 'relative' }}>
       <List
+        ref={listRef}
         sx={{
           width: '35rem',
           height: '6.5rem',
@@ -46,7 +65,7 @@ export default function FriendsList({ type, open, onClick }: ListType) {
           variant="h4"
           sx={{ color: textColor, marginLeft: '2rem' }}
         >{`${type} (10)`}</Typography>
-        <ListItemButton disableRipple onClick={onClick}>
+        <ListItemButton disableRipple onClick={() => setOpen(!open)}>
           {open ? (
             <ExpandLessIcon
               sx={{ color: 'white', fontSize: '4rem', marginLeft: 'auto' }}
@@ -73,6 +92,7 @@ export default function FriendsList({ type, open, onClick }: ListType) {
               overflowY: 'auto',
               scrollbarWidth: 'none',
               borderRadius: '0 0 1rem 1rem',
+              boxShadow: '0 0.5rem 1.5rem #24243e',
             }}
           >
             <List sx={{ width: '100%' }} component="div">
@@ -88,7 +108,7 @@ export default function FriendsList({ type, open, onClick }: ListType) {
                     }}
                   />
                   <img
-                    src={`../../../public/assets/${user.rank}.svg`}
+                    src={`/assets/${user.rank}.svg`}
                     style={{ height: '4rem', width: '4rem' }}
                   />
                 </ListItem>

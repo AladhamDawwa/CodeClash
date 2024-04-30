@@ -26,9 +26,9 @@ const Home = () => {
   return (
     <>
       <NavBar
-        rankImg={'../../../public/assets/bronze.svg'}
+        rankImg={'/assets/bronze.svg'}
         rankAmount={200}
-        userImg={'../../../public/assets/user-1.jpg'}
+        userImg={'/assets/user-1.jpg'}
       />
       <Container maxWidth="xl">
         <div className="left-right">
@@ -225,13 +225,13 @@ const Home = () => {
             <Paper
               sx={{
                 backgroundColor: '#0f0c29',
-                width: '40rem',
+                width: '50rem',
                 height: '60rem',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '3rem',
+                gap: '5.5rem',
                 marginBottom: '10rem',
               }}
             >
@@ -244,12 +244,12 @@ const Home = () => {
               <Paper
                 sx={{
                   backgroundColor: '#24243e',
-                  width: '36em',
+                  width: '45rem',
                   height: 'auto',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'space-around',
+                  justifyContent: 'space-between',
                   padding: '2rem 0rem',
                   overflowY: 'auto',
                   scrollbarWidth: 'none',
@@ -260,7 +260,7 @@ const Home = () => {
                   <Paper
                     key={index}
                     sx={{
-                      width: '32rem',
+                      width: '40rem',
                       minHeight: '7rem',
                       backgroundColor: '#0f0c29',
                       marginBottom: '1rem',
@@ -280,7 +280,7 @@ const Home = () => {
                     </p>
                     <img
                       className="tournament-img"
-                      src={`../../../public/assets/${user.rank}.svg`}
+                      src={`/assets/${user.rank}.svg`}
                     />
                   </Paper>
                 ))}

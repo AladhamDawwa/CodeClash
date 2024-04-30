@@ -44,23 +44,24 @@ export default function TeamsList({ open, onClick }: TeamType) {
               gap: '1rem',
             }}
           >
-            <Statues
-              sx={{
-                color: '#2cbb5d',
-                fontSize: '2rem',
-              }}
-            />
-            {open && (
-              <ListItemButton disableRipple>
+            {open ? (
+              <ListItemButton disableRipple sx={{ padding: 0, margin: 0 }}>
                 <DeleteIcon
                   sx={{
                     color: 'red',
                     fontSize: '2rem',
-                    marginRight: '1rem',
                   }}
                 />
               </ListItemButton>
+            ) : (
+              <Statues
+                sx={{
+                  color: '#2cbb5d',
+                  fontSize: '2rem',
+                }}
+              />
             )}
+
             <ListItemButton disableRipple onClick={onClick}>
               {open ? (
                 <ExpandLessIcon
@@ -92,10 +93,6 @@ export default function TeamsList({ open, onClick }: TeamType) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-evenly',
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            zIndex: 1,
           }}
         >
           <List component="div">
