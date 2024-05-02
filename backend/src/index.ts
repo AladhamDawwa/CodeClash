@@ -22,7 +22,11 @@ UsersController.routes(app)
 
 // websockets
 const server = createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  }
+})
 
 // socket.io middlewares
 io.use(authenticate_socket)
