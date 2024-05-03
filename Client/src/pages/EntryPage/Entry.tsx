@@ -23,7 +23,7 @@ const EntryPage = () => {
   return (
     <Container>
       <div className="header">
-        <img src="../../../public/assets/logo.svg" className="header-img" />
+        <img src="/assets/logo.svg" className="header-img" />
         <Button
           onClick={() => {
             navigate('/signIn');

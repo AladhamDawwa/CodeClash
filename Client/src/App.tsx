@@ -8,6 +8,8 @@ import HomePage from './pages/HomePage/Home';
 import { RootState } from './store/store';
 import EntryPage from './pages/EntryPage/Entry';
 import GamePage from './pages/GamePage/GamePage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import GameHistory from './pages/GameHistory/GameHistory';
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   console.log(isAuthenticated ? 'Authenticated' : 'Not Authenticated');
@@ -16,6 +18,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/entry" element={<EntryPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/history" element={<GameHistory />} />
         <Route
           path="/"
           element={
