@@ -1,0 +1,82 @@
+.profile-top-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 7rem;
+}
+.profile-left-right {
+  display: flex;
+  justify-content: space-between;
+}
+.profile-user-info {
+  position: relative;
+  width: 100%;
+}
+.profile-img {
+  float: left;
+}
+.profile-txt {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+}
+.language {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto auto auto;
+  column-gap: 4rem;
+  row-gap: 3rem;
+}
+.profile-lang-background {
+  color: white;
+  font-size: 1.8rem;
+  text-transform: capitalize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 7rem;
+  height: 3.5rem;
+  border-radius: 2rem;
+}
+.profile-edit {
+  border: hidden;
+  width: 100%;
+  color: white;
+  background-color: #0f0c29;
+}
+.rank-grid-container {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto auto;
+  column-gap: 15rem;
+  row-gap: 7rem;
+}
+.rank-p {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 2.5rem;
+}
+.level-p {
+  color: white;
+  font-size: 2rem;
+}
+.profile-rank-img {
+  width: 10rem;
+  height: 10rem;
+}
+.profile-level-img {
+  width: 5rem;
+  height: 5rem;
+}
+.rank-txt {
+  color: white;
+  font-size: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 20px;
+  background-color: #5d6ba1;
+  text-align: center;
+}
+.rank-align {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
