@@ -188,7 +188,7 @@ const ProfilePage = () => {
                   let langColor;
                   switch (lang) {
                     case 'python':
-                      langColor = '#66D9E8';
+                      langColor = '#58a6b1';
                       break;
                     case 'c++':
                       langColor = '#C2255C';
