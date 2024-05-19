@@ -37,6 +37,7 @@ const Timer = () => {
       sx={{
         backgroundColor: '#383560',
         borderRadius: '0.5rem',
+        boxShadow: '3',
       }}
     >
       <Avatar alt="user 1" src="assets/user-1.jpg" />

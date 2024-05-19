@@ -1,7 +1,7 @@
 import Editor, { useMonaco } from '@monaco-editor/react';
 import 'monaco-themes/themes/Blackboard.json';
 import { useEffect, useState } from 'react';
-
+import './style.css';
 const CodeEditor = ({ language }: { language: string }) => {
   const [code, setCode] = useState(`// Write your ${language} code here`);
   const monaco = useMonaco();
@@ -27,13 +27,13 @@ const CodeEditor = ({ language }: { language: string }) => {
 
   return (
     <Editor
-      height="50%"
-      width="50%"
+      height="36rem"
+      width="78rem"
       defaultLanguage="cpp"
       language={language}
       value={code}
       onChange={handleEditorChange}
-      theme="blackboard"
+      theme="Blackboard"
     />
   );
 };
