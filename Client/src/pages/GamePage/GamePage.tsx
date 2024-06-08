@@ -255,6 +255,10 @@ const GamePage = () => {
                         color: 'white',
                         backgroundColor: '#24243E',
                         fontSize: '1.6rem',
+                        '.MuiSelect-icon': {
+                          color: 'white',
+                          fontSize: '2rem',
+                        },
                       }}
                       MenuProps={{
                         PaperProps: {
@@ -262,16 +266,35 @@ const GamePage = () => {
                             width: '15rem',
                             backgroundColor: '#24243E',
                             color: 'white',
+                            padding: '1rem 0',
                           },
                         },
                       }}
                     >
-                      <MenuItem value={'javascript'}>JavaScript</MenuItem>
-                      <MenuItem value={'typescript'}>TypeScript</MenuItem>
-                      <MenuItem value={'python'}>Python</MenuItem>
-                      <MenuItem value={'java'}>Java</MenuItem>
-                      <MenuItem value={'csharp'}>C#</MenuItem>
-                      <MenuItem value={'cpp'}>C++</MenuItem>
+                      <MenuItem
+                        sx={{ fontSize: '1.5rem' }}
+                        value={'javascript'}
+                      >
+                        JavaScript
+                      </MenuItem>
+                      <MenuItem
+                        sx={{ fontSize: '1.5rem' }}
+                        value={'typescript'}
+                      >
+                        TypeScript
+                      </MenuItem>
+                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'python'}>
+                        Python
+                      </MenuItem>
+                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'java'}>
+                        Java
+                      </MenuItem>
+                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'csharp'}>
+                        C#
+                      </MenuItem>
+                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'cpp'}>
+                        C++
+                      </MenuItem>
                     </Select>
                   </FormControl>
                   <Box
