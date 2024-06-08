@@ -7,9 +7,12 @@ initializeApp({
 })
 
 // firestore
-const firestore = getFirestore()
+export const firestore = getFirestore()
 export const db = {
-  users: firestore.collection("users")
+  users: firestore.collection("users"),
+  games: firestore.collection("games"),
+  problems: firestore.collection("problems"),
+  testcases: firestore.collection("testcases")
 }
 
 
