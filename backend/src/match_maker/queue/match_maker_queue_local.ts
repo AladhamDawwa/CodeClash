@@ -1,7 +1,7 @@
 import { User } from "../../models/users";
 import { EloMatchMakerEvaluator } from "../evaluator/elo_match_maker_evaluator";
 import { IMatchMakerEvaluator } from "../evaluator/match_maker_evaluator";
-import { IMatchMakerQueue } from "./match_maker_queue";
+import { IMatchMakerQueue } from "./i_match_maker_queue";
 
 class Node {
   user: User;

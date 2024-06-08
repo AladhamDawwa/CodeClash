@@ -52,6 +52,7 @@ const converter = {
             rank_tier: data.rank_tier,
             registeration_date: data.registeration_date,
             username: data.username,
+            mmr: data.mmr,
         };
     },
 };
@@ -72,6 +73,15 @@ class Users {
             const ref = yield users_collection.add(this.create_user_args(first_name, last_name, email, username, password));
             delete user_creation_args.password;
             return user_creation_args;
+        });
+    }
+    static get_by_username(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield users_collection
+                .where("username", "==", username)
+                .get();
+            const user = snapshot.docs[0].data();
+            return user;
         });
     }
     static get_rank(username) {
@@ -144,6 +154,7 @@ class Users {
             rank_tier: rank_tier_1.RankTier.Bronze,
             registeration_date: firestore_1.Timestamp.now(),
             username: username,
+            mmr: 800,
         };
     }
 }
