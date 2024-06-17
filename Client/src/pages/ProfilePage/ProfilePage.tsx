@@ -4,27 +4,29 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import Stack from '@mui/material/Stack';
 import './styles.css';
 import '../../index.css';
 import { useState } from 'react';
 import MatchCard from '../../components/MatchCard/MatchCard';
+import userData from './profile.json';
+
 const ProfilePage = () => {
-  const currentRank = 'bronze';
-  const NextRank = 'silver';
-  const currentPoints = 216;
-  const PointsToRank = 84;
-  const currentLevelPoints = 3145;
-  const PointsToLevelUp = 855;
-  const currentLevel = 4;
-  const nextLevel = 5;
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState('Ahmed Adel');
-  const [userName, setUserName] = useState('Adel24_24');
-  const [description, setDescription] = useState(
-    'I am a Software Engineer with strength in JavaScript web applications using emerging technologies. I have hands-on experience in JavaScript cutting-edge technologies such as React, and Redux on the front end, as well as Node.js, MongoDB, and Firebase.',
-  );
-  const userLanguages = ['c++', 'python', 'java', 'c#', 'c'];
+  const [name, setName] = useState(userData.user.fullName);
+  const [userName, setUserName] = useState(userData.user.userName);
+  const [description, setDescription] = useState(userData.user.describtion);
+  const userLanguages = userData.user.languages;
+  const currentRank = userData.user.currentRank;
+  const NextRank = userData.user.nextRank;
+  const currentPoints = userData.user.currentRankPoints;
+  const PointsToRank = userData.user.pointsToRank;
+  const currentLevelPoints = userData.user.currentLevelPoints;
+  const PointsToLevelUp = userData.user.pointsToLevel;
+  const currentLevel = userData.user.currentLevel;
+  const nextLevel = userData.user.nextLevel;
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -37,9 +39,9 @@ const ProfilePage = () => {
   return (
     <>
       <NavBar
-        rankImg={'/assets/bronze.svg'}
-        rankAmount={200}
-        userImg={'/assets/user-1.jpg'}
+        rankImg={`/assets/${currentRank}.svg`}
+        rankAmount={currentPoints}
+        userImg={userData.user.profilePicture}
       />
       <Container maxWidth="xl">
         <div className="profile-top-bottom">
@@ -60,31 +62,41 @@ const ProfilePage = () => {
                 <div className="profile-img">
                   {isEditing ? (
                     <>
-                      <AddPhotoAlternateOutlinedIcon
-                        sx={{
-                          width: '15rem',
-                          height: '17rem',
-                          borderRadius: '1rem',
-                          opacity: '50%',
-                          cursor: 'pointer',
-                          position: 'absolute',
-                          zIndex: '1',
-                        }}
-                      />
-                      <img
-                        src="/assets/user-1.jpg"
-                        alt="user image"
-                        style={{
-                          width: '15rem',
-                          height: '17rem',
-                          borderRadius: '1rem',
-                          filter: 'brightness(70%)',
-                        }}
-                      />
+                      {userData.user.profilePicture.length === 0 ? (
+                        <AccountBoxIcon
+                          sx={{
+                            width: '15rem',
+                            height: '17rem',
+                            borderRadius: '1rem',
+                            color: 'white',
+                            filter: 'brightness(70%)',
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={userData.user.profilePicture}
+                          alt="user image"
+                          style={{
+                            width: '15rem',
+                            height: '17rem',
+                            borderRadius: '1rem',
+                            filter: 'brightness(70%)',
+                          }}
+                        />
+                      )}
                     </>
+                  ) : userData.user.profilePicture.length === 0 ? (
+                    <AccountBoxIcon
+                      sx={{
+                        width: '15rem',
+                        height: '17rem',
+                        borderRadius: '1rem',
+                        color: 'white',
+                      }}
+                    />
                   ) : (
                     <img
-                      src="/assets/user-1.jpg"
+                      src={userData.user.profilePicture}
                       alt="user image"
                       style={{
                         width: '15rem',
@@ -111,7 +123,7 @@ const ProfilePage = () => {
                         style={{
                           fontSize: '3rem',
                           border: '1px solid white',
-                          padding: '0.5rem',
+                          textTransform: 'capitalize',
                         }}
                         className="profile-edit"
                       />
@@ -120,22 +132,29 @@ const ProfilePage = () => {
                         value={userName}
                         onChange={e => setUserName(e.target.value)}
                         style={{
-                          fontSize: '2.125rem',
+                          fontSize: '2.2rem',
                           color: '#999',
                           border: '1px solid white',
-                          padding: '0.5rem',
+                          padding: '0 0.5rem',
+                          textTransform: 'capitalize',
                         }}
                         className="profile-edit"
                       />
                     </>
                   ) : (
                     <>
-                      <Typography variant="h3" sx={{ color: 'white' }}>
+                      <p
+                        style={{
+                          color: 'white',
+                          textTransform: 'capitalize',
+                          fontSize: '3rem',
+                        }}
+                      >
                         {name}
-                      </Typography>
-                      <Typography variant="h4" sx={{ color: '#999' }}>
-                        {`#${userName}`}
-                      </Typography>
+                      </p>
+                      <p
+                        style={{ color: '#999', fontSize: '2.2rem' }}
+                      >{`#${userName}`}</p>
                     </>
                   )}
                 </div>
@@ -167,9 +186,9 @@ const ProfilePage = () => {
                       resize: 'none',
                       overflowY: 'auto',
                       scrollbarWidth: 'none',
-                      padding: '0.5rem',
                       border: '1px solid white',
                       borderRadius: '1rem',
+                      fontFamily: 'inherit',
                     }}
                     className="profile-edit"
                   />
@@ -184,35 +203,48 @@ const ProfilePage = () => {
                 Languages
               </Typography>
               <div className="language">
-                {userLanguages.map(lang => {
-                  let langColor;
-                  switch (lang) {
-                    case 'python':
-                      langColor = '#66D9E8';
-                      break;
-                    case 'c++':
-                      langColor = '#C2255C';
-                      break;
-                    case 'c#':
-                      langColor = '#6741D9';
-                      break;
-                    case 'java':
-                      langColor = '#E8590C';
-                      break;
-                    default:
-                      langColor = '#5d6ba1';
-                      break;
-                  }
-                  return (
-                    <p
-                      className="profile-lang-background"
-                      key={lang}
-                      style={{ backgroundColor: langColor }}
-                    >
-                      {lang}
-                    </p>
-                  );
-                })}
+                {userLanguages.length === 0 ? (
+                  <p
+                    style={{
+                      color: 'white',
+                      textTransform: 'capitalize',
+                      fontSize: '1.8rem',
+                      fontWeight: '500',
+                    }}
+                  >
+                    No languages detected yet!
+                  </p>
+                ) : (
+                  userLanguages.map(lang => {
+                    let langColor;
+                    switch (lang) {
+                      case 'python':
+                        langColor = '#58a6b1';
+                        break;
+                      case 'c++':
+                        langColor = '#C2255C';
+                        break;
+                      case 'c#':
+                        langColor = '#6741D9';
+                        break;
+                      case 'java':
+                        langColor = '#E8590C';
+                        break;
+                      default:
+                        langColor = '#5d6ba1';
+                        break;
+                    }
+                    return (
+                      <p
+                        className="profile-lang-background"
+                        key={lang}
+                        style={{ backgroundColor: langColor }}
+                      >
+                        {lang}
+                      </p>
+                    );
+                  })
+                )}
               </div>
               {isEditing ? (
                 <Button
@@ -397,4 +429,5 @@ const ProfilePage = () => {
     </>
   );
 };
+
 export default ProfilePage;
