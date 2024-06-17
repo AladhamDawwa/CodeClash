@@ -9,7 +9,6 @@ import {
   SelectChangeEvent,
   Stack,
   Button,
-  Container,
 } from '@mui/material';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
@@ -28,7 +27,9 @@ interface TestCase {
 }
 const GamePage = () => {
   const [language, setLanguage] = useState('cpp');
-  const [selectedCase, setSelectedCase] = useState<TestCase | null>(null);
+  const [selectedCase, setSelectedCase] = useState<TestCase | null>(
+    data.problem.testCases[0],
+  );
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [problemOption, setProblemOption] = useState('description');
   const [testcaseOption, setTestcaseOption] = useState('testcase');
@@ -57,7 +58,7 @@ const GamePage = () => {
         userImg={'/assets/user-1.jpg'}
       />
 
-      <Container maxWidth="xl">
+      <div>
         <Stack direction={'column'}>
           <Stack direction={'column'} alignItems={'center'}>
             <Timer />
@@ -118,7 +119,7 @@ const GamePage = () => {
             </Box>
             <Stack
               direction={'row'}
-              spacing={20}
+              spacing={15}
               sx={{ paddingBottom: '7rem' }}
             >
               <Box
@@ -199,14 +200,14 @@ const GamePage = () => {
                 {problemOption === 'description' && <ProblemDescription />}
                 {problemOption === 'submissions' && <ProblemSubmissions />}
               </Box>
-              <Stack spacing={5}>
+              <Stack spacing={5} sx={{ width: '80rem' }}>
                 <Box
-                  width={800}
                   height={540}
                   sx={{
                     backgroundColor: '#0F0C29',
                     borderRadius: '1.3rem',
                     boxShadow: '0 0 0.3rem',
+                    width: '100%',
                   }}
                 >
                   <Box
@@ -308,12 +309,12 @@ const GamePage = () => {
                   <CodeEditor language={language} />
                 </Box>
                 <Box
-                  width={800}
                   height={540}
                   sx={{
                     backgroundColor: '#0F0C29',
                     borderRadius: '1.3rem',
                     boxShadow: '0 0 0.3rem',
+                    width: '100%',
                   }}
                 >
                   <Box
@@ -383,10 +384,10 @@ const GamePage = () => {
                     </Stack>
                   </Box>
                   <div
+                    className="wrapper"
                     style={{
                       overflowX: 'auto',
                       maxHeight: '30rem',
-                      scrollbarWidth: 'none',
                     }}
                   >
                     <Stack
@@ -399,7 +400,7 @@ const GamePage = () => {
                         <p
                           style={{
                             minWidth: '10rem',
-                            marginLeft: '2rem',
+
                             color: accepted
                               ? '#2CBB5D'
                               : lastStatus === 'wrong answer'
@@ -510,7 +511,7 @@ const GamePage = () => {
             </Stack>
           </Stack>
         </Stack>
-      </Container>
+      </div>
     </>
   );
 };

@@ -1,0 +1,14 @@
+.wrapper {
+  margin: 0 2rem 2rem 1rem;
+}
+.wrapper::-webkit-scrollbar {
+  height: 8px;
+  background-color: #0f0c29;
+}
+.wrapper::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.wrapper::-webkit-scrollbar-thumb {
+  background-color: #555570;
+  border-radius: 5px;
+}
