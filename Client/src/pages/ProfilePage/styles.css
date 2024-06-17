@@ -67,13 +67,18 @@
   width: 5rem;
   height: 5rem;
 }
-.rank-txt {
+.rank-txt,
+.rank-txt-level {
   color: white;
   font-size: 2rem;
   padding: 1rem 1.5rem;
   border-radius: 20px;
   background-color: #5d6ba1;
   text-align: center;
+  margin-top: 2rem;
+}
+.rank-txt-level {
+  margin-top: 1rem;
 }
 .rank-align {
   display: flex;

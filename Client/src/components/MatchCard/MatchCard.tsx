@@ -68,7 +68,7 @@ export default function MatchCard({
       <List sx={{ padding: '0' }}>
         <Stack
           direction="row"
-          justifyContent="space-around"
+          justifyContent="space-between"
           alignItems="center"
           sx={{
             backgroundColor: '#0f0c29',
@@ -76,6 +76,7 @@ export default function MatchCard({
             height: '10rem',
             borderRadius: '1rem 1rem 0 0',
             boxShadow: '0 0 0.2rem ',
+            padding: '0 2rem',
           }}
         >
           <div>
@@ -160,6 +161,7 @@ export default function MatchCard({
                       border: 'none',
                       textTransform: 'capitalize',
                       height: '5rem',
+                      textAlign: 'start',
                     },
                   }}
                 >
@@ -168,7 +170,7 @@ export default function MatchCard({
                       direction="row"
                       spacing={1}
                       alignItems={'center'}
-                      justifyContent={'center'}
+                      justifyContent={'flex-start'}
                     >
                       <div>Status</div>
                       <div>
@@ -181,7 +183,7 @@ export default function MatchCard({
                       direction="row"
                       spacing={1}
                       alignItems={'center'}
-                      justifyContent={'center'}
+                      justifyContent={'flex-start'}
                     >
                       <div>Language</div>
                       <div>
@@ -204,6 +206,7 @@ export default function MatchCard({
                         color: 'white',
                         fontSize: '2rem',
                         textTransform: 'capitalize',
+                        textAlign: 'start',
                       },
                       backgroundColor: index % 2 === 0 ? '#0f0c29' : '#24243E',
                     }}
