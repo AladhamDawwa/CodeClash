@@ -324,7 +324,7 @@ const ProfilePage = () => {
                 <div className="rank-grid-container">
                   <div className="rank-align">
                     <p className="rank-p">Current Points</p>
-                    <p className="rank-txt">{currentLevelPoints}</p>
+                    <p className="rank-txt-level">{currentLevelPoints}</p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Current Level</p>
@@ -345,7 +345,7 @@ const ProfilePage = () => {
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Points to rank up</p>
-                    <p className="rank-txt">{PointsToLevelUp}</p>
+                    <p className="rank-txt-level">{PointsToLevelUp}</p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Next Level</p>
