@@ -89,6 +89,8 @@ export class Users {
       .where("username", "==", username)
       .get();
     const user = snapshot.docs[0].data();
+    delete user.password
+    delete user.doc_id
     return user;
   }
 

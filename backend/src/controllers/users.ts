@@ -60,9 +60,16 @@ export class UsersController {
     res.json({ user: new_user });
   }
 
+  static async get_by_username(req: Request, res: Response) {
+    const username = req.params.username
+    const user = await Users.get_by_username(username)
+    res.json(user)
+  }
+
   static routes(app: express.Application) {
     app.post("/users/signup", this.signup);
     app.post("/users/login", this.login);
     app.put("/users", authenticate, this.update);
+    app.get("/users/:username", authenticate, this.get_by_username)
   }
 }

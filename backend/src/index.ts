@@ -42,10 +42,3 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
-
-// testing
-// const test = async () => {
-//   const res = await UsersUnsolvedProblems.admin_create_for_all()
-//   console.log(res)
-// }
-// test()
