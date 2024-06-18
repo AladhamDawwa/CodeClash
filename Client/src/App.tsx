@@ -10,6 +10,7 @@ import EntryPage from './pages/EntryPage/Entry';
 import GamePage from './pages/GamePage/GamePage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import GameHistory from './pages/GameHistory/GameHistory';
+import AppLayout from './components/AppLayout';
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   console.log(isAuthenticated ? 'Authenticated' : 'Not Authenticated');
@@ -18,8 +19,22 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/entry" element={<EntryPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/history" element={<GameHistory />} />
+        <Route element={<AppLayout />}>
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/history" element={<GameHistory />} />
+          <Route
+            path="/home"
+            element={
+              isAuthenticated ? <HomePage /> : <Navigate to="/" replace />
+            }
+          />
+          <Route
+            path="/gameSession"
+            element={
+              isAuthenticated ? <GamePage /> : <Navigate to="/" replace />
+            }
+          />
+        </Route>
         <Route
           path="/"
           element={
@@ -29,14 +44,6 @@ function App() {
               <Navigate to="/entry" replace />
             )
           }
-        />
-        <Route
-          path="/home"
-          element={isAuthenticated ? <HomePage /> : <Navigate to="/" replace />}
-        />
-        <Route
-          path="/gameSession"
-          element={isAuthenticated ? <GamePage /> : <Navigate to="/" replace />}
         />
         <Route path="/signIn" element={<SignIn />} />
         <Route

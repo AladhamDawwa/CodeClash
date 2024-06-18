@@ -52,12 +52,6 @@ const GamePage = () => {
   }
   return (
     <>
-      <NavBar
-        rankImg={'/assets/bronze.svg'}
-        rankAmount={200}
-        userImg={'/assets/user-1.jpg'}
-      />
-
       <div>
         <Stack direction={'column'}>
           <Stack direction={'column'} alignItems={'center'}>
@@ -444,6 +438,7 @@ const GamePage = () => {
                             cursor: 'pointer',
                             transition: 'background-color 0.3s',
                           }}
+                          key={index}
                         >
                           case {index + 1}
                         </p>

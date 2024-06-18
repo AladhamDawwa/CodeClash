@@ -1,9 +1,8 @@
-import NavBar from '../../components/NavBar/NavBar';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import Stack from '@mui/material/Stack';
 import './styles.css';
@@ -11,22 +10,17 @@ import '../../index.css';
 import { useState } from 'react';
 import MatchCard from '../../components/MatchCard/MatchCard';
 import userData from './profile.json';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(userData.user.fullName);
-  const [userName, setUserName] = useState(userData.user.userName);
   const [description, setDescription] = useState(userData.user.describtion);
   const userLanguages = userData.user.languages;
-  const currentRank = userData.user.currentRank;
-  const NextRank = userData.user.nextRank;
-  const currentPoints = userData.user.currentRankPoints;
   const PointsToRank = userData.user.pointsToRank;
-  const currentLevelPoints = userData.user.currentLevelPoints;
   const PointsToLevelUp = userData.user.pointsToLevel;
-  const currentLevel = userData.user.currentLevel;
-  const nextLevel = userData.user.nextLevel;
-
+  const authState = useSelector((state: RootState) => state.auth);
+  const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -38,11 +32,6 @@ const ProfilePage = () => {
 
   return (
     <>
-      <NavBar
-        rankImg={`/assets/${currentRank}.svg`}
-        rankAmount={currentPoints}
-        userImg={userData.user.profilePicture}
-      />
       <Container maxWidth="xl">
         <div className="profile-top-bottom">
           <div className="profile-left-right">
@@ -118,8 +107,7 @@ const ProfilePage = () => {
                     <>
                       <input
                         type="text"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
+                        value={authState.user.user.first_name}
                         style={{
                           fontSize: '3rem',
                           border: '1px solid white',
@@ -129,8 +117,7 @@ const ProfilePage = () => {
                       />
                       <input
                         type="text"
-                        value={userName}
-                        onChange={e => setUserName(e.target.value)}
+                        value={authState.user.user.username}
                         style={{
                           fontSize: '2.2rem',
                           color: '#999',
@@ -150,11 +137,13 @@ const ProfilePage = () => {
                           fontSize: '3rem',
                         }}
                       >
-                        {name}
+                        {authState.user.user.first_name +
+                          ' ' +
+                          authState.user.user.last_name}
                       </p>
                       <p
                         style={{ color: '#999', fontSize: '2.2rem' }}
-                      >{`#${userName}`}</p>
+                      >{`#${authState.user.user.username}`}</p>
                     </>
                   )}
                 </div>
@@ -310,12 +299,14 @@ const ProfilePage = () => {
                 <div className="rank-grid-container">
                   <div className="rank-align">
                     <p className="rank-p">Current Points</p>
-                    <p className="rank-txt">{currentPoints}</p>
+                    <p className="rank-txt">
+                      {authState.user.user.rank_points}
+                    </p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Current Rank</p>
                     <img
-                      src={`/assets/${currentRank}.svg`}
+                      src={`/assets/${ranks[authState.user.user.rank_tier]}.svg`}
                       alt="rank image"
                       className="profile-rank-img"
                     />
@@ -327,7 +318,7 @@ const ProfilePage = () => {
                   <div className="rank-align">
                     <p className="rank-p">Next Rank</p>
                     <img
-                      src={`/assets/${NextRank}.svg`}
+                      src={`/assets/${ranks[authState.user.user.rank_tier + 1]}.svg`}
                       alt="rank image"
                       className="profile-rank-img"
                       style={{ opacity: '50%' }}
@@ -356,7 +347,7 @@ const ProfilePage = () => {
                 <div className="rank-grid-container">
                   <div className="rank-align">
                     <p className="rank-p">Current Points</p>
-                    <p className="rank-txt-level">{currentLevelPoints}</p>
+                    <p className="rank-txt">{authState.user.user.exp}</p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Current Level</p>
@@ -372,12 +363,12 @@ const ProfilePage = () => {
                         alt="level image"
                         className="profile-level-img"
                       />
-                      <p className="level-p">{currentLevel}</p>
+                      <p className="level-p">{authState.user.user.level}</p>
                     </div>
                   </div>
                   <div className="rank-align">
-                    <p className="rank-p">Points to rank up</p>
-                    <p className="rank-txt-level">{PointsToLevelUp}</p>
+                    <p className="rank-p">Points to level up</p>
+                    <p className="rank-txt">{PointsToLevelUp}</p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Next Level</p>
@@ -393,7 +384,7 @@ const ProfilePage = () => {
                         alt="level image"
                         className="profile-level-img"
                       />
-                      <p className="level-p">{nextLevel}</p>
+                      <p className="level-p">{authState.user.user.level + 1}</p>
                     </div>
                   </div>
                 </div>

@@ -53,3 +53,7 @@ export const signUpAction = createAsyncThunk(
     }
   },
 );
+
+// export const getUser() = createAsyncThunk{
+// ''
+// }

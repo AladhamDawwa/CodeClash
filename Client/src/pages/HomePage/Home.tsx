@@ -25,11 +25,6 @@ const Home = () => {
   };
   return (
     <>
-      <NavBar
-        rankImg={'/assets/bronze.svg'}
-        rankAmount={200}
-        userImg={'/assets/user-1.jpg'}
-      />
       <Container maxWidth="xl">
         <div className="left-right">
           <div className="left">
