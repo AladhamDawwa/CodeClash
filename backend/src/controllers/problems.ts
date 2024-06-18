@@ -3,6 +3,7 @@ import { Problems, Problem } from "../models/problem"
 import { TestCases, TestCase } from "../models/test_case";
 import { firestore } from '../firebase'
 import dotenv from "dotenv";
+import { UsersUnsolvedProblems } from "../models/users_unsolved_problems";
 dotenv.config();
 
 type ProblemAndTestCases = {
@@ -23,6 +24,7 @@ export class ProblemsController {
 
     for (const problem_and_testcases of problems_and_testcases) {
       let problem_skipped = false
+      let problem_id = "";
       try {
         await firestore.runTransaction(async (transaction) => {
           const problem_exists = await Problems.problem_exists_in_transaction(
@@ -34,7 +36,7 @@ export class ProblemsController {
             problem_skipped = true
             return
           }
-          const problem_id = Problems.create_in_transaction(
+          problem_id = Problems.create_in_transaction(
             ProblemsController.create_problem_args(problem_and_testcases),
             transaction
           )
@@ -45,6 +47,7 @@ export class ProblemsController {
         })
         if (!problem_skipped) {
           console.log(`write successful for problem: ${problem_and_testcases.title}`);
+          UsersUnsolvedProblems.insert_problem_for_all(problem_id, problem_and_testcases.rating, problem_and_testcases.title)
         }
 
       }

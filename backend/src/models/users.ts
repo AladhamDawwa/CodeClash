@@ -3,6 +3,7 @@ import { db } from "../firebase";
 import bcrypt from "bcrypt";
 import { RankTier } from "../utils/definitions/rank_tier";
 import dotenv from "dotenv";
+import { UsersUnsolvedProblems } from "./users_unsolved_problems";
 dotenv.config();
 
 const { SALT_ROUNDS, PEPPER } = process.env;
@@ -78,6 +79,7 @@ export class Users {
     const ref = await users_collection.add(
       this.create_user_args(first_name, last_name, email, username, password),
     );
+    UsersUnsolvedProblems.init(username)
     delete user_creation_args.password;
     return user_creation_args;
   }

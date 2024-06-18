@@ -9,6 +9,7 @@ import { Socket } from 'dgram'
 import { authenticate_socket } from './middlewares/socket_authentication'
 import { ConnectedUsers } from './sockets/connected_users'
 import { ProblemsController } from './controllers/problems'
+import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
 dotenv.config()
 
 const port = process.env.PORT || 8080
@@ -41,3 +42,10 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
+
+// testing
+// const test = async () => {
+//   const res = await UsersUnsolvedProblems.admin_create_for_all()
+//   console.log(res)
+// }
+// test()
