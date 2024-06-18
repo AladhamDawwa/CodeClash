@@ -12,7 +12,8 @@ export const db = {
   users: firestore.collection("users"),
   games: firestore.collection("games"),
   problems: firestore.collection("problems"),
-  testcases: firestore.collection("testcases")
+  testcases: firestore.collection("testcases"),
+  users_unsolved_problems: firestore.collection("users_unsolved_problems")
 }
 
 

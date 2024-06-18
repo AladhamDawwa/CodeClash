@@ -60,4 +60,10 @@ export class Problems {
     return false
   }
 
+  static async get_all_problems() {
+    const snapshot = await problems_collection.get();
+    const problems = snapshot.docs.map((doc) => doc.data());
+    return problems;
+  }
+
 }
