@@ -44,6 +44,14 @@ export class Problems {
     const ref = await problems_collection.add(problem)
     return ref.id
   }
+
+  static async get_problem(problem_id: string): Promise<Problem> {
+    const docRef = problems_collection.doc(problem_id);
+    const docSnapshot = await docRef.get();
+    const problem = docSnapshot.data()
+    return problem!
+  }
+
   static create_in_transaction(problem: Problem, transaction: Transaction): string {
     const ref = problems_collection.doc()
     transaction.set(ref, problem)

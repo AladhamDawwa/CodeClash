@@ -1,8 +1,9 @@
 import { Problem, Problems } from "./problem";
 import dotenv from "dotenv";
 import { db } from "../firebase";
-import { Users } from "./users";
+import { User, Users } from "./users";
 import { firestore } from "firebase-admin";
+import { Filter } from "firebase-admin/firestore";
 
 dotenv.config();
 export type UserUnsolvedProblems = {
@@ -184,6 +185,24 @@ export class UsersUnsolvedProblems {
       return false;
     }
     return true;
+  }
+
+  static async get_problems_array_by_code(users: User[], problem_level_code: string): Promise<string[]> {
+    const usernames: string[] = []
+    for (const user of users) {
+      usernames.push(user.username!)
+    }
+    const snapshot = await users_unsolved_problems_collection
+      .where("username", "in", usernames)
+      .select(`rating_${problem_level_code}`)
+      .get();
+    const data = snapshot.docs.map(doc => doc.data());
+
+    const problem_ids: string[] = []
+    for (const user_unsolved_problems of data) {
+      problem_ids.push(...user_unsolved_problems[`rating_${problem_level_code}`])
+    }
+    return problem_ids
   }
 
   static async admin_create_for_all() {
