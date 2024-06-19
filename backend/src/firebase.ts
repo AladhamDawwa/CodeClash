@@ -13,7 +13,9 @@ export const db = {
   games: firestore.collection("games"),
   problems: firestore.collection("problems"),
   testcases: firestore.collection("testcases"),
-  users_unsolved_problems: firestore.collection("users_unsolved_problems")
+  users_unsolved_problems: firestore.collection("users_unsolved_problems"),
+  tiers: firestore.collection("tiers"),
+  problem_levels: firestore.collection("problem_levels")
 }
 
 
