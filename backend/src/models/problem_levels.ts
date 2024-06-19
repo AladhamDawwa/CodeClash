@@ -4,7 +4,8 @@ export type ProblemLevel = {
   id: string;
   code: string;
   min_mmr: number;
-  max_mmr: number
+  max_mmr: number;
+  duration: number
 }
 
 const converter = {
@@ -18,7 +19,8 @@ const converter = {
       id: snap.id,
       code: data.code,
       min_mmr: data.min_mmr,
-      max_mmr: data.max_mmr
+      max_mmr: data.max_mmr,
+      duration: data.duration
     };
   },
 };
@@ -30,6 +32,7 @@ export class ProblemLevels {
   static async index(): Promise<ProblemLevel[]> {
     const snapshot = await problem_levels_collection.orderBy('code').get();
     const problem_levels = snapshot.docs.map((doc) => doc.data());
+    console.log(problem_levels)
     return problem_levels;
   }
 
