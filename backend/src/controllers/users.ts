@@ -4,7 +4,13 @@ import { User } from "../models/users";
 import jwt from "jsonwebtoken";
 import { authenticate } from "../middlewares/authentication";
 import dotenv from "dotenv";
+import multer from 'multer';
+import imagekit from "../imagekit";
+
 dotenv.config();
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const { TOKEN_SECRET } = process.env;
 export class UsersController {
@@ -66,10 +72,41 @@ export class UsersController {
     res.json(user)
   }
 
+  static async upload_profile_picture(req: Request, res: Response) {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded")
+    }
+
+    const result = await imagekit.upload({
+      file: req.file.buffer,
+      fileName: req.file.originalname
+    })
+    const user = await Users.get_by_username(req.body.username)
+    if (user.profile_image_id != undefined) {
+      UsersController.delete_image(user.profile_image_id)
+    }
+    await Users.update({ image: result.url, profile_image_id: result.fileId }, req.body.username)
+    return res.json("Image uploaded")
+  }
+
+  static async delete_image(image_id: string) {
+    try {
+      const fileDetails = await imagekit.getFileDetails(image_id);
+      if (!fileDetails) {
+        return
+      }
+      const fileId = fileDetails.fileId
+      await imagekit.deleteFile(fileId);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   static routes(app: express.Application) {
     app.post("/users/signup", this.signup);
     app.post("/users/login", this.login);
     app.put("/users", authenticate, this.update);
     app.get("/users/:username", authenticate, this.get_by_username)
+    app.put("/users/profile_picture", [upload.single('image'), authenticate], this.upload_profile_picture)
   }
 }
