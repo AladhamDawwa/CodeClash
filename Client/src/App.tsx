@@ -8,11 +8,12 @@ import HomePage from './pages/HomePage/Home';
 import { RootState } from './store/store';
 import EntryPage from './pages/EntryPage/Entry';
 import GamePage from './pages/GamePage/GamePage';
+import MatchMaker from './pages/MatchMaker/MatchMaker';
+
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import GameHistory from './pages/GameHistory/GameHistory';
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  console.log(isAuthenticated ? 'Authenticated' : 'Not Authenticated');
 
   return (
     <BrowserRouter>
@@ -37,6 +38,12 @@ function App() {
         <Route
           path="/gameSession"
           element={isAuthenticated ? <GamePage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/matchMaker"
+          element={
+            isAuthenticated ? <MatchMaker /> : <Navigate to="/" replace />
+          }
         />
         <Route path="/signIn" element={<SignIn />} />
         <Route
