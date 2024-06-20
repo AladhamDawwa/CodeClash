@@ -23,7 +23,7 @@ export class MatchMakerService {
   }
 
   static async handle_disconnection(username: string) {
-    // const user = await Users.get_by_username(username)
-    // this.match_maker_queue.remove(user)
+    const user = await Users.get_by_username(username)
+    this.match_maker_queue.remove(user)
   }
 }

@@ -9,7 +9,10 @@ import { Socket } from 'dgram'
 import { authenticate_socket } from './middlewares/socket_authentication'
 import { ConnectedUsers } from './sockets/connected_users'
 import { ProblemsController } from './controllers/problems'
+import { ProblemPickerService } from './services/problem_picker_service'
 import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
+
+
 dotenv.config()
 
 const port = process.env.PORT || 8080
@@ -42,3 +45,9 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
+
+// const test = async () => {
+//   const problem = await ProblemPickerService.pick_problem([{ username: "shehabgad123", mmr: 1199 }, { username: "mmr_1", mmr: 1199 }])
+//   console.log(problem)
+// }
+// test()

@@ -23,6 +23,7 @@ export type User = {
   registeration_date?: Timestamp;
   username?: string;
   mmr?: number;
+  profile_image_id?: string;
 };
 
 const converter = {
@@ -47,6 +48,7 @@ const converter = {
       registeration_date: data.registeration_date,
       username: data.username,
       mmr: data.mmr,
+      profile_image_id: data.profile_image_id
     };
   },
 };
