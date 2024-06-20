@@ -181,6 +181,7 @@ export class Users {
       registeration_date: Timestamp.now(),
       username: username,
       mmr: 800,
+      description: "Hey There ! I am using codeclash"
     };
   }
 }
