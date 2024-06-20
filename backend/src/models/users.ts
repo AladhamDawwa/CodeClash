@@ -3,6 +3,7 @@ import { db } from "../firebase";
 import bcrypt from "bcrypt";
 import { RankTier } from "../utils/definitions/rank_tier";
 import dotenv from "dotenv";
+import { UsersUnsolvedProblems } from "./users_unsolved_problems";
 dotenv.config();
 
 const { SALT_ROUNDS, PEPPER } = process.env;
@@ -22,6 +23,7 @@ export type User = {
   registeration_date?: Timestamp;
   username?: string;
   mmr?: number;
+  profile_image_id?: string;
 };
 
 const converter = {
@@ -46,6 +48,7 @@ const converter = {
       registeration_date: data.registeration_date,
       username: data.username,
       mmr: data.mmr,
+      profile_image_id: data.profile_image_id
     };
   },
 };
@@ -78,6 +81,7 @@ export class Users {
     const ref = await users_collection.add(
       this.create_user_args(first_name, last_name, email, username, password),
     );
+    UsersUnsolvedProblems.init(username)
     delete user_creation_args.password;
     return user_creation_args;
   }
@@ -87,6 +91,8 @@ export class Users {
       .where("username", "==", username)
       .get();
     const user = snapshot.docs[0].data();
+    delete user.password
+    delete user.doc_id
     return user;
   }
 
@@ -175,6 +181,7 @@ export class Users {
       registeration_date: Timestamp.now(),
       username: username,
       mmr: 800,
+      description: "Hey There ! I am using codeclash"
     };
   }
 }

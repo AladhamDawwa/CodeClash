@@ -1,0 +1,27 @@
+.top {
+  margin-bottom: 5rem;
+}
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+}
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+  align-items: center;
+}
+.left-right {
+  display: flex;
+  justify-content: space-between;
+}
+.tournament-img {
+  height: 6rem;
+  width: 6rem;
+}
+.home-teams {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

@@ -29,6 +29,7 @@ const firebase_1 = require("../firebase");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const rank_tier_1 = require("../utils/definitions/rank_tier");
 const dotenv_1 = __importDefault(require("dotenv"));
+const users_unsolved_problems_1 = require("./users_unsolved_problems");
 dotenv_1.default.config();
 const { SALT_ROUNDS, PEPPER } = process.env;
 const converter = {
@@ -52,6 +53,8 @@ const converter = {
             rank_tier: data.rank_tier,
             registeration_date: data.registeration_date,
             username: data.username,
+            mmr: data.mmr,
+            profile_image_id: data.profile_image_id
         };
     },
 };
@@ -70,8 +73,20 @@ class Users {
             password = bcrypt_1.default.hashSync(password + PEPPER, parseInt(salt_rounds));
             const user_creation_args = this.create_user_args(first_name, last_name, email, username, password);
             const ref = yield users_collection.add(this.create_user_args(first_name, last_name, email, username, password));
+            users_unsolved_problems_1.UsersUnsolvedProblems.init(username);
             delete user_creation_args.password;
             return user_creation_args;
+        });
+    }
+    static get_by_username(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield users_collection
+                .where("username", "==", username)
+                .get();
+            const user = snapshot.docs[0].data();
+            delete user.password;
+            delete user.doc_id;
+            return user;
         });
     }
     static get_rank(username) {
@@ -144,6 +159,7 @@ class Users {
             rank_tier: rank_tier_1.RankTier.Bronze,
             registeration_date: firestore_1.Timestamp.now(),
             username: username,
+            mmr: 800,
         };
     }
 }

@@ -4,12 +4,14 @@ import './App.css';
 import _404 from './components/404/404';
 import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
-import HomePage from './pages/HomePage/home';
+import HomePage from './pages/HomePage/Home';
 import { RootState } from './store/store';
 import EntryPage from './pages/EntryPage/Entry';
 import GamePage from './pages/GamePage/GamePage';
 import MatchMaker from './pages/MatchMaker/MatchMaker';
 
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import GameHistory from './pages/GameHistory/GameHistory';
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
@@ -17,6 +19,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/entry" element={<EntryPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/history" element={<GameHistory />} />
         <Route
           path="/"
           element={
@@ -44,7 +48,7 @@ function App() {
         <Route path="/signIn" element={<SignIn />} />
         <Route
           path="/signUp"
-          element={isAuthenticated ? <HomePage /> : <SignUp />}
+          element={isAuthenticated ? <Navigate to="/home" /> : <SignUp />}
         />
         <Route path="*" element={<_404 />} />
       </Routes>

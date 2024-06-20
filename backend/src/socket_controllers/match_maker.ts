@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { MatchMakerRequest } from "../utils/definitions/match_maker";
 import { GameMode, GameType } from "../utils/definitions/games_types";
-import { MatchMakerService } from "../services/match_maker";
+import { MatchMakerService } from "../services/match_maker_service";
 import { SocketType, IoType } from "../utils/definitions/io_socket_types";
 import { ConnectedUsers } from "../sockets/connected_users";
 
@@ -25,20 +25,14 @@ export class MatchMakerSocketController {
 
   async find_one_v_one(match_maker_request: MatchMakerRequest) {
     match_maker_request.username = this.socket.data.username;
-    const matched_user =
-      await MatchMakerService.find_one_v_one(match_maker_request);
-    if (matched_user) {
-      console.log(
-        `user: ${match_maker_request.username} is matched with user: ${matched_user?.username}`,
-      );
-    } else {
-      console.log(`user: ${match_maker_request.username} will wait in queue`);
-    }
+    const match_maker_response = await MatchMakerService.find_one_v_one(match_maker_request)
+    console.log(match_maker_response)
   }
 
   register_events() {
     this.socket.on("match_maker_server:find_match", this.find_match);
     this.socket.on("disconnect", () => {
+      MatchMakerService.handle_disconnection(this.socket.data.username)
       ConnectedUsers.remove_user(this.socket.data.username);
     });
   }

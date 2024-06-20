@@ -35,8 +35,9 @@ const Timer = () => {
       width="45rem"
       p={2}
       sx={{
-        backgroundImage: 'linear-gradient(0deg, #56508D 50%, #0F0C29 100%)',
+        backgroundColor: '#383560',
         borderRadius: '0.5rem',
+        boxShadow: '3',
       }}
     >
       <Avatar alt="user 1" src="assets/user-1.jpg" />
