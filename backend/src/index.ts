@@ -45,9 +45,3 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
-
-// const test = async () => {
-//   const problem = await ProblemPickerService.pick_problem([{ username: "shehabgad123", mmr: 1199 }, { username: "mmr_1", mmr: 1199 }])
-//   console.log(problem)
-// }
-// test()
