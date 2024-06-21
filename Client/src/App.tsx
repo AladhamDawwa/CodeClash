@@ -16,6 +16,7 @@ import AppLayout from './components/AppLayout';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getUserByUsername } from './store/actions/userInfo';
+import MatchLoading from './pages/MatchLoading/MatchLoading';
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
@@ -73,6 +74,12 @@ function App() {
           path="/matchMaker"
           element={
             isAuthenticated ? <MatchMaker /> : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/matchLoading"
+          element={
+            isAuthenticated ? <MatchLoading /> : <Navigate to="/" replace />
           }
         />
         <Route path="/signIn" element={<SignIn />} />

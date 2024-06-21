@@ -30,8 +30,14 @@ export default function GameModesCard({ type }: ModeType) {
           gap: '10rem',
         }}
       >
-        <GameButton>Ranked</GameButton>
-        <GameButton>Normal</GameButton>
+        <GameButton gameSettings={{
+          type: 'Ranked',
+          mode: type,
+        }}>Ranked</GameButton>
+        <GameButton gameSettings={{
+          type: 'Normal',
+          mode: type,
+        }}>Normal</GameButton>
       </div>
     </Paper>
   );
