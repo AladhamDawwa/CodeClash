@@ -46,8 +46,8 @@ const Home = () => {
               >
                 Game Modes
               </Typography>
-              <GameModesCard type="1 vs 1" />
-              <GameModesCard type="3 vs 3" />
+              <GameModesCard type="1 V 1" />
+              <GameModesCard type="3 V 3" />
               <GameModesCard type="Last Man Standing" />
               <Box height="2rem" />
             </Paper>
