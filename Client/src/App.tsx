@@ -9,6 +9,7 @@ import { RootState } from './store/store';
 import EntryPage from './pages/EntryPage/Entry';
 import GamePage from './pages/GamePage/GamePage';
 import MatchMaker from './pages/MatchMaker/MatchMaker';
+
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import GameHistory from './pages/GameHistory/GameHistory';
 import AppLayout from './components/AppLayout';
