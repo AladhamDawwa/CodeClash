@@ -17,6 +17,7 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
+import userReducer from './reducers/userReducer';
 
 const authPersistConfig = {
   key: 'auth',
@@ -30,6 +31,7 @@ const anotherPersistConfig = {
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
+  user: userReducer,
   // another: persistReducer(anotherPersistConfig, anotherReducer),
 });
 

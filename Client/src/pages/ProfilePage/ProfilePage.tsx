@@ -1,55 +1,50 @@
-import NavBar from '../../components/NavBar/NavBar';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import Stack from '@mui/material/Stack';
 import './styles.css';
 import '../../index.css';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import MatchCard from '../../components/MatchCard/MatchCard';
 import userData from './profile.json';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { uploadImage } from '../../store/actions/authAction';
+import { Button } from '@mui/material';
 
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(userData.user.fullName);
-  const [userName, setUserName] = useState(userData.user.userName);
-  const [description, setDescription] = useState(userData.user.describtion);
   const userLanguages = userData.user.languages;
-  const currentRank = userData.user.currentRank;
-  const NextRank = userData.user.nextRank;
-  const currentPoints = userData.user.currentRankPoints;
   const PointsToRank = userData.user.pointsToRank;
-  const currentLevelPoints = userData.user.currentLevelPoints;
   const PointsToLevelUp = userData.user.pointsToLevel;
-  const currentLevel = userData.user.currentLevel;
-  const nextLevel = userData.user.nextLevel;
+  const authState = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.user.data);
+  const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const jwtToken = authState.user.token;
+      await uploadImage(file, jwtToken);
+    }
+  };
   const handleSave = () => {
     setIsEditing(false);
-    // we need to call our database
   };
-
   return (
     <>
-      <NavBar
-        rankImg={`/assets/${currentRank}.svg`}
-        rankAmount={currentPoints}
-        userImg={userData.user.profilePicture}
-      />
       <Container maxWidth="xl">
         <div className="profile-top-bottom">
           <div className="profile-left-right">
             <Paper
               sx={{
-                width: '55rem',
-                height: '80rem',
+                width: '60rem',
+                height: '90rem',
                 backgroundColor: '#0f0c29',
                 display: 'flex',
                 flexDirection: 'column',
@@ -60,51 +55,35 @@ const ProfilePage = () => {
             >
               <div className="profile-user-info">
                 <div className="profile-img">
-                  {isEditing ? (
-                    <>
-                      {userData.user.profilePicture.length === 0 ? (
-                        <AccountBoxIcon
-                          sx={{
-                            width: '15rem',
-                            height: '17rem',
-                            borderRadius: '1rem',
-                            color: 'white',
-                            filter: 'brightness(70%)',
-                          }}
-                        />
-                      ) : (
-                        <img
-                          src={userData.user.profilePicture}
-                          alt="user image"
-                          style={{
-                            width: '15rem',
-                            height: '17rem',
-                            borderRadius: '1rem',
-                            filter: 'brightness(70%)',
-                          }}
-                        />
-                      )}
-                    </>
-                  ) : userData.user.profilePicture.length === 0 ? (
+                  {user.image ? (
+                    <img
+                      className="profile-img"
+                      src={user.image}
+                      alt="user image"
+                      onClick={() =>
+                        document.getElementById('fileInput')?.click()
+                      }
+                      style={{ cursor: 'pointer' }}
+                    />
+                  ) : (
                     <AccountBoxIcon
+                      className="profile-account-box"
                       sx={{
                         width: '15rem',
                         height: '17rem',
-                        borderRadius: '1rem',
-                        color: 'white',
+                        cursor: 'pointer',
                       }}
-                    />
-                  ) : (
-                    <img
-                      src={userData.user.profilePicture}
-                      alt="user image"
-                      style={{
-                        width: '15rem',
-                        height: '17rem',
-                        borderRadius: '1rem',
-                      }}
+                      onClick={() =>
+                        document.getElementById('fileInput')?.click()
+                      }
                     />
                   )}
+                  <input
+                    id="fileInput"
+                    type="file"
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                  />
                 </div>
                 <div
                   className="profile-txt"
@@ -118,25 +97,23 @@ const ProfilePage = () => {
                     <>
                       <input
                         type="text"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
+                        value={user.first_name + ' ' + user.last_name}
                         style={{
                           fontSize: '3rem',
                           border: '1px solid white',
                           textTransform: 'capitalize',
+                          padding: '1rem 1.5rem',
                         }}
                         className="profile-edit"
                       />
                       <input
                         type="text"
-                        value={userName}
-                        onChange={e => setUserName(e.target.value)}
+                        value={user.username}
                         style={{
                           fontSize: '2.2rem',
                           color: '#999',
                           border: '1px solid white',
-                          padding: '0 0.5rem',
-                          textTransform: 'capitalize',
+                          padding: '1rem 1.5rem',
                         }}
                         className="profile-edit"
                       />
@@ -148,54 +125,72 @@ const ProfilePage = () => {
                           color: 'white',
                           textTransform: 'capitalize',
                           fontSize: '3rem',
+                          padding: '1rem 1.5rem',
                         }}
                       >
-                        {name}
+                        {user.first_name + ' ' + user.last_name}
                       </p>
                       <p
-                        style={{ color: '#999', fontSize: '2.2rem' }}
-                      >{`#${userName}`}</p>
+                        style={{
+                          color: '#999',
+                          fontSize: '2.2rem',
+                          padding: '1rem 1.5rem',
+                        }}
+                      >{`#${user.username}`}</p>
                     </>
                   )}
                 </div>
               </div>
-              <p
-                style={{
-                  fontSize: '1.5rem',
-                  color: 'white',
-                  textTransform: 'capitalize',
-                  letterSpacing: '0.5px',
-                  maxWidth: '50rem',
-                  lineHeight: '1.8',
-                  fontWeight: '500',
-                }}
-              >
-                {isEditing ? (
-                  <textarea
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                    style={{
-                      fontSize: '1.5rem',
-                      lineHeight: '1.8',
-                      textTransform: 'capitalize',
-                      letterSpacing: '0.5px',
-                      overflow: 'hidden',
-                      minWidth: '45rem',
-                      minHeight: '12rem',
-                      fontWeight: '500',
-                      resize: 'none',
-                      overflowY: 'auto',
-                      scrollbarWidth: 'none',
-                      border: '1px solid white',
-                      borderRadius: '1rem',
-                      fontFamily: 'inherit',
-                    }}
-                    className="profile-edit"
-                  />
-                ) : (
-                  description
-                )}
-              </p>
+              <div>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    marginBottom: '2rem',
+                  }}
+                >
+                  Description
+                </Typography>
+                <p
+                  style={{
+                    fontSize: '1.5rem',
+                    color: 'white',
+                    textTransform: 'capitalize',
+                    letterSpacing: '0.5px',
+                    maxWidth: '50rem',
+                    lineHeight: '1.8',
+                    fontWeight: '500',
+                    padding: '1rem 1.5rem',
+                  }}
+                >
+                  {isEditing ? (
+                    <textarea
+                      value={user.description}
+                      // onChange={e => setDescription(e.target.value)}
+                      style={{
+                        fontSize: '1.5rem',
+                        lineHeight: '1.8',
+                        textTransform: 'capitalize',
+                        letterSpacing: '0.5px',
+                        overflow: 'hidden',
+                        minWidth: '45rem',
+                        minHeight: '12rem',
+                        fontWeight: '500',
+                        resize: 'none',
+                        overflowY: 'auto',
+                        scrollbarWidth: 'none',
+                        border: '1px solid white',
+                        fontFamily: 'inherit',
+                        padding: '1rem 1.5rem',
+                      }}
+                      className="profile-edit"
+                    />
+                  ) : (
+                    user.description
+                  )}
+                </p>
+              </div>
               <Typography
                 variant="h2"
                 sx={{ color: 'white', fontWeight: 'bold' }}
@@ -310,12 +305,12 @@ const ProfilePage = () => {
                 <div className="rank-grid-container">
                   <div className="rank-align">
                     <p className="rank-p">Current Points</p>
-                    <p className="rank-txt">{currentPoints}</p>
+                    <p className="rank-txt">{user.rank_points}</p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Current Rank</p>
                     <img
-                      src={`/assets/${currentRank}.svg`}
+                      src={`/assets/${ranks[authState.user.user.rank_tier]}.svg`}
                       alt="rank image"
                       className="profile-rank-img"
                     />
@@ -327,7 +322,7 @@ const ProfilePage = () => {
                   <div className="rank-align">
                     <p className="rank-p">Next Rank</p>
                     <img
-                      src={`/assets/${NextRank}.svg`}
+                      src={`/assets/${ranks[authState.user.user.rank_tier + 1]}.svg`}
                       alt="rank image"
                       className="profile-rank-img"
                       style={{ opacity: '50%' }}
@@ -356,7 +351,7 @@ const ProfilePage = () => {
                 <div className="rank-grid-container">
                   <div className="rank-align">
                     <p className="rank-p">Current Points</p>
-                    <p className="rank-txt-level">{currentLevelPoints}</p>
+                    <p className="rank-txt">{authState.user.user.exp}</p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Current Level</p>
@@ -372,12 +367,12 @@ const ProfilePage = () => {
                         alt="level image"
                         className="profile-level-img"
                       />
-                      <p className="level-p">{currentLevel}</p>
+                      <p className="level-p">{user.level}</p>
                     </div>
                   </div>
                   <div className="rank-align">
-                    <p className="rank-p">Points to rank up</p>
-                    <p className="rank-txt-level">{PointsToLevelUp}</p>
+                    <p className="rank-p">Points to level up</p>
+                    <p className="rank-txt">{PointsToLevelUp}</p>
                   </div>
                   <div className="rank-align">
                     <p className="rank-p">Next Level</p>
@@ -393,7 +388,7 @@ const ProfilePage = () => {
                         alt="level image"
                         className="profile-level-img"
                       />
-                      <p className="level-p">{nextLevel}</p>
+                      <p className="level-p">{user.level + 1}</p>
                     </div>
                   </div>
                 </div>

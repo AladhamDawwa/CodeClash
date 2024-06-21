@@ -9,15 +9,16 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import Popper from '@mui/material/Popper';
 import LogoutIcon from '@mui/icons-material/Logout';
+import Avatar from '@mui/material/Avatar';
 import { useDispatch } from 'react-redux';
 import { setAuthenticated, clearError } from '../../store/reducers/authReducer';
-type NavBar = {
-  rankImg: string;
-  rankAmount: number;
-  userImg: string;
-};
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+
 // TODO : apply useEffects to get the user info instead of props
-export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
+export default function NavBar() {
+  const user = useSelector((state: RootState) => state.user.data);
+  const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
     dispatch(setAuthenticated(false));
     navigate('/signIn');
   };
+
   return (
     <Paper
       elevation={2}
@@ -75,7 +77,11 @@ export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
           justifyContent: 'space-between',
         }}
       >
-        <img src={rankImg} className="rank-img" alt="rank image" />
+        <img
+          src={`assets/${ranks[user.rank_tier]}.svg`}
+          className="rank-img"
+          alt="rank image"
+        />
         <div
           style={{
             display: 'flex',
@@ -85,7 +91,7 @@ export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
         >
           <img className="rank-icon" src="/assets/Rank.svg" />
           <Typography variant="h4" sx={{ color: 'white', marginLeft: '10px' }}>
-            {rankAmount}
+            {user.rank_points}
           </Typography>
         </div>
 
@@ -94,7 +100,19 @@ export default function NavBar({ rankImg, rankAmount, userImg }: NavBar) {
           onClick={() => setOpen(!open)}
           style={{ position: 'relative' }}
         >
-          <img src={userImg} alt="user image" className="user-img" />
+          {user.image ? (
+            <img src={user.image} alt="user image" className="user-img" />
+          ) : (
+            <Avatar
+              className="navbar-avatar"
+              sx={{
+                cursor: 'pointer',
+                boxShadow: '0 0 3px white',
+              }}
+              src="/broken-image.jpg"
+            />
+          )}
+
           <Popper
             open={open}
             anchorEl={anchorRef.current}

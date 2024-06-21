@@ -12,15 +12,45 @@ import MatchMaker from './pages/MatchMaker/MatchMaker';
 
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import GameHistory from './pages/GameHistory/GameHistory';
+import AppLayout from './components/AppLayout';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { getUserByUsername } from './store/actions/userInfo';
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  const authState = useSelector((state: RootState) => state.auth);
 
+  useEffect(() => {
+    if (authState.user.token && authState.user.user.username) {
+      dispatch<any>(
+        getUserByUsername({
+          username: authState.user.user.username,
+          jwtToken: authState.user.token,
+        }),
+      );
+    }
+  }, [authState.user.token, authState.user.user.username, dispatch]);
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/entry" element={<EntryPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/history" element={<GameHistory />} />
+        <Route element={<AppLayout />}>
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/history" element={<GameHistory />} />
+          <Route
+            path="/home"
+            element={
+              isAuthenticated ? <HomePage /> : <Navigate to="/" replace />
+            }
+          />
+          <Route
+            path="/gameSession"
+            element={
+              isAuthenticated ? <GamePage /> : <Navigate to="/" replace />
+            }
+          />
+        </Route>
         <Route
           path="/"
           element={

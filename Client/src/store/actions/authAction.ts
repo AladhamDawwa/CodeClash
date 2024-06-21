@@ -53,3 +53,30 @@ export const signUpAction = createAsyncThunk(
     }
   },
 );
+
+export const uploadImage = async (
+  file: File,
+  jwtToken: string,
+): Promise<void> => {
+  const url = 'http://localhost:5000/users/profile_picture';
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const response = await axios.put(url, formData, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log('Image uploaded successfully:', response.data);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        'Error response:',
+        error.response.status,
+        error.response.data,
+      );
+    }
+  }
+};

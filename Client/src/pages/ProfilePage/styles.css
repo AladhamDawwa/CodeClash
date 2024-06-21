@@ -89,9 +89,20 @@
   width: 15rem;
   height: 17rem;
   border-radius: 1rem;
-  transition: filter 0.3s ease;
+  cursor: pointer;
 }
 
 .profile-img img:hover {
+  transition: filter 0.3s ease;
+  filter: brightness(70%);
+}
+
+.profile-account-box {
+  cursor: pointer;
+  color: white;
+  border-radius: 1rem;
+}
+.profile-account-box:hover {
+  transition: filter 0.3s ease;
   filter: brightness(70%);
 }
