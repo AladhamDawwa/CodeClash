@@ -12,8 +12,14 @@
   width: 5rem;
 }
 .user-img {
-  height: 6rem;
-  width: 6rem;
+  height: 5rem;
+  width: 5rem;
   border-radius: 100%;
   cursor: pointer;
+}
+.navbar-avatar {
+}
+.navbar-avatar:active {
+  filter: brightness(80%);
+  transition: filter 0.1s ease;
 }

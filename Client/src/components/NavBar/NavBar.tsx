@@ -17,7 +17,7 @@ import { RootState } from '../../store/store';
 
 // TODO : apply useEffects to get the user info instead of props
 export default function NavBar() {
-  const authState = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.user.data);
   const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -46,6 +46,7 @@ export default function NavBar() {
     dispatch(setAuthenticated(false));
     navigate('/signIn');
   };
+
   return (
     <Paper
       elevation={2}
@@ -77,7 +78,7 @@ export default function NavBar() {
         }}
       >
         <img
-          src={`assets/${ranks[authState.user.user.rank_tier]}.svg`}
+          src={`assets/${ranks[user.rank_tier]}.svg`}
           className="rank-img"
           alt="rank image"
         />
@@ -90,7 +91,7 @@ export default function NavBar() {
         >
           <img className="rank-icon" src="/assets/Rank.svg" />
           <Typography variant="h4" sx={{ color: 'white', marginLeft: '10px' }}>
-            {authState.user.user.rank_points}
+            {user.rank_points}
           </Typography>
         </div>
 
@@ -99,14 +100,17 @@ export default function NavBar() {
           onClick={() => setOpen(!open)}
           style={{ position: 'relative' }}
         >
-          {authState.user.user.image === '' ? (
-            <img
-              src={authState.user.user.image}
-              alt="user image"
-              className="user-img"
-            />
+          {user.image ? (
+            <img src={user.image} alt="user image" className="user-img" />
           ) : (
-            <Avatar src="/broken-image.jpg" />
+            <Avatar
+              className="navbar-avatar"
+              sx={{
+                cursor: 'pointer',
+                boxShadow: '0 0 3px white',
+              }}
+              src="/broken-image.jpg"
+            />
           )}
 
           <Popper

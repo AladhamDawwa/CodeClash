@@ -14,6 +14,8 @@ import List from '@mui/material/List';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import MemoryOutlinedIcon from '@mui/icons-material/MemoryOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 type MatchInfo = {
   problemName: string;
@@ -62,7 +64,7 @@ export default function MatchCard({
       textColor = '#2cbb5d';
       break;
   }
-
+  const user = useSelector((state: RootState) => state.user.data);
   return (
     <div style={{ marginBottom: '5rem' }}>
       <List sx={{ padding: '0' }}>
@@ -87,11 +89,7 @@ export default function MatchCard({
           </div>
           <div>
             <Stack direction="row" spacing={4} alignContent={'center'}>
-              <img
-                src="/assets/user-1.jpg"
-                alt="user image"
-                className="user-img"
-              />
+              <img src={user.image} alt="user image" className="user-img" />
               <p
                 style={{
                   color: 'white',
