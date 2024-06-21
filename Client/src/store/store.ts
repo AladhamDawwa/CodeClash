@@ -24,15 +24,14 @@ const authPersistConfig = {
   storage: storage,
 };
 
-const anotherPersistConfig = {
-  key: 'another',
+const userPresistConfig = {
+  key: 'user',
   storage: storage,
 };
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
-  user: userReducer,
-  // another: persistReducer(anotherPersistConfig, anotherReducer),
+  user: persistReducer(userPresistConfig, userReducer),
 });
 
 const store = configureStore({

@@ -1,5 +1,11 @@
-import { useSelector } from 'react-redux';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+} from 'react-router-dom';
 import './App.css';
 import _404 from './components/404/404';
 import SignIn from './components/Auth/SignIn';
@@ -9,88 +15,132 @@ import { RootState } from './store/store';
 import EntryPage from './pages/EntryPage/Entry';
 import GamePage from './pages/GamePage/GamePage';
 import MatchMaker from './pages/MatchMaker/MatchMaker';
-
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import GameHistory from './pages/GameHistory/GameHistory';
 import AppLayout from './components/AppLayout';
-import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getUserByUsername } from './store/actions/userInfo';
 import MatchLoading from './pages/MatchLoading/MatchLoading';
+
+interface PrivateRouteProps {
+  children: JSX.Element;
+}
+
+function PrivateRoute({ children }: PrivateRouteProps) {
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated,
+  );
+
+  return isAuthenticated ? children : <Navigate to="/signIn" replace />;
+}
+
 function App() {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const authState = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (authState.user.token && authState.user.user.username) {
+    if (authState?.user?.token && authState?.user?.user?.username) {
       dispatch<any>(
         getUserByUsername({
-          username: authState.user.user.username,
-          jwtToken: authState.user.token,
+          username: authState?.user?.user?.username,
+          jwtToken: authState?.user?.token,
         }),
       );
     }
-  }, [authState.user.token, authState.user.user.username, dispatch]);
+  }, [authState?.user?.token, authState?.user?.user?.username, dispatch]);
+
+  useEffect(() => {
+    if (!authState.isAuthenticated) {
+      navigate('/signIn');
+    }
+  }, [authState.isAuthenticated, navigate]);
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/entry" element={<EntryPage />} />
-        <Route element={<AppLayout />}>
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/history" element={<GameHistory />} />
-          <Route
-            path="/home"
-            element={
-              isAuthenticated ? <HomePage /> : <Navigate to="/" replace />
-            }
-          />
-          <Route
-            path="/gameSession"
-            element={
-              isAuthenticated ? <GamePage /> : <Navigate to="/" replace />
-            }
-          />
-        </Route>
+    <Routes>
+      <Route path="/entry" element={<EntryPage />} />
+      <Route element={<AppLayout />}>
         <Route
-          path="/"
+          path="/profile"
           element={
-            isAuthenticated ? (
-              <Navigate to="/home" replace />
-            ) : (
-              <Navigate to="/entry" replace />
-            )
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <PrivateRoute>
+              <GameHistory />
+            </PrivateRoute>
           }
         />
         <Route
           path="/home"
-          element={isAuthenticated ? <HomePage /> : <Navigate to="/" replace />}
+          element={
+            <PrivateRoute>
+              <HomePage />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/gameSession"
-          element={isAuthenticated ? <GamePage /> : <Navigate to="/" replace />}
-        />
-        <Route
-          path="/matchMaker"
           element={
-            isAuthenticated ? <MatchMaker /> : <Navigate to="/" replace />
+            <PrivateRoute>
+              <GamePage />
+            </PrivateRoute>
           }
         />
-        <Route
-          path="/matchLoading"
-          element={
-            isAuthenticated ? <MatchLoading /> : <Navigate to="/" replace />
-          }
-        />
-        <Route path="/signIn" element={<SignIn />} />
-        <Route
-          path="/signUp"
-          element={isAuthenticated ? <Navigate to="/home" /> : <SignUp />}
-        />
-        <Route path="*" element={<_404 />} />
-      </Routes>
+      </Route>
+      <Route
+        path="/"
+        element={
+          useSelector((state: RootState) => state.auth.isAuthenticated) ? (
+            <Navigate to="/home" replace />
+          ) : (
+            <Navigate to="/entry" replace />
+          )
+        }
+      />
+      <Route
+        path="/matchMaker"
+        element={
+          <PrivateRoute>
+            <MatchMaker />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/matchLoading"
+        element={
+          <PrivateRoute>
+            <MatchLoading />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/signIn" element={<SignIn />} />
+      <Route
+        path="/signUp"
+        element={
+          useSelector((state: RootState) => state.auth.isAuthenticated) ? (
+            <Navigate to="/home" />
+          ) : (
+            <SignUp />
+          )
+        }
+      />
+      <Route path="*" element={<_404 />} />
+    </Routes>
+  );
+}
+
+function AppWrapper() {
+  return (
+    <BrowserRouter>
+      <App />
     </BrowserRouter>
   );
 }
 
-export default App;
+export default AppWrapper;
