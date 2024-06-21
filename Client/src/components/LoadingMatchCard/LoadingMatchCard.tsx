@@ -4,7 +4,7 @@ import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
 import Skeleton from '@mui/material/Skeleton';
 import { useState } from 'react';
-export default function LoadingMatchCard() {
+export default function LoadingMatchCard({ gameSettings }: { gameSettings: any }) {
   const user = useSelector((state: RootState) => state.user.data);
   const [isOppFetched, setIsOppfetched] = useState(false);
   return (
@@ -24,19 +24,37 @@ export default function LoadingMatchCard() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '13rem',
+          gap: '10rem',
         }}
       >
-        <p
+        <div
           style={{
-            color: 'white',
-            fontSize: '3rem',
-            fontWeight: '600',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             marginTop: '5rem',
+            gap: '2rem',
           }}
         >
-          Finding Match
-        </p>
+          <p
+            style={{
+              color: 'white',
+              fontSize: '3rem',
+              fontWeight: '600',
+            }}
+          >
+            {gameSettings.mode} - {gameSettings.type}
+          </p>
+          <p
+            style={{
+              color: 'white',
+              fontSize: '3rem',
+              fontWeight: '600',
+            }}
+          >
+            Finding Match
+          </p>
+        </div>
         <div
           style={{
             display: 'flex',

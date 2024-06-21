@@ -1,8 +1,7 @@
 import Button from '@mui/material/Button';
-type ButtonText = {
-  children: string;
-};
-export default function GameButton({ children }: ButtonText) {
+import { useNavigate } from 'react-router';
+export default function GameButton( {gameSettings, children} : any ) {
+  const navigate = useNavigate();
   return (
     <Button
       variant="contained"
@@ -15,6 +14,9 @@ export default function GameButton({ children }: ButtonText) {
       }}
       disableRipple
       disableElevation
+      onClick={() => {
+        navigate('/matchLoading', { state: { gameSettings } });
+      }}
     >
       {children}
     </Button>
