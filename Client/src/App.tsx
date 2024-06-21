@@ -22,15 +22,15 @@ function App() {
   const authState = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (authState.user.token && authState.user.user.username) {
+    if (authState?.user?.token && authState?.user?.user?.username) {
       dispatch<any>(
         getUserByUsername({
-          username: authState.user.user.username,
-          jwtToken: authState.user.token,
+          username: authState?.user?.user?.username,
+          jwtToken: authState?.user?.token,
         }),
       );
     }
-  }, [authState.user.token, authState.user.user.username, dispatch]);
+  }, [authState?.user?.token, authState?.user?.user?.username, dispatch]);
   return (
     <BrowserRouter>
       <Routes>
