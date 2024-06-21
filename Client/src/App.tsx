@@ -17,6 +17,8 @@ import { useEffect } from 'react';
 import { getUserByUsername } from './store/actions/userInfo';
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  const authState = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (authState.user.token && authState.user.user.username) {
