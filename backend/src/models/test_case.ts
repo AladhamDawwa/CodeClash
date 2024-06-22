@@ -50,4 +50,13 @@ export class TestCases {
     const test_cases = snapshot.docs.map((doc) => doc.data());
     return test_cases
   }
+
+  static async get_inner_testcases(problem_id: string): Promise<TestCase[]> {
+    const snapshot = await testcases_collection
+      .where("problem_id", "==", problem_id)
+      .where("test_type", "==", TestCaseType.Inner)
+      .get();
+    const test_cases = snapshot.docs.map((doc) => doc.data());
+    return test_cases
+  }
 }

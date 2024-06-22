@@ -5,6 +5,10 @@ import { User, Users } from "../models/users";
 import { GameMode, GameType } from "../utils/definitions/games_types";
 import { ProblemPickerService } from "./problem_picker_service";
 import { addMinutes, addSeconds } from 'date-fns';
+import dotenv from 'dotenv'
+dotenv.config();
+
+const { UVU_GAME_START_TIME_DELAY } = process.env;
 
 export class GameService {
   static game_uvu_store: IGameUvUStore = new GameUvUFireStore();
@@ -27,7 +31,7 @@ export class GameService {
 
   static create_uvu_game_state(username_a: string, username_b: string, game_mode: GameMode, problem_id: string, game_duration: number): UvUGameState {
     let start_time = new Date()
-    start_time = addSeconds(start_time, 10)
+    start_time = addSeconds(start_time, parseInt(UVU_GAME_START_TIME_DELAY!))
     let end_time = addMinutes(start_time, game_duration)
 
     const game: UvUGameState = {
