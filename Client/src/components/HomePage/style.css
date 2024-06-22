@@ -5,8 +5,8 @@
 }
 
 :root {
-  --card-height: 700px;
-  --card-width: calc(var(--card-height) / 1.5);
+  --card-height: 300px;
+  --card-width: calc(var(--card-height));
 }
 
 .card {
@@ -15,11 +15,12 @@
   height: var(--card-height);
   padding: 3px;
   position: relative;
-  border-radius: 6px;
+  border-radius: 1rem;
   justify-content: center;
   align-items: center;
   text-align: center;
   display: flex;
+  min-width: var(--card-width);
 }
 
 .card:before {
