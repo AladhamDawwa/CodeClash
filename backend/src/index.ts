@@ -57,7 +57,11 @@ server.listen(port, () => {
 //       const is_problem_valid = await JudgeZeroService.is_problem_testcases_valid_by_problem_id(problem, 52)
 //       number_of_problems_tested += 1
 //       if (is_problem_valid) {
+//         console.log(`problem: ${problem.title} is correct`)
 //         number_of_valid_problems += 1
+//       } else {
+//         console.log(`problem: ${problem.title} is not valid !!!!!`)
+
 //       }
 //     }
 //   }

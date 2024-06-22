@@ -40,6 +40,7 @@ export class JudgeZeroService {
         )
         const judge_result = response.data
         if (judge_result.status.id != 3) {
+          console.log(testcase)
           return false
         }
       } catch (err) {
