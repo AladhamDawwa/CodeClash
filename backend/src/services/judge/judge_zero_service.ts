@@ -1,5 +1,6 @@
+import { ProblemAndTestCases } from "../../controllers/problems"
 import { Problem, Problems } from "../../models/problem"
-import { TestCases } from "../../models/test_case"
+import { TestCase, TestCases } from "../../models/test_case"
 import axios from "axios"
 
 export type JudgeResult = {
@@ -30,7 +31,7 @@ export class JudgeZeroService {
     }
   }
 
-  static async is_problem_testcases_valid(problem: Problem, language_id: number): Promise<boolean> {
+  static async is_problem_testcases_valid_by_problem_id(problem: Problem, language_id: number): Promise<boolean> {
     const testcases = await TestCases.get_inner_testcases(problem.id!)
     for (const testcase of testcases) {
       try {
@@ -46,6 +47,23 @@ export class JudgeZeroService {
       }
     }
     return true
+  }
+
+  static async is_problem_testcases_valid(problem_and_testcases: ProblemAndTestCases, language_id: number): Promise<TestCase | null> {
+    for (const testcase of problem_and_testcases.testcases) {
+      try {
+        const response = await axios.request(
+          this.create_submit_request_args(problem_and_testcases.accepted_code!, language_id, testcase.input!, testcase.expected_output!)
+        )
+        const judge_result = response.data
+        if (judge_result.status.id != 3) {
+          return testcase
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    return null
   }
 
   static async submit_problem_async(problem_id: string, source_code: string) {

@@ -4,9 +4,10 @@ import { TestCases, TestCase } from "../models/test_case";
 import { firestore } from '../firebase'
 import dotenv from "dotenv";
 import { UsersUnsolvedProblems } from "../models/users_unsolved_problems";
+import { JudgeZeroService } from "../services/judge/judge_zero_service";
 dotenv.config();
 
-type ProblemAndTestCases = {
+export type ProblemAndTestCases = {
   memory_limit: number;
   title: string,
   time_limit: number,
@@ -21,40 +22,51 @@ type ProblemAndTestCases = {
 export class ProblemsController {
   static async create_problems(req: Request, res: Response) {
     const problems_and_testcases: ProblemAndTestCases[] = req.body
-
     for (const problem_and_testcases of problems_and_testcases) {
       let problem_skipped = false
       let problem_id = "";
-      try {
-        await firestore.runTransaction(async (transaction) => {
-          const problem_exists = await Problems.problem_exists_in_transaction(
-            ProblemsController.create_problem_args(problem_and_testcases),
-            transaction
-          )
-          if (problem_exists) {
-            console.log(`Problem with title "${problem_and_testcases.title}" already exists.`);
-            problem_skipped = true
-            return
+      let wrong_testcase
+      if (problem_and_testcases.accepted_code == undefined) {
+        wrong_testcase = null
+      }
+      else {
+        wrong_testcase = await JudgeZeroService.is_problem_testcases_valid(problem_and_testcases, 52)
+      }
+      if (wrong_testcase != null) {
+        console.log(`Problem with title "${problem_and_testcases.title}" doesn't have valid testcases`);
+        console.log(wrong_testcase)
+      }
+      else {
+        try {
+          await firestore.runTransaction(async (transaction) => {
+            const problem_exists = await Problems.problem_exists_in_transaction(
+              ProblemsController.create_problem_args(problem_and_testcases),
+              transaction
+            )
+            if (problem_exists) {
+              console.log(`Problem with title "${problem_and_testcases.title}" already exists.`);
+              problem_skipped = true
+              return
+            }
+            problem_id = Problems.create_in_transaction(
+              ProblemsController.create_problem_args(problem_and_testcases),
+              transaction
+            )
+            for (const testcase of problem_and_testcases.testcases) {
+              testcase.problem_id = problem_id
+              TestCases.create_in_transaction(testcase, transaction)
+            }
+          })
+          if (!problem_skipped) {
+            console.log(`write successful for problem: ${problem_and_testcases.title}`);
+            UsersUnsolvedProblems.insert_problem_for_all(problem_id, problem_and_testcases.rating, problem_and_testcases.title)
           }
-          problem_id = Problems.create_in_transaction(
-            ProblemsController.create_problem_args(problem_and_testcases),
-            transaction
-          )
-          for (const testcase of problem_and_testcases.testcases) {
-            testcase.problem_id = problem_id
-            TestCases.create_in_transaction(testcase, transaction)
-          }
-        })
-        if (!problem_skipped) {
-          console.log(`write successful for problem: ${problem_and_testcases.title}`);
-          UsersUnsolvedProblems.insert_problem_for_all(problem_id, problem_and_testcases.rating, problem_and_testcases.title)
+
         }
-
+        catch (err) {
+          console.log(`write Failed for problem: ${problem_and_testcases.title} - ${err}`);
+        }
       }
-      catch (err) {
-        console.log(`write Failed for problem: ${problem_and_testcases.title} - ${err}`);
-      }
-
     }
 
 
