@@ -11,6 +11,7 @@ import { ConnectedUsers } from './sockets/connected_users'
 import { ProblemsController } from './controllers/problems'
 import { ProblemPickerService } from './services/problem_picker_service'
 import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
+import { TeamsController } from './controllers/teams'
 
 
 dotenv.config()
@@ -24,6 +25,7 @@ app.use(express.json({ limit: '50mb' }))
 // routes
 UsersController.routes(app)
 ProblemsController.routes(app)
+TeamsController.routes(app)
 
 // websockets
 const server = createServer(app)
