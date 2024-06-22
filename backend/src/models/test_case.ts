@@ -6,11 +6,11 @@ enum TestCaseType {
   Inner
 }
 export type TestCase = {
-  id: string
-  problem_id: string
-  input: string;
-  expected_output: string
-  test_type: TestCaseType
+  id?: string
+  problem_id?: string
+  input?: string;
+  expected_output?: string
+  test_type?: TestCaseType
 }
 const converter = {
   toFirestore: (data: TestCase) => {
@@ -40,5 +40,14 @@ export class TestCases {
     const ref = testcases_collection.doc()
     transaction.set(ref, testcase)
     return ref.id
+  }
+
+  static async get_sample_testcases(problem_id: string): Promise<TestCase[]> {
+    const snapshot = await testcases_collection
+      .where("problem_id", "==", problem_id)
+      .where("test_type", "==", TestCaseType.Sample)
+      .get();
+    const test_cases = snapshot.docs.map((doc) => doc.data());
+    return test_cases
   }
 }

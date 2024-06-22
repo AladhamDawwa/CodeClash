@@ -61,6 +61,37 @@ export class ProblemsController {
     res.status(200).json("finished writing the problems")
   }
 
+  static async get_problem(req: Request, res: Response) {
+    const problem_id = req.params.problem_id
+    const problem = await Problems.get_problem(problem_id)
+    const test_cases = await TestCases.get_sample_testcases(problem_id)
+
+    ProblemsController.remove_problem_protected_fields(problem)
+    ProblemsController.remove_testcases_protected_fields(test_cases)
+
+    res.json({
+      problem,
+      test_cases
+    })
+  }
+
+  static remove_problem_protected_fields(problem: Problem) {
+    delete problem.id
+    delete problem.accepted_code
+    delete problem.rating
+    delete problem.tags
+  }
+
+  static remove_testcase_protected_fields(test_case: TestCase) {
+    delete test_case.id
+    delete test_case.test_type
+  }
+
+  static remove_testcases_protected_fields(test_cases: TestCase[]) {
+    for (const test_case of test_cases) {
+      ProblemsController.remove_testcase_protected_fields(test_case)
+    }
+  }
   private static create_problem_args(problem_and_testcases: ProblemAndTestCases): Problem {
     const { testcases, ...problem } = problem_and_testcases
     return problem
@@ -68,5 +99,6 @@ export class ProblemsController {
 
   static routes(app: express.Application) {
     app.post('/problems/create', this.create_problems)
+    app.get('/problems/:problem_id', this.get_problem)
   }
 }

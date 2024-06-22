@@ -28,12 +28,32 @@ const converter = {
 const problem_levels_collection = db.problem_levels.withConverter(converter);
 
 export class ProblemLevels {
+  static problem_levels: ProblemLevel[] = []
 
   static async index(): Promise<ProblemLevel[]> {
-    const snapshot = await problem_levels_collection.orderBy('code').get();
-    const problem_levels = snapshot.docs.map((doc) => doc.data());
-    console.log(problem_levels)
-    return problem_levels;
+    if (!this.problem_levels.length) {
+      const snapshot = await problem_levels_collection.orderBy('code').get();
+      const problem_levels = snapshot.docs.map((doc) => doc.data());
+      this.problem_levels = problem_levels
+    }
+    return this.problem_levels
   }
+  static async get_uvu_game_duration(problem_rating: string): Promise<number> {
+    if (!this.problem_levels.length) {
+      await this.index()
+    }
+
+    let duration = 60
+    for (const problem_level of this.problem_levels) {
+      if (problem_level.code == problem_rating) {
+        duration = problem_level.duration
+        break
+      }
+    }
+    return duration
+
+  }
+
+
 
 } 

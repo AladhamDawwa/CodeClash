@@ -38,7 +38,6 @@ io.use(authenticate_socket)
 
 io.on('connection', (socket) => {
   new MatchMakerSocketController(io, socket).register_events()
-
 })
 
 
