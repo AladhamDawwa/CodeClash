@@ -10,11 +10,41 @@ import data from './users.json';
 import FriendsList from '../../components/HomePage/FriendsList';
 import TeamsList from '../../components/HomePage/TeamsList';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './glitchText.scss';
-//TODO when the user clicks on his image it navigate him to his profile page
+import CreateTeamCard from '../../components/CreateTeamCard/CreateTeamCard';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { useDispatch } from 'react-redux';
+import { getUserTeams } from '../../store/actions/userInfo';
 const Home = () => {
   const [openList, setOpenList] = useState(-1);
+  const [showTeamCard, setshowTeanCard] = useState(false);
+  const [userTeams, setuserTeams] = useState<Team[]>([]);
+  const authState = useSelector((state: RootState) => state.auth);
+  interface Team {
+    doc_id: string;
+    slogan: string;
+    team_name: string;
+    emails: string[];
+    exp: number;
+    level: number;
+    rank_points: number;
+    rank_tier: number;
+    registration_date: {
+      _seconds: number;
+      _nanoseconds: number;
+    };
+    mmr: number;
+  }
+  const dispatch = useDispatch();
+  const handleshowTeamCard = () => {
+    setshowTeanCard(true);
+  };
+
+  const handleCloseshowTeamCard = () => {
+    setshowTeanCard(false);
+  };
   const handleListToggle = (index: number) => {
     setOpenList(openList === index ? -1 : index);
   };
@@ -22,35 +52,57 @@ const Home = () => {
   const handleTeamToggle = (index: number) => {
     setOpenTeam(openTeam === index ? -1 : index);
   };
+
+  useEffect(() => {
+    const jwtToken = authState.user.token;
+    dispatch<any>(getUserTeams({ jwtToken }))
+      .unwrap()
+      .then((responseData: any) => {
+        setuserTeams(responseData);
+      })
+      .catch((error: any) => {
+        console.error('Failed to fetch user teams:', error);
+      });
+  }, [authState.user.token, dispatch]);
   return (
     <>
       <Container maxWidth="xl">
-        <div style={{
-          margin: '2rem',
-          padding: '4rem 2rem',
-          minHeight: '600px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <div style={{
+        <div
+          style={{
+            margin: '2rem',
+            padding: '4rem 2rem',
+            minHeight: '600px',
             display: 'flex',
-            width: 'fit-content',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-          }}>
-            <div className="glitch" data-text="GAME">GAME</div> 
-            <div className="glitch" data-text="MODES">MODES</div> 
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              width: 'fit-content',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}
+          >
+            <div className="glitch" data-text="GAME">
+              GAME
+            </div>
+            <div className="glitch" data-text="MODES">
+              MODES
+            </div>
           </div>
-          <div style={{
-            display: 'flex',
-            gap: '5rem',
-            justifyContent: 'space-around',
-            width: '100%',
-            padding: '2rem 0',
-            flexWrap: 'wrap'
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: '5rem',
+              justifyContent: 'space-around',
+              width: '100%',
+              padding: '2rem 0',
+              flexWrap: 'wrap',
+            }}
+          >
             <GameModesCard type="1 V 1" />
             <GameModesCard type="3 V 3" />
             <GameModesCard type="Last Man Standing" />
@@ -180,33 +232,24 @@ const Home = () => {
                       padding: '3rem 0',
                     }}
                   >
-                    <TeamsList
-                      open={openTeam === 0}
-                      onClick={() => handleTeamToggle(0)}
-                    />
-                    <TeamsList
-                      open={openTeam === 1}
-                      onClick={() => handleTeamToggle(1)}
-                    />
-                    <TeamsList
-                      open={openTeam === 2}
-                      onClick={() => handleTeamToggle(2)}
-                    />
-                    <TeamsList
-                      open={openTeam === 3}
-                      onClick={() => handleTeamToggle(3)}
-                    />
-                    <TeamsList
-                      open={openTeam === 4}
-                      onClick={() => handleTeamToggle(4)}
-                    />
-                    <TeamsList
-                      open={openTeam === 5}
-                      onClick={() => handleTeamToggle(5)}
-                    />
+                    {userTeams.length > 0 ? (
+                      userTeams.map((team, index) => (
+                        <TeamsList
+                          key={team.doc_id}
+                          open={openTeam === index}
+                          onClick={() => handleTeamToggle(index)}
+                          team={team}
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="h6" sx={{ color: 'white' }}>
+                        No teams found
+                      </Typography>
+                    )}
                   </Paper>
                   <Button
                     variant="contained"
+                    onClick={handleshowTeamCard}
                     size="large"
                     sx={{
                       margin: '3rem',
@@ -220,6 +263,12 @@ const Home = () => {
                   >
                     Create Team
                   </Button>
+                  {showTeamCard && (
+                    <CreateTeamCard
+                      open={true}
+                      onClose={handleCloseshowTeamCard}
+                    />
+                  )}
                 </div>
               </Paper>
               <Box height="2rem" />
