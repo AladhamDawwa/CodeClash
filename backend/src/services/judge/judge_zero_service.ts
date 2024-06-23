@@ -4,6 +4,7 @@ import { TestCase, TestCases } from "../../models/test_case"
 import axios from "axios"
 import dotenv from 'dotenv'
 dotenv.config();
+
 const { JUDGE_ZERO_URL } = process.env
 
 export type JudgeResult = {
