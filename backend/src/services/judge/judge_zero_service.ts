@@ -2,6 +2,9 @@ import { ProblemAndTestCases } from "../../controllers/problems"
 import { Problem, Problems } from "../../models/problem"
 import { TestCase, TestCases } from "../../models/test_case"
 import axios from "axios"
+import dotenv from 'dotenv'
+dotenv.config();
+const { JUDGE_ZERO_URL } = process.env
 
 export type JudgeResult = {
   score: number,
@@ -18,6 +21,8 @@ enum Status {
 
   Accepted,
 }
+
+
 export class JudgeZeroService {
 
   static async submit_problem_sync(problem_id: string, source_code: string, language_id: number) {
@@ -74,7 +79,7 @@ export class JudgeZeroService {
   private static create_submit_request_args(source_code: string, language_id: number, input: string, expected_output: string) {
     const args = {
       method: 'POST',
-      url: 'http://35.195.219.250:2358//submissions',
+      url: `http://${JUDGE_ZERO_URL}/submissions`,
       params: {
         base64_encoded: 'true',
         wait: 'true',
