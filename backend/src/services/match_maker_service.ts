@@ -6,7 +6,7 @@ import { MatchMakerRequest, MatchMakerResponse } from "../utils/definitions/matc
 export class MatchMakerService {
   static match_maker_queue: IMatchMakerQueue = new MatchMakerQueueLocal();
 
-  static async find_one_v_one(match_maker_request: MatchMakerRequest): Promise<MatchMakerResponse> {
+  static async find_uvu(match_maker_request: MatchMakerRequest): Promise<MatchMakerResponse> {
     const user = await Users.get_by_username(match_maker_request.username!);
     const matched_user = this.match_maker_queue.find_best(user);
     if (matched_user) {

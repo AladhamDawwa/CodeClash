@@ -9,8 +9,8 @@ export type Problem = {
   output_format: string
   memory_limit: number;
   time_limit: number;
-  rating: string;
-  tags: string[];
+  rating?: string;
+  tags?: string[];
   accepted_code?: string;
 }
 

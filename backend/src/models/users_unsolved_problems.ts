@@ -55,7 +55,7 @@ export class UsersUnsolvedProblems {
     const problems = await Problems.get_all_problems()
     const user_unsolved_problems = this.create_user_unsolved_problems_object(username)
     for (const problem of problems) {
-      this.append_problem_in_object(user_unsolved_problems, problem.id, problem.rating)
+      this.append_problem_in_object(user_unsolved_problems, problem.id, problem.rating!)
     }
     const ref = await users_unsolved_problems_collection.add(user_unsolved_problems)
   }

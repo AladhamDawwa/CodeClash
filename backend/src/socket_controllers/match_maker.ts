@@ -5,6 +5,8 @@ import { GameMode, GameType } from "../utils/definitions/games_types";
 import { MatchMakerService } from "../services/match_maker_service";
 import { SocketType, IoType } from "../utils/definitions/io_socket_types";
 import { ConnectedUsers } from "../sockets/connected_users";
+import { GameService } from "../services/game_service";
+import { UvUGameState } from "../game/store/i_game_uvu_store";
 
 export class MatchMakerSocketController {
   public io: IoType;
@@ -19,14 +21,25 @@ export class MatchMakerSocketController {
   async find_match(data: string) {
     const match_maker_request: MatchMakerRequest = JSON.parse(data);
     if (match_maker_request.game_type == GameType.OneVsOne) {
-      this.find_one_v_one(match_maker_request);
+      this.find_uvu(match_maker_request);
     }
   }
 
-  async find_one_v_one(match_maker_request: MatchMakerRequest) {
+  async find_uvu(match_maker_request: MatchMakerRequest) {
     match_maker_request.username = this.socket.data.username;
-    const match_maker_response = await MatchMakerService.find_one_v_one(match_maker_request)
-    console.log(match_maker_response)
+    const match_maker_response = await MatchMakerService.find_uvu(match_maker_request)
+    if (match_maker_response.status == "MatchFound") {
+      const uvu_game_state = await GameService.create_uvu(
+        this.socket.data.username, match_maker_response.user?.username!, match_maker_request.game_mode!
+      )
+      console.log(uvu_game_state)
+      this.send_uvu_game_to_users(uvu_game_state)
+    }
+  }
+
+  send_uvu_game_to_users(uvu_game_state: UvUGameState) {
+    ConnectedUsers.get_socket(uvu_game_state.username_a!).emit("match_maker_client:found_match", uvu_game_state)
+    ConnectedUsers.get_socket(uvu_game_state.username_b!).emit("match_maker_client:found_match", uvu_game_state)
   }
 
   register_events() {

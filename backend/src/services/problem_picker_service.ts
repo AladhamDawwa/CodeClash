@@ -4,7 +4,6 @@ import { User } from "../models/users";
 import { UserUnsolvedProblems, UsersUnsolvedProblems } from "../models/users_unsolved_problems";
 
 export class ProblemPickerService {
-  static problem_levels: ProblemLevel[] = []
 
   static async pick_problem(users: User[]): Promise<Problem | null> {
     const average_mmr = this.calculate_average_mmr(users)
@@ -42,9 +41,9 @@ export class ProblemPickerService {
   }
 
   static async get_problem_level_code(mmr: number): Promise<string> {
-    await this.fetch_problem_levels()
     let chosen_problem_code: string = "a"
-    for (const problem_level of this.problem_levels) {
+    const problem_levels = await ProblemLevels.index()
+    for (const problem_level of problem_levels) {
       if (problem_level.max_mmr != -1) {
         if (mmr >= problem_level.min_mmr && mmr <= problem_level.max_mmr) {
           chosen_problem_code = problem_level.code
@@ -59,11 +58,5 @@ export class ProblemPickerService {
       }
     }
     return chosen_problem_code
-  }
-
-  static async fetch_problem_levels() {
-    if (this.problem_levels.length == 0) {
-      this.problem_levels = await ProblemLevels.index()
-    }
   }
 }

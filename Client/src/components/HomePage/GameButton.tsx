@@ -1,8 +1,9 @@
 import Button from '@mui/material/Button';
-type ButtonText = {
-  children: string;
-};
-export default function GameButton({ children }: ButtonText) {
+import { useNavigate } from 'react-router';
+import LeaderboardRoundedIcon from '@mui/icons-material/LeaderboardRounded';
+import FitnessCenterRoundedIcon from '@mui/icons-material/FitnessCenterRounded';
+export default function GameButton( {gameSettings, children} : any ) {
+  const navigate = useNavigate();  
   return (
     <Button
       variant="contained"
@@ -11,11 +12,35 @@ export default function GameButton({ children }: ButtonText) {
         px: '4rem',
         fontSize: '2rem',
         textTransform: 'capitalize',
-        backgroundColor: '#0f0c29',
+        backgroundColor: '#3f51b5',
+        color: 'white',
+        borderRadius: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+
+        '&:hover': {
+          backgroundColor: '#303f9f',
+        },
       }}
       disableRipple
       disableElevation
+      onClick={() => {
+        navigate('/matchLoading', { state: { gameSettings } });
+      }}
     >
+      {(gameSettings && gameSettings.type === "Ranked") ?     
+        <LeaderboardRoundedIcon sx={{
+          fontSize: '3rem',
+          mr: '1rem',
+        }} />
+      :
+      (gameSettings && gameSettings.type !== "Register") ?
+        <FitnessCenterRoundedIcon sx={{
+          fontSize: '3rem',
+          mr: '1rem',
+        }} /> 
+      : null}
       {children}
     </Button>
   );

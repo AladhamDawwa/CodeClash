@@ -4,7 +4,6 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { useNavigate } from 'react-router-dom';
 import GameModesCard from '../../components/HomePage/GameModesCard';
 import GameButton from '../../components/HomePage/GameButton';
 import data from './users.json';
@@ -12,7 +11,7 @@ import FriendsList from '../../components/HomePage/FriendsList';
 import TeamsList from '../../components/HomePage/TeamsList';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import NavBar from '../../components/NavBar/NavBar';
+import './glitchText.scss';
 //TODO when the user clicks on his image it navigate him to his profile page
 const Home = () => {
   const [openList, setOpenList] = useState(-1);
@@ -26,31 +25,39 @@ const Home = () => {
   return (
     <>
       <Container maxWidth="xl">
+        <div style={{
+          margin: '2rem',
+          padding: '4rem 2rem',
+          minHeight: '600px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <div style={{
+            display: 'flex',
+            width: 'fit-content',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}>
+            <div className="glitch" data-text="GAME">GAME</div> 
+            <div className="glitch" data-text="MODES">MODES</div> 
+          </div>
+          <div style={{
+            display: 'flex',
+            gap: '5rem',
+            justifyContent: 'space-around',
+            width: '100%',
+            padding: '2rem 0',
+            flexWrap: 'wrap'
+          }}>
+            <GameModesCard type="1 V 1" />
+            <GameModesCard type="3 V 3" />
+            <GameModesCard type="Last Man Standing" />
+          </div>
+        </div>
         <div className="left-right">
           <div className="left">
-            <Paper
-              sx={{
-                backgroundColor: '#0f0c29',
-                width: '70rem',
-                height: '110rem',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '5rem',
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{ color: 'white', marginTop: '3rem', fontWeight: '500' }}
-              >
-                Game Modes
-              </Typography>
-              <GameModesCard type="1 vs 1" />
-              <GameModesCard type="3 vs 3" />
-              <GameModesCard type="Last Man Standing" />
-              <Box height="2rem" />
-            </Paper>
             <Paper
               sx={{
                 backgroundColor: '#0f0c29',
