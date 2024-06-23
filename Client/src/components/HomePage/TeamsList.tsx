@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
@@ -6,16 +7,123 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Statues from '@mui/icons-material/FiberManualRecord';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import data from '../../pages/HomePage/team.json';
+import { Box, Button, Paper, Slide, Snackbar, TextField } from '@mui/material';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import { RootState } from '../../store/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { inviteUser } from '../../store/actions/userInfo';
+import { SnackbarOrigin } from '@mui/material/Snackbar';
 
-type TeamType = {
+interface State extends SnackbarOrigin {
+  openn: boolean;
+}
+
+interface Team {
   open: boolean;
   onClick: () => void;
-};
+  team: {
+    doc_id: string;
+    slogan: string;
+    team_name: string;
+    emails: string[];
+    exp: number;
+    level: number;
+    rank_points: number;
+    rank_tier: number;
+    registration_date: {
+      _seconds: number;
+      _nanoseconds: number;
+    };
+    mmr: number;
+  };
+}
 
-export default function TeamsList({ open, onClick }: TeamType) {
+export default function TeamsList({ open, onClick, team }: Team) {
+  const [state, setState] = useState<State>({
+    openn: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { openn } = state;
+
+  const handleCloseSnack = () => {
+    setState({ ...state, openn: false });
+  };
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [teammateError, setTeammateError] = useState(false);
+  const [teammateUsername, setTeammateUsername] = useState('');
+  const [localTeam, setLocalTeam] = useState(team);
+
+  const authState = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+
+  const handleInvite = async () => {
+    if (!teammateUsername.trim()) {
+      setTeammateError(true);
+      return;
+    }
+
+    setTeammateError(false);
+
+    const jwtToken = authState.user.token;
+    dispatch<any>(
+      inviteUser({
+        jwtToken,
+        team_name: team.team_name,
+        user: teammateUsername,
+      }),
+    )
+      .then((responseData: { payload: { emails: string[] } }) => {
+        if (responseData.payload.emails) {
+          handleClose();
+          setState({ ...state, openn: true });
+          setLocalTeam(prevTeam => ({
+            ...prevTeam,
+            emails: responseData.payload.emails,
+          }));
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
+  const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTeammateUsername(e.target.value);
+    setTeammateError(!e.target.value.trim());
+  };
+
+  const handleClose = () => {
+    setShowDialog(false);
+  };
+
+  const inviteButtons = () => {
+    const remainingSlots = 3 - localTeam.emails.length;
+    return Array.from({ length: remainingSlots }).map((_, i) => (
+      <Button
+        key={i}
+        variant="contained"
+        onClick={() => setShowDialog(!showDialog)}
+        sx={{
+          width: '32.5rem',
+          minHeight: '7rem',
+          backgroundColor: 'rgba(82, 88, 114, 0.9)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          margin: '2rem',
+          borderRadius: '0.5rem',
+          fontSize: '1.7rem',
+          textTransform: 'capitalize',
+        }}
+      >
+        Invite Player
+      </Button>
+    ));
+  };
+
   return (
     <div style={{ position: 'relative' }}>
       <List
@@ -34,7 +142,7 @@ export default function TeamsList({ open, onClick }: TeamType) {
           }}
         >
           <Typography variant="h4" sx={{ color: 'white', marginLeft: '2rem' }}>
-            {`Team #1`}
+            {team.team_name}
           </Typography>
           <div
             style={{
@@ -96,7 +204,7 @@ export default function TeamsList({ open, onClick }: TeamType) {
           }}
         >
           <List component="div">
-            {data.map((user, index) => (
+            {localTeam.emails.map((user, index) => (
               <ListItem
                 key={index}
                 sx={{
@@ -116,13 +224,167 @@ export default function TeamsList({ open, onClick }: TeamType) {
                     fontSize: '1.7rem',
                   }}
                 >
-                  {user.username}
+                  {user}
                 </p>
               </ListItem>
             ))}
           </List>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {inviteButtons()}
+            {showDialog && (
+              <Slide direction="up" in={showDialog} mountOnEnter unmountOnExit>
+                <Box
+                  sx={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 3,
+                  }}
+                  onClick={handleClose}
+                >
+                  <Box
+                    sx={{
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: 'rgba(0, 0, 0, 0.0001)',
+                      zIndex: 2,
+                      pointerEvents: showDialog ? 'initial' : 'none',
+                      display: showDialog ? 'block' : 'none',
+                    }}
+                  />
+
+                  <Paper
+                    sx={{
+                      backgroundColor: 'rgba(82, 88, 114, 0.9)',
+                      width: '50rem',
+                      height: '30rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '3rem',
+                      padding: '2rem',
+                      borderRadius: '5px',
+                      zIndex: 3,
+                      position: 'relative',
+                    }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: '2rem',
+                        marginTop: '2rem',
+                        borderRadius: '5px',
+                      }}
+                    >
+                      <p
+                        style={{
+                          textAlign: 'center',
+                          color: 'white',
+                          fontSize: '3rem',
+                          justifyContent: 'center',
+                          fontWeight: '400',
+                          textTransform: 'capitalize',
+                        }}
+                      >
+                        Teammate Username
+                      </p>
+                      <PersonAddAltIcon
+                        sx={{
+                          color: 'white',
+                          fontSize: '3.2rem',
+                          alignSelf: 'center',
+                        }}
+                      />
+                    </div>
+                    <TextField
+                      required
+                      error={teammateError}
+                      helperText={teammateError ? 'Username is required' : ''}
+                      onChange={handleTeamNameChange}
+                      sx={{
+                        width: '30rem',
+                        '& .MuiInputLabel-root': {
+                          fontSize: '1.5rem',
+                          fontWeight: '500',
+                        },
+                        '& .MuiInputBase-root': {
+                          fontSize: '1.5rem',
+                        },
+                        '& .MuiFormHelperText-root': {
+                          fontSize: '1.2rem',
+                        },
+                      }}
+                      label="Username"
+                      variant="standard"
+                    />
+                    <div style={{ display: 'flex', gap: '10rem' }}>
+                      <Button
+                        disableElevation
+                        variant="contained"
+                        sx={{
+                          bgcolor: '#bb1a1a',
+                          color: 'white',
+                          fontSize: '1.7rem',
+                          textTransform: 'capitalize',
+                        }}
+                        onClick={handleClose}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        disableElevation
+                        variant="contained"
+                        sx={{
+                          bgcolor: '#14751c',
+                          color: 'white',
+                          fontSize: '1.7rem',
+                          textTransform: 'capitalize',
+                        }}
+                        onClick={handleInvite}
+                      >
+                        Invite
+                      </Button>
+                    </div>
+                  </Paper>
+                </Box>
+              </Slide>
+            )}
+          </div>
         </Paper>
       </Collapse>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{
+          fontSize: '2.5rem',
+          '& .MuiPaper-root': {
+            bgcolor: '#14751c',
+            fontSize: '1.5rem',
+            height: '5rem',
+            width: '4rem',
+            textTransform: 'capitalize',
+          },
+        }}
+        open={openn}
+        autoHideDuration={3000}
+        onClose={handleCloseSnack}
+        message="Invite sent!"
+      />
     </div>
   );
 }

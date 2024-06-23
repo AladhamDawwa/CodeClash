@@ -1,6 +1,11 @@
-// src/store/reducers/userSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getUserByUsername } from '../actions/userInfo';
+import {
+  addTeam,
+  getUserByUsername,
+  getUserTeams,
+  inviteUser,
+  updateUser,
+} from '../actions/userInfo';
 import { IUserState } from '../../interfaces/IUserState';
 
 const initialState: IUserState = {
@@ -39,7 +44,59 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = action.payload || 'Failed to fetch user data';
         },
-      );
+      )
+      .addCase(updateUser.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(updateUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to update user data';
+      })
+      .addCase(addTeam.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addTeam.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(addTeam.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to create a team';
+      })
+      .addCase(getUserTeams.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserTeams.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(getUserTeams.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to create a team';
+      })
+      .addCase(inviteUser.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(inviteUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(inviteUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to create a team';
+      });
   },
 });
 
