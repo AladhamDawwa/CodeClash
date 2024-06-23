@@ -52,6 +52,9 @@ const Home = () => {
   const handleTeamToggle = (index: number) => {
     setOpenTeam(openTeam === index ? -1 : index);
   };
+  const handleAddTeam = (newTeam: Team) => {
+    setuserTeams(prevTeams => [...prevTeams, newTeam]);
+  };
 
   useEffect(() => {
     const jwtToken = authState.user.token;
@@ -267,6 +270,7 @@ const Home = () => {
                     <CreateTeamCard
                       open={true}
                       onClose={handleCloseshowTeamCard}
+                      onTeamCreated={handleAddTeam}
                     />
                   )}
                 </div>

@@ -144,7 +144,7 @@ export const getUserTeams = createAsyncThunk(
       const err = error as AxiosError<ResponseData>;
       if (err.response && err.response.data) {
         return thunkAPI.rejectWithValue(
-          err.response.data.error || 'Failed to create team',
+          err.response.data.error || 'Failed to fetch teams',
         );
       }
       throw error;

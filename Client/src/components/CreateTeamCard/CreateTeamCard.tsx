@@ -21,9 +21,14 @@ const theme = createTheme({
 interface funparams {
   open: boolean;
   onClose: any;
+  onTeamCreated: (newTeam: any) => void;
 }
 
-export default function CreateTeamCard({ open, onClose }: funparams) {
+export default function CreateTeamCard({
+  open,
+  onClose,
+  onTeamCreated,
+}: funparams) {
   const [state, setState] = useState<State>({
     openn: false,
     vertical: 'bottom',
@@ -70,11 +75,12 @@ export default function CreateTeamCard({ open, onClose }: funparams) {
     if (teamName) {
       const jwtToken = authState.user.token;
       dispatch<any>(addTeam({ jwtToken, teamName, slogan }))
-        .then((responseData: { payload: string }) => {
+        .then((responseData: { payload: any }) => {
           if (responseData.payload === 'team name already exists') {
             setRepeatedTeamName(true);
           } else {
             setRepeatedTeamName(false);
+            onTeamCreated(responseData.payload);
             handleClose();
             setState({ ...state, openn: true });
             console.log('Team created');

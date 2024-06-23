@@ -11,8 +11,7 @@ import Typography from '@mui/material/Typography';
 import { Box, Button, Paper, Slide, Snackbar, TextField } from '@mui/material';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { RootState } from '../../store/store';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { inviteUser } from '../../store/actions/userInfo';
 import { SnackbarOrigin } from '@mui/material/Snackbar';
 
@@ -52,18 +51,21 @@ export default function TeamsList({ open, onClick, team }: Team) {
     setState({ ...state, openn: false });
   };
 
-  const [showDialog, setshowDialog] = useState(false);
-  const [teammateError, setteammateError] = useState(false);
-  const [teammateUsername, setteammateUsername] = useState('');
+  const [showDialog, setShowDialog] = useState(false);
+  const [teammateError, setTeammateError] = useState(false);
+  const [teammateUsername, setTeammateUsername] = useState('');
+  const [localTeam, setLocalTeam] = useState(team);
+
   const authState = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
-  const handleinvite = async () => {
+  const handleInvite = async () => {
     if (!teammateUsername.trim()) {
-      setteammateError(true);
-    } else {
-      setteammateError(false);
+      setTeammateError(true);
+      return;
     }
+
+    setTeammateError(false);
 
     const jwtToken = authState.user.token;
     dispatch<any>(
@@ -73,10 +75,14 @@ export default function TeamsList({ open, onClick, team }: Team) {
         user: teammateUsername,
       }),
     )
-      .then((responseData: { payload: string }) => {
-        if (responseData.payload !== '') {
+      .then((responseData: { payload: { emails: string[] } }) => {
+        if (responseData.payload.emails) {
           handleClose();
           setState({ ...state, openn: true });
+          setLocalTeam(prevTeam => ({
+            ...prevTeam,
+            emails: responseData.payload.emails,
+          }));
         }
       })
       .catch((error: any) => {
@@ -84,49 +90,38 @@ export default function TeamsList({ open, onClick, team }: Team) {
       });
   };
 
-  const handleteamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setteammateUsername(e.target.value);
-
-    if (!e.target.value.trim()) {
-      setteammateError(true);
-    } else {
-      setteammateError(false);
-    }
+  const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTeammateUsername(e.target.value);
+    setTeammateError(!e.target.value.trim());
   };
 
   const handleClose = () => {
-    setshowDialog(false);
+    setShowDialog(false);
   };
 
   const inviteButtons = () => {
-    const remainingSlots = 3 - team.emails.length;
-    const buttons = [];
-
-    for (let i = 0; i < remainingSlots; i++) {
-      buttons.push(
-        <Button
-          key={i}
-          variant="contained"
-          onClick={() => setshowDialog(!showDialog)}
-          sx={{
-            width: '32.5rem',
-            minHeight: '7rem',
-            backgroundColor: 'rgba(82, 88, 114, 0.9)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            margin: '2rem',
-            borderRadius: '0.5rem',
-            fontSize: '1.7rem',
-            textTransform: 'capitalize',
-          }}
-        >
-          Invite Player
-        </Button>,
-      );
-    }
-
-    return buttons;
+    const remainingSlots = 3 - localTeam.emails.length;
+    return Array.from({ length: remainingSlots }).map((_, i) => (
+      <Button
+        key={i}
+        variant="contained"
+        onClick={() => setShowDialog(!showDialog)}
+        sx={{
+          width: '32.5rem',
+          minHeight: '7rem',
+          backgroundColor: 'rgba(82, 88, 114, 0.9)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          margin: '2rem',
+          borderRadius: '0.5rem',
+          fontSize: '1.7rem',
+          textTransform: 'capitalize',
+        }}
+      >
+        Invite Player
+      </Button>
+    ));
   };
 
   return (
@@ -209,7 +204,7 @@ export default function TeamsList({ open, onClick, team }: Team) {
           }}
         >
           <List component="div">
-            {team.emails.map((user, index) => (
+            {localTeam.emails.map((user, index) => (
               <ListItem
                 key={index}
                 sx={{
@@ -320,7 +315,7 @@ export default function TeamsList({ open, onClick, team }: Team) {
                       required
                       error={teammateError}
                       helperText={teammateError ? 'Username is required' : ''}
-                      onChange={handleteamNameChange}
+                      onChange={handleTeamNameChange}
                       sx={{
                         width: '30rem',
                         '& .MuiInputLabel-root': {
@@ -360,7 +355,7 @@ export default function TeamsList({ open, onClick, team }: Team) {
                           fontSize: '1.7rem',
                           textTransform: 'capitalize',
                         }}
-                        onClick={handleinvite}
+                        onClick={handleInvite}
                       >
                         Invite
                       </Button>
