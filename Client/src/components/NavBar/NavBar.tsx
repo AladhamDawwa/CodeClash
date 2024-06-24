@@ -52,7 +52,7 @@ export default function NavBar() {
       elevation={2}
       sx={{
         width: '100%',
-        backgroundColor: '#24243e',
+        backgroundColor: '#0f0c29',
         height: '7rem',
         display: 'flex',
         alignItems: 'center',
