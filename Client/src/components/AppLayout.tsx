@@ -73,7 +73,7 @@ export default function MiniDrawer() {
   return (
     <Box sx={{ 
       minWidth: 'calc(100vw - (100vw - 100%))',
-      backgroundColor: '#24243e',
+      // backgroundColor: '#24243e',
     }}>
       <Drawer variant="permanent" open={open} 
       onMouseEnter={handleDrawerOpen} 
@@ -284,9 +284,9 @@ export default function MiniDrawer() {
       <div style={{
         position: 'fixed',
         top: '0',
-        right: '1.5rem',
+        right: '0.8rem',
       }}>
-        <RankFlag transparentColor="24243e"/>
+        <RankFlag/>
       </div>
     </Box>
   );

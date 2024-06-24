@@ -82,35 +82,37 @@ const Home = () => {
             alignItems: 'center',
             minHeight: '500px',
           }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              width: 'fit-content',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-            }}
           >
-            <div className="glitch" data-text="GAME">
-              GAME
+            <div
+              style={{
+                display: 'flex',
+                width: 'fit-content',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <div className="glitch" data-text="GAME">
+                GAME
+              </div>
+              <div className="glitch" data-text="MODES">
+                MODES
+              </div>
             </div>
-            <div className="glitch" data-text="MODES">
-              MODES
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '2rem',
+                width: '100%',
+                flexWrap: "wrap"
+              }}
+            >
+              <GameModesCard type="1 V 1" />
+              <GameModesCard type="3 V 3" />
+              <GameModesCard type="Last Man Standing" />
             </div>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              gap: '5rem',
-              justifyContent: 'space-between',
-              width: '100%',
-              flexWrap: 'wrap',
-            }}
-          >
-            <GameModesCard type="1 V 1" />
-            <GameModesCard type="3 V 3" />
-            <GameModesCard type="Last Man Standing" />
-          </div>
           </div>
           <div className="left-right">
             <div className="left">
