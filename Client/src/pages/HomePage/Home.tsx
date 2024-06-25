@@ -8,65 +8,15 @@ import GameModesCard from '../../components/HomePage/GameModesCard';
 import GameButton from '../../components/HomePage/GameButton';
 import data from './users.json';
 import FriendsList from '../../components/HomePage/FriendsList';
-import TeamsList from '../../components/HomePage/TeamsList';
-import Button from '@mui/material/Button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './glitchText.scss';
-import CreateTeamCard from '../../components/CreateTeamCard/CreateTeamCard';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { useDispatch } from 'react-redux';
-import { getUserTeams } from '../../store/actions/userInfo';
 const Home = () => {
   const [openList, setOpenList] = useState(-1);
-  const [showTeamCard, setshowTeanCard] = useState(false);
-  const [userTeams, setuserTeams] = useState<Team[]>([]);
-  const authState = useSelector((state: RootState) => state.auth);
-  interface Team {
-    doc_id: string;
-    slogan: string;
-    team_name: string;
-    emails: string[];
-    exp: number;
-    level: number;
-    rank_points: number;
-    rank_tier: number;
-    registration_date: {
-      _seconds: number;
-      _nanoseconds: number;
-    };
-    mmr: number;
-  }
-  const dispatch = useDispatch();
-  const handleshowTeamCard = () => {
-    setshowTeanCard(true);
-  };
 
-  const handleCloseshowTeamCard = () => {
-    setshowTeanCard(false);
-  };
   const handleListToggle = (index: number) => {
     setOpenList(openList === index ? -1 : index);
   };
-  const [openTeam, setOpenTeam] = useState(-1);
-  const handleTeamToggle = (index: number) => {
-    setOpenTeam(openTeam === index ? -1 : index);
-  };
-  const handleAddTeam = (newTeam: Team) => {
-    setuserTeams(prevTeams => [...prevTeams, newTeam]);
-  };
 
-  useEffect(() => {
-    const jwtToken = authState.user.token;
-    dispatch<any>(getUserTeams({ jwtToken }))
-      .unwrap()
-      .then((responseData: any) => {
-        setuserTeams(responseData);
-      })
-      .catch((error: any) => {
-        console.error('Failed to fetch user teams:', error);
-      });
-  }, [authState.user.token, dispatch]);
   return (
     <>
       <Container maxWidth="xl">
@@ -81,6 +31,7 @@ const Home = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             minHeight: '500px',
+            gap: '4rem',
           }}
           >
             <div
@@ -102,7 +53,7 @@ const Home = () => {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'space-around',
                 alignItems: 'center',
                 gap: '2rem',
                 width: '100%',
@@ -173,12 +124,10 @@ const Home = () => {
                 sx={{
                   backgroundColor: '#0f0c29',
                   width: '50rem',
-                  height: '110rem',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  gap: '5rem',
                 }}
               >
                 <Typography
@@ -191,11 +140,12 @@ const Home = () => {
                   sx={{
                     backgroundColor: '#24243e',
                     width: '45rem',
-                    height: '95rem',
+                    height: '30rem',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'space-around',
+                    justifyContent: 'space-evenly',
+                    gap: '2rem',
                   }}
                 >
                   <FriendsList
@@ -213,70 +163,6 @@ const Home = () => {
                     open={openList === 2}
                     onClick={() => handleListToggle(2)}
                   />
-                  <div className="home-teams">
-                    <Typography
-                      variant="h2"
-                      sx={{
-                        color: 'white',
-                        marginBottom: '3rem',
-                        fontWeight: '500',
-                      }}
-                    >
-                      Teams
-                    </Typography>
-                    <Paper
-                      sx={{
-                        backgroundColor: '#0f0c29',
-                        width: '40rem',
-                        height: '35rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        overflowY: 'auto',
-                        scrollbarWidth: 'none',
-                        gap: '4rem',
-                        padding: '3rem 0',
-                      }}
-                    >
-                      {userTeams.length > 0 ? (
-                        userTeams.map((team, index) => (
-                          <TeamsList
-                            key={team.doc_id}
-                            open={openTeam === index}
-                            onClick={() => handleTeamToggle(index)}
-                            team={team}
-                          />
-                        ))
-                      ) : (
-                        <Typography variant="h6" sx={{ color: 'white' }}>
-                          No teams found
-                        </Typography>
-                      )}
-                    </Paper>
-                    <Button
-                      variant="contained"
-                      onClick={handleshowTeamCard}
-                      size="large"
-                      sx={{
-                        margin: '3rem',
-                        p: '1.5rem',
-                        fontSize: '1.5rem',
-                        textTransform: 'capitalize',
-                        backgroundColor: '#0f0c29',
-                      }}
-                      disableRipple
-                      disableElevation
-                    >
-                      Create Team
-                    </Button>
-                    {showTeamCard && (
-                      <CreateTeamCard
-                        open={true}
-                        onClose={handleCloseshowTeamCard}
-                        onTeamCreated={handleAddTeam}
-                      />
-                    )}
-                  </div>
                 </Paper>
                 <Box height="2rem" />
               </Paper>

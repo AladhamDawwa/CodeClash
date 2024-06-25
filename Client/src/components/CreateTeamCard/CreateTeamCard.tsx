@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Paper, Slide, TextField, Snackbar } from '@mui/material';
-import GroupsIcon from '@mui/icons-material/Groups';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
 import { addTeam } from '../../store/actions/userInfo';
@@ -83,7 +83,6 @@ export default function CreateTeamCard({
             onTeamCreated(responseData.payload);
             handleClose();
             setState({ ...state, openn: true });
-            console.log('Team created');
           }
         })
         .catch((error: any) => {
@@ -111,14 +110,27 @@ export default function CreateTeamCard({
         onClose={handleCloseSnack}
         message="Team Created!"
       />
+      (openn ? <Box
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 2,
+          pointerEvents: open ? 'initial' : 'none',
+          background: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(2px) opacity(0.5) contrast(0.8)',
+        }}
+        /> : null)
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         <Box
           sx={{
             position: 'fixed',
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
+            width: '100vw',
+            height: '100vh',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -126,137 +138,130 @@ export default function CreateTeamCard({
           }}
           onClick={handleClose}
         >
-          <Box
-            sx={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backdropFilter: 'blur(1px)',
-              backgroundColor: 'rgba(0, 0, 0, 0.0001)',
-              zIndex: 2,
-              pointerEvents: open ? 'initial' : 'none',
-              display: open ? 'block' : 'none',
-            }}
-          />
-
-          <Paper
-            sx={{
-              backgroundColor: 'rgba(82, 88, 114, 0.9)',
-              width: '60rem',
-              height: '40rem',
+        <Paper
+          sx={{
+            background: '#0f0c29',
+            width: '50rem',
+            height: '35rem',
+            display: 'flex',
+            flexDirection: 'column',  
+            alignItems: 'center',
+            gap: '4rem',
+            padding: '1rem',
+            borderRadius: '1rem',
+            zIndex: 3,
+            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
+          }}
+          onClick={e => e.stopPropagation()}
+        >
+          <div
+            style={{
               display: 'flex',
-              flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
-              gap: '5rem',
-              padding: '2rem',
+              gap: '2rem',
+              marginTop: '2rem',
               borderRadius: '5px',
-              zIndex: 3,
-              position: 'relative',
             }}
-            onClick={e => e.stopPropagation()}
           >
-            <div
+            <p
               style={{
-                display: 'flex',
-                gap: '2rem',
-                marginTop: '2rem',
-                borderRadius: '5px',
+                textAlign: 'center',
+                color: 'white',
+                fontSize: '3rem',
+                justifyContent: 'center',
+                fontWeight: '400',
+                textTransform: 'capitalize',
               }}
             >
-              <p
-                style={{
-                  textAlign: 'center',
-                  color: 'white',
-                  fontSize: '3rem',
-                  justifyContent: 'center',
-                  fontWeight: '400',
-                  textTransform: 'capitalize',
-                }}
-              >
-                Create your team
-              </p>
-              <GroupsIcon
-                sx={{ color: 'white', fontSize: '3.2rem', alignSelf: 'center' }}
-              />
-            </div>
-            <ThemeProvider theme={theme}>
-              <TextField
-                required
-                error={teamNameError || repeatedTeamName}
-                helperText={
-                  teamNameError
-                    ? 'Team name is required'
-                    : repeatedTeamName
-                      ? 'Repeated team name'
-                      : ''
-                }
-                onChange={handleteamNameChange}
-                sx={{
-                  width: '30rem',
-                  '& .MuiInputLabel-root': {
-                    fontSize: '1.5rem',
-                    fontWeight: '500',
-                  },
-                  '& .MuiInputBase-root': {
-                    fontSize: '1.5rem',
-                  },
-                  '& .MuiFormHelperText-root': {
-                    fontSize: '1.2rem',
-                  },
-                }}
-                label="Team Name"
-                variant="standard"
-              />
-              <TextField
-                onChange={handleSloganChange}
-                sx={{
-                  width: '30rem',
-                  '& .MuiInputLabel-root': {
-                    fontSize: '1.5rem',
-                    fontWeight: '500',
-                  },
-                  '& .MuiInputBase-root': {
-                    fontSize: '1.5rem',
-                  },
-                  '& .MuiFormHelperText-root': {
-                    fontSize: '1.2rem',
-                  },
-                }}
-                label="Slogan"
-                variant="standard"
-              />
-            </ThemeProvider>
-            <div style={{ display: 'flex', gap: '10rem' }}>
-              <Button
-                disableElevation
-                variant="contained"
-                sx={{
-                  bgcolor: '#bb1a1a',
-                  color: 'white',
-                  fontSize: '1.7rem',
-                  textTransform: 'capitalize',
-                }}
-                onClick={handleClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                disableElevation
-                variant="contained"
-                sx={{
-                  bgcolor: '#14751c',
-                  color: 'white',
-                  fontSize: '1.7rem',
-                  textTransform: 'capitalize',
-                }}
-                onClick={handleCreateTeam}
-              >
-                Add team
-              </Button>
-            </div>
-          </Paper>
+              Create your team
+            </p>
+            <GroupsOutlinedIcon
+              sx={{ color: 'white', fontSize: '4rem', fontWeight: '400'}}
+            />
+          </div>
+          <ThemeProvider theme={theme}>
+            <TextField
+              required
+              error={teamNameError || repeatedTeamName}
+              helperText={
+                teamNameError
+                  ? 'Team name is required'
+                  : repeatedTeamName
+                    ? 'Repeated team name'
+                    : ''
+              }
+              onChange={handleteamNameChange}
+              sx={{
+                width: '30rem',
+                '& .MuiInputLabel-root': {
+                  fontSize: '1.5rem',
+                  fontWeight: '500',
+                },
+                '& .MuiInputBase-root': {
+                  fontSize: '1.5rem',
+                },
+                '& .MuiFormHelperText-root': {
+                  fontSize: '1.2rem',
+                },
+              }}
+              label="Team Name"
+              variant="standard"
+            />
+            <TextField
+              onChange={handleSloganChange}
+              sx={{
+                width: '30rem',
+                '& .MuiInputLabel-root': {
+                  fontSize: '1.5rem',
+                  fontWeight: '500',
+                },
+                '& .MuiInputBase-root': {
+                  fontSize: '1.5rem',
+                },
+                '& .MuiFormHelperText-root': {
+                  fontSize: '1.2rem',
+                },
+              }}
+              label="Slogan"
+              variant="standard"
+            />
+          </ThemeProvider>
+          <div style={{ display: 'flex', gap: '10rem' }}>
+            <Button
+              disableElevation
+              variant="contained"
+              sx={{
+                color: 'white',
+                fontSize: '1.7rem',
+                textTransform: 'capitalize',
+                background: '#f44336',
+                '&:hover': {
+                  backgroundColor: '#d32f2f',
+                },
+              }}
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              disableElevation
+              variant="contained"
+              sx={{
+                color: 'white',
+                fontSize: '1.7rem',
+                textTransform: 'capitalize',
+                background: '#3f51b5',
+                '&:hover': {
+                  backgroundColor: '#303f9f',
+                },
+              }}
+              onClick={handleCreateTeam}
+            >
+              Add team
+            </Button>
+          </div>
+        </Paper>
         </Box>
       </Slide>
     </div>

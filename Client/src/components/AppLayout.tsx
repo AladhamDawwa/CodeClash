@@ -195,6 +195,10 @@ export default function MiniDrawer() {
                 minHeight: 48,
                 px: 1.5,
               }}
+              onClick={() => {
+                handleDrawerClose();
+                navigate('/teams');
+              }}
             >
               <ListItemIcon>
                 <Groups2RoundedIcon sx={{
@@ -221,6 +225,10 @@ export default function MiniDrawer() {
               sx={{
                 minHeight: 48,
                 px: 1.5,
+              }}
+              onClick={() => {
+                handleDrawerClose();
+                navigate('/history');
               }}
             >
               <ListItemIcon>

@@ -21,6 +21,7 @@ import AppLayout from './components/AppLayout';
 import { useEffect } from 'react';
 import { getUserByUsername } from './store/actions/userInfo';
 import MatchLoading from './pages/MatchLoading/MatchLoading';
+import Teams from './pages/Teams/Teams';
 
 interface PrivateRouteProps {
   children: JSX.Element;
@@ -81,6 +82,14 @@ function App() {
           element={
             <PrivateRoute>
               <HomePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teams"
+          element={
+            <PrivateRoute>
+              <Teams />
             </PrivateRoute>
           }
         />

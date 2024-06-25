@@ -12,6 +12,13 @@
   background: linear-gradient(45deg, #24243e, #302b63, #0f0c29);
 }
 
+.user-img {
+  height: 5rem;
+  width: 5rem;
+  border-radius: 100%;
+  cursor: pointer;
+}
+
 html {
   font-size: 62.5%;
 }

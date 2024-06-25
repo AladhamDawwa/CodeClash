@@ -2,11 +2,9 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import Stack from '@mui/material/Stack';
 import './styles.css';
 import '../../index.css';
 import { ChangeEvent, useState } from 'react';
-import MatchCard from '../../components/MatchCard/MatchCard';
 import userData from './profile.json';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
@@ -466,30 +464,6 @@ const ProfilePage = () => {
               </div>
             </Paper>
           </div>
-        </div>
-        <Typography
-          variant="h2"
-          sx={{ color: 'white', fontWeight: 'bold', alignSelf: 'center' }}
-        >
-          Latest Matches
-        </Typography>
-        <div>
-          <Stack direction="column" spacing={5}>
-            <MatchCard
-              problemName="reverse integer"
-              date="April 06, 2023"
-              oppImage="/assets/avatar.png"
-              status="loser"
-              amount={50}
-            />
-            <MatchCard
-              problemName="reverse integer"
-              date="April 06, 2023"
-              oppImage="/assets/avatar.png"
-              status="loser"
-              amount={50}
-            />
-          </Stack>
         </div>
       </div>
     </Container>

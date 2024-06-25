@@ -63,7 +63,7 @@ const RankFlag = () => {
           width: '100%',
         }}>
           {[...Array(6)].map((_, i) => {
-            return <div style={{
+            return <div key={i} style={{
               backgroundColor: color,
               width: 'calc(100% / 6)',
               height: '35px',
