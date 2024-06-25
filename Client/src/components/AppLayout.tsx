@@ -2,7 +2,15 @@ import * as React from 'react';
 import { styled, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
-import { Avatar, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import {
+  Avatar,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -33,21 +41,21 @@ const closedMixin = (theme: Theme): CSSObject => ({
   width: `calc(${theme.spacing(8)})`,
 });
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: prop => prop !== 'open',
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
 
 export default function MiniDrawer() {
   const [open, setOpen] = React.useState(false);
@@ -71,37 +79,46 @@ export default function MiniDrawer() {
   const user = useSelector((state: RootState) => state.user.data);
 
   return (
-    <Box sx={{ 
-      minWidth: 'calc(100vw - (100vw - 100%))',
-      // backgroundColor: '#24243e',
-    }}>
-      <Drawer variant="permanent" open={open} 
-      onMouseEnter={handleDrawerOpen} 
-      onMouseLeave={handleDrawerClose}
+    <Box
       sx={{
-        '& .MuiDrawer-paper': { 
-          background: '#0f0c29',
-          color: 'white',
-          boxShadow: '0 0 3px white',
-          justifyContent: 'space-between',
-          padding: '1rem 0',
-        },
+        minWidth: 'calc(100vw - (100vw - 100%))',
+        // backgroundColor: '#24243e',
       }}
+    >
+      <Drawer
+        variant="permanent"
+        open={open}
+        onMouseEnter={handleDrawerOpen}
+        onMouseLeave={handleDrawerClose}
+        sx={{
+          '& .MuiDrawer-paper': {
+            background: '#0f0c29',
+            color: 'white',
+            boxShadow: '0 0 3px white',
+            justifyContent: 'space-between',
+            padding: '1rem 0',
+          },
+        }}
       >
-        <List sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1rem',
-        }}>
-
+        <List
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+          }}
+        >
           {/* Logo */}
 
-          <ListItem key={'home'} disablePadding sx={{ 
-            display: 'block',
-            '&:hover': {
-              backgroundColor: '#1a1a1a',
-            }
-          }}>
+          <ListItem
+            key={'home'}
+            disablePadding
+            sx={{
+              display: 'block',
+              '&:hover': {
+                backgroundColor: '#1a1a1a',
+              },
+            }}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -113,7 +130,7 @@ export default function MiniDrawer() {
               }}
             >
               <ListItemIcon>
-              <Avatar
+                <Avatar
                   sx={{
                     cursor: 'pointer',
                     boxShadow: '0 0 3px white',
@@ -121,30 +138,40 @@ export default function MiniDrawer() {
                     height: '4rem',
                   }}
                   src="/assets/logo.svg"
-                  />
+                />
               </ListItemIcon>
-              <ListItemText primaryTypographyProps={{
-                fontSize: '1.5rem',
-                letterSpacing: 1,
-                fontStyle: 'italic',
-              }}>CodeClash</ListItemText>
+              <ListItemText
+                primaryTypographyProps={{
+                  fontSize: '1.5rem',
+                  letterSpacing: 1,
+                  fontStyle: 'italic',
+                }}
+              >
+                CodeClash
+              </ListItemText>
             </ListItemButton>
           </ListItem>
 
-          <Divider sx={{ 
-            backgroundColor: 'white',
-            opacity: 0.5,
-            margin: '1rem 0', 
-          }} />
+          <Divider
+            sx={{
+              backgroundColor: 'white',
+              opacity: 0.5,
+              margin: '1rem 0',
+            }}
+          />
 
           {/* Profile */}
 
-          <ListItem key={'profile'} disablePadding sx={{ 
-            display: 'block',
-            '&:hover': {
-              backgroundColor: '#1a1a1a',
-            }
-          }}>
+          <ListItem
+            key={'profile'}
+            disablePadding
+            sx={{
+              display: 'block',
+              '&:hover': {
+                backgroundColor: '#1a1a1a',
+              },
+            }}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -156,40 +183,53 @@ export default function MiniDrawer() {
               }}
             >
               <ListItemIcon>
-                {user.image ? (
-                    <img style={{
+                {user?.image ? (
+                  <img
+                    style={{
                       borderRadius: '50%',
                       width: '4rem',
                       height: '4rem',
                       objectFit: 'cover',
                       boxShadow: '0 0 3px white',
-                    }} src={user.image} alt="user image" className="user-img" />
-                  ) : (
-                    <Avatar
-                      className="navbar-avatar"
-                      sx={{
-                        cursor: 'pointer',
-                        boxShadow: '0 0 3px white',
-                      }}
-                      src="/broken-image.jpg"
-                    />
+                    }}
+                    src={user?.image}
+                    alt="user image"
+                    className="user-img"
+                  />
+                ) : (
+                  <Avatar
+                    className="navbar-avatar"
+                    sx={{
+                      cursor: 'pointer',
+                      boxShadow: '0 0 3px white',
+                    }}
+                    src="/broken-image.jpg"
+                  />
                 )}
               </ListItemIcon>
-              <ListItemText primaryTypographyProps={{
-                fontSize: '1.5rem',
-                letterSpacing: 1,
-              }}>Profile</ListItemText>
+              <ListItemText
+                primaryTypographyProps={{
+                  fontSize: '1.5rem',
+                  letterSpacing: 1,
+                }}
+              >
+                Profile
+              </ListItemText>
             </ListItemButton>
           </ListItem>
 
           {/* Teams */}
 
-          <ListItem key={'Teams'} disablePadding sx={{ 
-            display: 'block',
-            '&:hover': {
-              backgroundColor: '#1a1a1a',
-            }
-          }}>
+          <ListItem
+            key={'Teams'}
+            disablePadding
+            sx={{
+              display: 'block',
+              '&:hover': {
+                backgroundColor: '#1a1a1a',
+              },
+            }}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -201,26 +241,35 @@ export default function MiniDrawer() {
               }}
             >
               <ListItemIcon>
-                <Groups2RoundedIcon sx={{
-                  color: 'white',
-                  fontSize: '4rem',
-                }}/>
+                <Groups2RoundedIcon
+                  sx={{
+                    color: 'white',
+                    fontSize: '4rem',
+                  }}
+                />
               </ListItemIcon>
-              <ListItemText primary={'Teams'} primaryTypographyProps={{
-                fontSize: '1.5rem',
-                letterSpacing: 1,
-              }} />
+              <ListItemText
+                primary={'Teams'}
+                primaryTypographyProps={{
+                  fontSize: '1.5rem',
+                  letterSpacing: 1,
+                }}
+              />
             </ListItemButton>
           </ListItem>
 
           {/* Game History */}
 
-          <ListItem key={'Inbox'} disablePadding sx={{ 
-            display: 'block',
-            '&:hover': {
-              backgroundColor: '#1a1a1a',
-            }
-          }}>
+          <ListItem
+            key={'Inbox'}
+            disablePadding
+            sx={{
+              display: 'block',
+              '&:hover': {
+                backgroundColor: '#1a1a1a',
+              },
+            }}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -232,29 +281,35 @@ export default function MiniDrawer() {
               }}
             >
               <ListItemIcon>
-                <HistoryRoundedIcon sx={{
-                  color: 'white',
-                  fontSize: '4rem',
-                }}/>
+                <HistoryRoundedIcon
+                  sx={{
+                    color: 'white',
+                    fontSize: '4rem',
+                  }}
+                />
               </ListItemIcon>
-              <ListItemText primary={'Game History'} primaryTypographyProps={{
-                letterSpacing: 1,
-                fontSize: '1.5rem',
-              }} />
+              <ListItemText
+                primary={'Game History'}
+                primaryTypographyProps={{
+                  letterSpacing: 1,
+                  fontSize: '1.5rem',
+                }}
+              />
             </ListItemButton>
           </ListItem>
-
-          
-
         </List>
 
         <List>
-          <ListItem key={'Logout'} disablePadding sx={{ 
-            display: 'block',
-            '&:hover': {
-              backgroundColor: '#1a1a1a',
-            }
-          }}>
+          <ListItem
+            key={'Logout'}
+            disablePadding
+            sx={{
+              display: 'block',
+              '&:hover': {
+                backgroundColor: '#1a1a1a',
+              },
+            }}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -263,38 +318,47 @@ export default function MiniDrawer() {
               onClick={LogOut}
             >
               <ListItemIcon>
-                <LogoutIcon sx={{
-                  color: 'darkred',
-                  fontSize: '4rem',
-                  rotate: '180deg',
-                }}/>
+                <LogoutIcon
+                  sx={{
+                    color: 'darkred',
+                    fontSize: '4rem',
+                    rotate: '180deg',
+                  }}
+                />
               </ListItemIcon>
-              <ListItemText primary={'Logout'} primaryTypographyProps={{
-                letterSpacing: 1,
-                fontSize: '1.5rem',
-              }} />
+              <ListItemText
+                primary={'Logout'}
+                primaryTypographyProps={{
+                  letterSpacing: 1,
+                  fontSize: '1.5rem',
+                }}
+              />
             </ListItemButton>
           </ListItem>
         </List>
       </Drawer>
-      <div style={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        filter: open ? 'blur(10px) opacity(0.5) grayscale(100%)' : 'none',
-        transition: 'filter 0.2s ease',
-        padding: '0 6rem',
-      }}>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          filter: open ? 'blur(10px) opacity(0.5) grayscale(100%)' : 'none',
+          transition: 'filter 0.2s ease',
+          padding: '0 6rem',
+        }}
+      >
         <Outlet />
       </div>
-      <div style={{
-        position: 'fixed',
-        top: '0',
-        right: '0.8rem',
-      }}>
-        <RankFlag/>
+      <div
+        style={{
+          position: 'fixed',
+          top: '0',
+          right: '0.8rem',
+        }}
+      >
+        <RankFlag />
       </div>
     </Box>
   );

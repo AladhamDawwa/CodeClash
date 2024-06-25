@@ -34,7 +34,12 @@ const userSlice = createSlice({
         getUserByUsername.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          console.log('fullfilled action', action.payload);
+          console.log('fullfilled state', state.data);
+          state.data = {
+            ...state.data,
+            ...action.payload,
+          };
           state.error = null;
         },
       )
@@ -51,7 +56,10 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = {
+          ...state.data,
+          ...action.payload,
+        };
         state.error = null;
       })
       .addCase(updateUser.rejected, (state, action: PayloadAction<any>) => {
@@ -64,7 +72,10 @@ const userSlice = createSlice({
       })
       .addCase(addTeam.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = {
+          ...state.data,
+          ...action.payload,
+        };
         state.error = null;
       })
       .addCase(addTeam.rejected, (state, action: PayloadAction<any>) => {
@@ -77,7 +88,10 @@ const userSlice = createSlice({
       })
       .addCase(getUserTeams.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = {
+          ...state.data,
+          ...action.payload,
+        };
         state.error = null;
       })
       .addCase(getUserTeams.rejected, (state, action: PayloadAction<any>) => {
@@ -90,7 +104,10 @@ const userSlice = createSlice({
       })
       .addCase(inviteUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = {
+          ...state.data,
+          ...action.payload,
+        };
         state.error = null;
       })
       .addCase(inviteUser.rejected, (state, action: PayloadAction<any>) => {
