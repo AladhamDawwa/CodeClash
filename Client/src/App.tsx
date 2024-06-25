@@ -4,6 +4,7 @@ import {
   Navigate,
   Route,
   Routes,
+  useLocation,
   useNavigate,
 } from 'react-router-dom';
 import './App.css';
@@ -38,7 +39,7 @@ function App() {
   const dispatch = useDispatch();
   const authState = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
-
+  const location = useLocation();
   useEffect(() => {
     if (authState?.user?.token && authState?.user?.user?.username) {
       dispatch<any>(
@@ -52,9 +53,12 @@ function App() {
 
   useEffect(() => {
     if (!authState.isAuthenticated) {
-      navigate('/signIn');
+      const currentPath = location.pathname;
+      if (currentPath !== '/signUp') {
+        navigate('/signIn');
+      }
     }
-  }, [authState.isAuthenticated, navigate]);
+  }, [authState.isAuthenticated, location.pathname, navigate]);
 
   return (
     <Routes>
