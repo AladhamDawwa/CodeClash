@@ -1,10 +1,12 @@
 import { db } from "../firebase";
+import { RankTier } from "../utils/definitions/rank_tier";
 
 export type Tier = {
   id: string;
   name: string;
   min_mmr: number;
-  max_mmr: number
+  max_mmr: number;
+  rank_tier: RankTier
 }
 
 const converter = {
@@ -18,7 +20,8 @@ const converter = {
       id: snap.id,
       name: data.name,
       min_mmr: data.min_mmr,
-      max_mmr: data.max_mmr
+      max_mmr: data.max_mmr,
+      rank_tier: data.rank_tier
     };
   },
 };
@@ -26,10 +29,14 @@ const converter = {
 const tiers_collection = db.tiers.withConverter(converter);
 
 export class Tiers {
-
+  static tiers: Tier[] = []
   static async index(): Promise<Tier[]> {
-    const snapshot = await tiers_collection.get();
+    if (this.tiers.length != 0) {
+      return this.tiers
+    }
+    const snapshot = await tiers_collection.orderBy("min_mmr").get();
     const tiers = snapshot.docs.map((doc) => doc.data());
+    this.tiers = tiers
     return tiers;
   }
 

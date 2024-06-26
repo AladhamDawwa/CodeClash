@@ -14,12 +14,12 @@ const converter = {
       id: snap.id,
       game_type: data.game_type,
       game_mode: data.game_mode,
-      user_a: data.user_a,
-      user_b: data.user_b,
+      username_a: data.username_a,
+      username_b: data.username_b,
       problem_id: data.problem_id,
       duration: data.duration,
-      start_time: data.start_time,
-      end_time: data.end_time,
+      start_time: data.start_time.toDate(),
+      end_time: data.end_time.toDate(),
       submissions: data.submissions
     };
   },
@@ -47,3 +47,5 @@ export class GameUvUFireStore implements IGameUvUStore {
     return game_state!
   }
 }
+
+export default new GameUvUFireStore()

@@ -30,7 +30,7 @@ export class ProblemsController {
         wrong_testcase = null
       }
       else {
-        wrong_testcase = await JudgeZeroService.is_problem_testcases_valid(problem_and_testcases, 52)
+        wrong_testcase = await JudgeZeroService.is_problem_testcases_valid(problem_and_testcases, 71)
       }
       if (wrong_testcase != null) {
         console.log(`Problem with title "${problem_and_testcases.title}" doesn't have valid testcases`);
@@ -104,7 +104,8 @@ export class ProblemsController {
       ProblemsController.remove_testcase_protected_fields(test_case)
     }
   }
-  private static create_problem_args(problem_and_testcases: ProblemAndTestCases): Problem {
+
+  static create_problem_args(problem_and_testcases: ProblemAndTestCases): Problem {
     const { testcases, ...problem } = problem_and_testcases
     return problem
   }

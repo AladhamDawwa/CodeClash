@@ -5,7 +5,7 @@ import { GameMode, GameType } from "../utils/definitions/games_types";
 import { MatchMakerService } from "../services/match_maker_service";
 import { SocketType, IoType } from "../utils/definitions/io_socket_types";
 import { ConnectedUsers } from "../sockets/connected_users";
-import { GameService } from "../services/game_service";
+import { GameCreationService } from "../services/game_creation_service";
 import { UvUGameState } from "../game/store/i_game_uvu_store";
 
 export class MatchMakerSocketController {
@@ -29,10 +29,9 @@ export class MatchMakerSocketController {
     match_maker_request.username = this.socket.data.username;
     const match_maker_response = await MatchMakerService.find_uvu(match_maker_request)
     if (match_maker_response.status == "MatchFound") {
-      const uvu_game_state = await GameService.create_uvu(
+      const uvu_game_state = await GameCreationService.create_uvu(
         this.socket.data.username, match_maker_response.user?.username!, match_maker_request.game_mode!
       )
-      console.log(uvu_game_state)
       this.send_uvu_game_to_users(uvu_game_state)
     }
   }
