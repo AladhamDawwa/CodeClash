@@ -10,7 +10,7 @@ dotenv.config();
 
 const { UVU_GAME_START_TIME_DELAY } = process.env;
 
-export class GameService {
+export class GameCreationService {
   static game_uvu_store: IGameUvUStore = new GameUvUFireStore();
 
   static async create_uvu(username_a: string, username_b: string, game_mode: GameMode): Promise<UvUGameState> {
@@ -25,7 +25,8 @@ export class GameService {
       problem?.id!,
       game_duration
     )
-    await this.game_uvu_store.create(uvu_game_state)
+    const game_id = await this.game_uvu_store.create(uvu_game_state)
+    uvu_game_state.id = game_id
     return uvu_game_state
   }
 
@@ -35,6 +36,7 @@ export class GameService {
     let end_time = addMinutes(start_time, game_duration)
 
     const game: UvUGameState = {
+      id: "asdasd",
       username_a: username_a,
       username_b: username_b,
       game_mode: game_mode,

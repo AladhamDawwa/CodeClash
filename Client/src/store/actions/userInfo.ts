@@ -41,8 +41,10 @@ interface ResponseData {
 
 interface UpdateUserParams {
   jwtToken: string;
-  fieldName: string;
-  fieldValue: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+  description: string;
 }
 
 interface CreateTeamParams {
@@ -119,10 +121,22 @@ export const getGameInfo = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   'user/updateUser',
-  async ({ jwtToken, fieldName, fieldValue }: UpdateUserParams, thunkAPI) => {
+  async (
+    {
+      jwtToken,
+      first_name,
+      last_name,
+      username,
+      description,
+    }: UpdateUserParams,
+    thunkAPI,
+  ) => {
     const newData = {
       new_user: {
-        [fieldName]: fieldValue,
+        first_name: first_name,
+        last_name: last_name,
+        username: username,
+        description: description,
       },
     };
 
@@ -133,6 +147,7 @@ export const updateUser = createAsyncThunk(
           'Content-Type': 'application/json',
         },
       });
+
       return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseData>;

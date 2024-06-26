@@ -27,7 +27,7 @@ interface Team {
     doc_id: string;
     slogan: string;
     team_name: string;
-    emails: string[];
+    members: string[];
     exp: number;
     level: number;
     rank_points: number;
@@ -101,7 +101,7 @@ export default function TeamsList({ open, onClick, team }: Team) {
   };
 
   const inviteButtons = () => {
-    const remainingSlots = 3 - localTeam.emails.length;
+    const remainingSlots = 3 - localTeam.members.length;
     return Array.from({ length: remainingSlots }).map((_, i) => (
       <Button
         key={i}
@@ -205,7 +205,7 @@ export default function TeamsList({ open, onClick, team }: Team) {
     //       }}
     //     >
     //       <List component="div">
-    //         {localTeam.emails.map((user, index) => (
+    //         {localTeam.members.map((user, index) => (
     //           <ListItem
     //             key={index}
     //             sx={{
@@ -389,7 +389,7 @@ export default function TeamsList({ open, onClick, team }: Team) {
     // </div>
 
     <>
-      <TeamCard></TeamCard>
+      <TeamCard team={team}></TeamCard>
     </>
   );
 }

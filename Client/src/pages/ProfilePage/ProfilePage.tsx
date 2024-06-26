@@ -44,31 +44,21 @@ const ProfilePage = () => {
   const handleSave = async () => {
     setIsEditing(false);
     const jwtToken = authState.user?.token;
-    if (user.username !== username) {
-      dispatch<any>(
-        updateUser({
-          jwtToken,
-          fieldName: 'username',
-          fieldValue: username,
-        }),
-      ).then((result: any) => {
-        if (updateUser.pending.match(result)) {
-          <LoadingState />;
-        } else if (updateUser.fulfilled.match(result)) {
-          dispatch<any>(getUserByUsername({ jwtToken, username }));
-        }
-      });
-    }
-
-    if (user.first_name + ' ' + user.last_name !== name) {
+    if (
+      user.username !== username ||
+      user.first_name + ' ' + user.last_name !== name ||
+      user.description !== description
+    ) {
       const nameParts = name.split(' ');
       const first_name = nameParts[0];
       const last_name = nameParts.slice(1).join(' ');
       dispatch<any>(
         updateUser({
           jwtToken,
-          fieldName: 'first_name',
-          fieldValue: first_name,
+          first_name,
+          last_name,
+          username,
+          description,
         }),
       ).then((result: any) => {
         if (updateUser.pending.match(result)) {
@@ -77,29 +67,8 @@ const ProfilePage = () => {
           dispatch<any>(getUserByUsername({ jwtToken, username }));
         }
       });
-      dispatch<any>(
-        updateUser({ jwtToken, fieldName: 'last_name', fieldValue: last_name }),
-      ).then((result: any) => {
-        if (updateUser.pending.match(result)) {
-          <LoadingState />;
-        } else if (updateUser.fulfilled.match(result)) {
-          dispatch<any>(getUserByUsername({ jwtToken, username }));
-        }
-      });
-    }
-
-    if (user.description !== description) {
-      dispatch<any>(
-        updateUser({
-          jwtToken,
-          fieldName: 'description',
-          fieldValue: description,
-        }),
-      ).then((result: any) => {
-        if (updateUser.fulfilled.match(result)) {
-          dispatch<any>(getUserByUsername({ jwtToken, username }));
-        }
-      });
+    } else {
+      return;
     }
   };
 

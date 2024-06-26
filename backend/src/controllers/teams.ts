@@ -3,8 +3,8 @@ import { Team, Teams } from "../models/teams";
 
 // import jwt from "jsonwebtoken";
 import { authenticate } from "../middlewares/authentication";
-import { log } from "console";
-import { Users } from "../models/users";
+// import { log } from "console";
+// import { Users } from "../models/users";
 // import dotenv from "dotenv";
 // import multer from 'multer';
 // import imagekit from "../imagekit";
@@ -29,30 +29,38 @@ export class TeamsController {
     res.json(team);
   }
 
+  static async delete(req: Request, res: Response) {
+    const team_name = req.body.team_name;
+    const team = await Teams.delete(team_name);
+    res.json(team);
+  }
+
   static async invite_user(req: Request, res: Response) {
     const team_name = req.body.team_name;
     const username = req.body.user;
     const team = await Teams.invite_user(team_name, username);
+    if (team == null) {
+      res.status(400).json({ error: "user does not exist or is already a member" });
+      return;
+    }
     res.json(team);
   }
 
-  static async update(req: Request, res: Response) {
-    delete req.body.username;
-    const team = await Teams.update(req.body, req.params.team_name);
-    res.json(team);
-  }
+  // static async update(req: Request, res: Response) {
+  //   delete req.body.username;
+  //   const team = await Teams.update(req.body, req.params.team_name);
+  //   res.json(team);
+  // }
 
-  static async get_by_team_name(req: Request, res: Response) {
-    const team_name = req.params.team_name
-    const team = await Teams.get_by_team_name(team_name)
-    res.json(team)
-  }
+  // static async get_by_team_name(req: Request, res: Response) {
+  //   const team_name = req.params.team_name
+  //   const team = await Teams.get_by_team_name(team_name)
+  //   res.json(team)
+  // }
 
   static async get_teams(req: Request, res: Response) {
-    const teams = (await Teams.index()).filter((team) => {
-      return team.emails && team.emails.includes(req.body.username)
-    })
-    res.json(teams)
+    const teams = await Teams.get_teams_by_username(req.body.username);
+    res.json(teams);
   }
 
   // static async upload_profile_picture(req: Request, res: Response) {
@@ -87,9 +95,10 @@ export class TeamsController {
 
   static routes(app: express.Application) {
     app.post("/teams/create", authenticate, this.create);
+    app.delete("/teams/delete", authenticate, this.delete);
     app.get("/teams/all", authenticate, this.get_teams);
-    app.get("/teams/:team_name", authenticate, this.get_by_team_name);
-    app.put("/teams/:team_name", authenticate, this.update);
+    // app.get("/teams/:team_name", authenticate, this.get_by_team_name);
+    // app.put("/teams/:team_name", authenticate, this.update);
     app.post("/teams/invite", authenticate, this.invite_user);
     // app.put("/users/profile_picture", [upload.single('image'), authenticate], this.upload_profile_picture)
   }

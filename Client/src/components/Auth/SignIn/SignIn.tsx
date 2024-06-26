@@ -22,6 +22,7 @@ import { signInAction } from '../../../store/actions/authAction';
 import { clearError } from '../../../store/reducers/authReducer';
 import { store, RootState } from '../../../store/store';
 import './style.css';
+import { getUserByUsername } from '../../../store/actions/userInfo';
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -85,6 +86,14 @@ const SignIn = () => {
           setUsername('');
           setPassword('');
           navigate('/home');
+          if (authState?.user?.token && authState?.user?.user?.username) {
+            dispatch<any>(
+              getUserByUsername({
+                username: authState?.user?.user?.username,
+                jwtToken: authState?.user?.token,
+              }),
+            );
+          }
         }
       });
     }
