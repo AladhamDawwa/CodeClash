@@ -85,15 +85,15 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/gameSession"
-          element={
-            <PrivateRoute>
-              <GamePage />
-            </PrivateRoute>
-          }
-        />
       </Route>
+      <Route
+        path="/gameSession"
+        element={
+          <PrivateRoute>
+            <GamePage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/"
         element={

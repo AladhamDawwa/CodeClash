@@ -11,7 +11,7 @@ interface Team {
   doc_id: string;
   slogan: string;
   team_name: string;
-  emails: string[];
+  members: string[];
   exp: number;
   level: number;
   rank_points: number;
@@ -60,22 +60,18 @@ const Teams = () => {
   }, [authState.user.token, dispatch]);
 
   return (
-    <div
-      style={{
-        width: '100%',
+    <div style={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '3rem',
+      padding: '3rem 6rem',
+    }}>
+      <div style={{
         display: 'flex',
-        flexDirection: 'column',
-        gap: '3rem',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '3rem 6rem',
-        }}
-      >
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
         <Typography
           variant="h2"
           sx={{
@@ -115,24 +111,22 @@ const Teams = () => {
           Create Team
         </Button>
       </div>
-      <div
-        style={{
-          // backgroundColor: '#0f0c29',
-          // width: '40rem',
-          // height: '35rem',
+      <div style={userTeams.length > 0 ? {
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(40rem, 1fr))',
+          padding: '3rem 0',
+          gap: '3rem',
+          placeItems: 'center',
+        } : {
           display: 'flex',
-          flexDirection: 'column',
+          justifyContent: 'center',
           alignItems: 'center',
-          // overflowY: 'auto',
-          // scrollbarWidth: 'none',
-          // gap: '4rem',
-          // padding: '3rem 0',
         }}
       >
         {userTeams.length > 0 ? (
           userTeams.map((team, index) => (
             <TeamsList
-              key={team.doc_id}
+              key={team.team_name}
               open={openTeam === index}
               onClick={() => handleTeamToggle(index)}
               team={team}
