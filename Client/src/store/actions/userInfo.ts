@@ -103,6 +103,8 @@ export const getGameInfo = createAsyncThunk(
           'Content-Type': 'application/json',
         },
       });
+      console.log('response', response.data);
+
       return response.data as ProblemData;
     } catch (error) {
       const err = error as AxiosError<ResponseData>;

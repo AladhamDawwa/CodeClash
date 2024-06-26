@@ -55,26 +55,22 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        getGameInfo.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          console.log('fullfilled action game', action.payload);
-          console.log('fullfilled state game', state.data);
-          state.data = {
-            ...state.data,
-            ...action.payload,
-          };
-          state.error = null;
-        },
-      )
-      .addCase(
-        getGameInfo.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload || 'Failed to fetch user data';
-        },
-      )
+      .addCase(getGameInfo.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        console.log('fullfilled action game', action.payload);
+        console.log('fullfilled state game', state.data);
+        const gameInfo = action.payload;
+
+        state.data = {
+          ...state.data,
+          gameInfo,
+        };
+        state.error = null;
+      })
+      .addCase(getGameInfo.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to fetch user data';
+      })
       .addCase(updateUser.pending, state => {
         state.loading = true;
         state.error = null;
