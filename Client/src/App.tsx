@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   BrowserRouter,
   Navigate,
@@ -20,7 +20,6 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 import GameHistory from './pages/GameHistory/GameHistory';
 import AppLayout from './components/AppLayout';
 import { useEffect } from 'react';
-import { getUserByUsername } from './store/actions/userInfo';
 import MatchLoading from './pages/MatchLoading/MatchLoading';
 import Teams from './pages/Teams/Teams';
 
@@ -37,20 +36,9 @@ function PrivateRoute({ children }: PrivateRouteProps) {
 }
 
 function App() {
-  const dispatch = useDispatch();
   const authState = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
-  useEffect(() => {
-    if (authState?.user?.token && authState?.user?.user?.username) {
-      dispatch<any>(
-        getUserByUsername({
-          username: authState?.user?.user?.username,
-          jwtToken: authState?.user?.token,
-        }),
-      );
-    }
-  }, [authState?.user?.token, authState?.user?.user?.username, dispatch]);
 
   useEffect(() => {
     if (!authState.isAuthenticated) {
