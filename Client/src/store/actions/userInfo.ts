@@ -1,3 +1,4 @@
+import { Problem } from './../../../../backend/src/models/problem';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 
@@ -13,6 +14,25 @@ interface UserData {
   mmr: number;
   rank_points: number;
   rank_tier: number;
+}
+
+interface ProblemData {
+  problem: Problem;
+  testcases: TestCase[];
+}
+interface TestCase {
+  problem_id: string;
+  input: string;
+  expected_output: string;
+}
+
+interface TestCase {
+  title: string;
+  description: string;
+  input_format: string;
+  output_format: string;
+  time_limit: number;
+  memory_limit: number;
 }
 
 interface ResponseData {
@@ -35,6 +55,10 @@ interface CreateTeamParams {
 
 interface GetUserByUsernameParams {
   username: string;
+  jwtToken: string;
+}
+interface GetGameInfoParams {
+  gameId: string;
   jwtToken: string;
 }
 
@@ -60,6 +84,30 @@ export const getUserByUsername = createAsyncThunk(
         },
       });
       return response.data as UserData;
+    } catch (error) {
+      const err = error as AxiosError<ResponseData>;
+      if (err.response && err.response.data) {
+        return thunkAPI.rejectWithValue(
+          err.response.data.error || 'Failed to fetch user data',
+        );
+      }
+    }
+  },
+);
+export const getGameInfo = createAsyncThunk(
+  'user/getGameInfo',
+  async ({ gameId, jwtToken }: GetGameInfoParams, thunkAPI) => {
+    const url = `http://localhost:5000/problems/${gameId}`;
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('response', response.data);
+
+      return response.data as ProblemData;
     } catch (error) {
       const err = error as AxiosError<ResponseData>;
       if (err.response && err.response.data) {

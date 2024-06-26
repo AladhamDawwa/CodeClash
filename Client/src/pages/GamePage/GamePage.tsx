@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../../index.css';
 import './styles.css';
 import {
@@ -20,12 +20,17 @@ import NavBar from '../../components/NavBar/NavBar';
 import data from './problem.json';
 import ProblemDescription from './ProblemDescription';
 import ProblemSubmissions from './ProblemSubmissions';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { useDispatch } from 'react-redux';
+import { getGameInfo } from '../../store/actions/userInfo';
 interface TestCase {
   test_type: number;
   input: string;
   output: string;
 }
 const GamePage = () => {
+  const authState = useSelector((state: RootState) => state.auth);
   const [language, setLanguage] = useState('cpp');
   const [selectedCase, setSelectedCase] = useState<TestCase | null>(
     data.problem.testCases[0],
@@ -33,6 +38,12 @@ const GamePage = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [problemOption, setProblemOption] = useState('description');
   const [testcaseOption, setTestcaseOption] = useState('testcase');
+
+  // TODO Change gameID
+  const gameId = '0Jn92yhtIgN1FPoPW6gs';
+
+  const dispatch = useDispatch();
+
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value as string);
   };
@@ -50,6 +61,12 @@ const GamePage = () => {
       break;
     }
   }
+
+  useEffect(() => {
+    const jwtToken = authState.user?.token;
+
+    dispatch<any>(getGameInfo({ gameId, jwtToken }));
+  }, [authState.user?.token, dispatch]);
   return (
     <>
       <div>
