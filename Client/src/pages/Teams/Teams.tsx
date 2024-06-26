@@ -1,10 +1,10 @@
-import { Button, Typography } from "@mui/material"
-import TeamsList from "../../components/HomePage/TeamsList"
-import CreateTeamCard from "../../components/CreateTeamCard"
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { getUserTeams } from "../../store/actions/userInfo";
+import { Button, Typography } from '@mui/material';
+import TeamsList from '../../components/HomePage/TeamsList';
+import CreateTeamCard from '../../components/CreateTeamCard';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { getUserTeams } from '../../store/actions/userInfo';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 
 interface Team {
@@ -46,7 +46,7 @@ const Teams = () => {
 
   const authState = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     const jwtToken = authState.user.token;
     dispatch<any>(getUserTeams({ jwtToken }))
@@ -60,18 +60,22 @@ const Teams = () => {
   }, [authState.user.token, dispatch]);
 
   return (
-    <div style={{
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '3rem',
-    }}>
-      <div style={{
+    <div
+      style={{
+        width: '100%',
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '3rem 6rem',
-      }}>
+        flexDirection: 'column',
+        gap: '3rem',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '3rem 6rem',
+        }}
+      >
         <Typography
           variant="h2"
           sx={{
@@ -94,7 +98,7 @@ const Teams = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '1rem',
-    
+
             '&:hover': {
               backgroundColor: '#303f9f',
             },
@@ -103,12 +107,13 @@ const Teams = () => {
           disableRipple
           disableElevation
         >
-          <GroupAddOutlinedIcon sx={{
-            fontSize: '2.5rem',
-          }} />
+          <GroupAddOutlinedIcon
+            sx={{
+              fontSize: '2.5rem',
+            }}
+          />
           Create Team
         </Button>
-        
       </div>
       <div
         style={{
@@ -134,9 +139,12 @@ const Teams = () => {
             />
           ))
         ) : (
-          <Typography variant="h2" sx={{ 
-            color: 'white',
-          }}>
+          <Typography
+            variant="h2"
+            sx={{
+              color: 'white',
+            }}
+          >
             No teams found
           </Typography>
         )}
@@ -149,6 +157,6 @@ const Teams = () => {
         />
       )}
     </div>
-  )
-}
-export default Teams
+  );
+};
+export default Teams;
