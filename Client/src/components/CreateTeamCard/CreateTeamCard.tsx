@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Button, Paper, Slide, TextField, Snackbar } from '@mui/material';
+import {
+  Box,
+  Button,
+  Paper,
+  Slide,
+  TextField,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
 import { addTeam } from '../../store/actions/userInfo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { SnackbarOrigin } from '@mui/material/Snackbar';
-
-interface State extends SnackbarOrigin {
-  openn: boolean;
-}
 
 const theme = createTheme({
   palette: {
@@ -18,33 +21,32 @@ const theme = createTheme({
   },
 });
 
-interface funparams {
+interface CreateTeamCardProps {
   open: boolean;
-  onClose: any;
+  onClose: () => void;
   onTeamCreated: (newTeam: any) => void;
 }
 
-export default function CreateTeamCard({
+const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
   open,
   onClose,
   onTeamCreated,
-}: funparams) {
-  const [state, setState] = useState<State>({
-    openn: false,
-    vertical: 'top',
-    horizontal: 'center',
-  });
-  const { openn } = state;
-
-  const handleCloseSnack = () => {
-    setState({ ...state, openn: false });
-  };
+}) => {
   const [teamNameError, setteamNameError] = useState(false);
   const [repeatedTeamName, setRepeatedTeamName] = useState(false);
   const [teamName, setteamName] = useState('');
   const [slogan, setslogan] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
   const authState = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
+
+  const handleCloseSnack = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const handleteamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setteamName(e.target.value);
@@ -82,11 +84,20 @@ export default function CreateTeamCard({
             setRepeatedTeamName(false);
             onTeamCreated(responseData.payload);
             handleClose();
-            setState({ ...state, openn: true });
+            setSnackbar({
+              open: true,
+              message: 'Team created successfully',
+              severity: 'success',
+            });
           }
         })
         .catch((error: any) => {
           console.log(error);
+          setSnackbar({
+            open: true,
+            message: 'Error creating team',
+            severity: 'error',
+          });
         });
     }
   };
@@ -95,21 +106,23 @@ export default function CreateTeamCard({
     <div>
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        sx={{
-          fontSize: '2.5rem',
-          '& .MuiPaper-root': {
-            bgcolor: '#14751c',
-            fontSize: '1.5rem',
-            height: '5rem',
-            width: '4rem',
-            textTransform: 'capitalize',
-          },
-        }}
-        open={openn}
+        open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleCloseSnack}
-        message="Team Created!"
-      />
+      >
+        <Alert
+          onClose={handleCloseSnack}
+          severity={snackbar.severity}
+          sx={{
+            fontSize: '1.5rem',
+            '& .MuiAlert-icon': {
+              fontSize: '2rem',
+            },
+          }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
 
       {open ? (
         <Box
@@ -269,4 +282,6 @@ export default function CreateTeamCard({
       </Slide>
     </div>
   );
-}
+};
+
+export default CreateTeamCard;

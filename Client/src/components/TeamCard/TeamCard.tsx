@@ -5,26 +5,24 @@ import {
   Box,
   Paper,
   TextField,
+  Snackbar,
+  Alert,
+  AlertColor,
 } from '@mui/material';
 import axios from 'axios';
 import { RootState } from '../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import { getUserTeams, inviteUser } from '../../store/actions/userInfo';
+import { inviteUser } from '../../store/actions/userInfo';
 import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import PersonRemoveRoundedIcon from '@mui/icons-material/PersonRemoveRounded';
 import { useState } from 'react';
-import { SnackbarOrigin } from '@mui/material/Snackbar';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import EditTeamCard from '../EditTeamCard/EditTeamCard';
 
 const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
-
-interface State extends SnackbarOrigin {
-  openn: boolean;
-}
 
 const TeamCard = ({ team }: any) => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -37,17 +35,6 @@ const TeamCard = ({ team }: any) => {
   const handleCloseEditTeam = () => {
     setShowEditCard(false);
   };
-  // const handleInvite = async () => {
-  //   dispatch<any>(
-  //     inviteUser({
-  //       jwtToken: auth.user.token,
-  //       team_name: team.team_name,
-  //       user: 'Aladham2001',
-  //     })
-  //   ).then((res : any) => {
-  //     team = res.payload;
-  //   });
-  // };
 
   const handleDeleteTeam = () => {
     axios
@@ -61,24 +48,41 @@ const TeamCard = ({ team }: any) => {
         },
       })
       .then(() => {
+        setSnackbar({
+          open: true,
+          message: 'Team deleted successfully',
+          severity: 'success',
+        });
         location.reload();
+      })
+      .catch(error => {
+        setSnackbar({
+          open: true,
+          message: 'Error deleting team',
+          severity: 'error',
+        });
       });
   };
 
   const [showDialog, setShowDialog] = useState(false);
   const [teammateError, setTeammateError] = useState(false);
   const [teammateUsername, setTeammateUsername] = useState('');
-  const [localTeam, setLocalTeam] = useState(team);
 
-  const [state, setState] = useState<State>({
-    openn: false,
-    vertical: 'top',
-    horizontal: 'center',
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
   });
 
-  const handleEditTeam = (respone: string) => {
-    setTeam(respone);
+  const handleEditTeam = (response: string) => {
+    setTeam(response);
+    setSnackbar({
+      open: true,
+      message: 'Team edited successfully',
+      severity: 'success',
+    });
   };
+
   const handleInvite = async () => {
     if (!teammateUsername.trim()) {
       setTeammateError(true);
@@ -95,23 +99,33 @@ const TeamCard = ({ team }: any) => {
         user: teammateUsername,
       }),
     )
-      .then((responseData: { payload: { emails: string[] } }) => {
-        if (responseData.payload.emails) {
-          handleClose();
-          setState({ ...state, openn: true });
-          setLocalTeam((prevTeam: any) => ({
-            ...prevTeam,
-            emails: responseData.payload.emails,
-          }));
+      .then((responseData: { payload: any }) => {
+        if (responseData.payload.members) {
+          setSnackbar({
+            open: true,
+            message: 'User invited successfully',
+            severity: 'success',
+          });
+          setTeam(responseData.payload);
+          handleCloseDialog();
         }
       })
       .catch((error: any) => {
+        setSnackbar({
+          open: true,
+          message: 'Error inviting user',
+          severity: 'error',
+        });
         console.log(error);
       });
   };
 
-  const handleClose = () => {
+  const handleCloseDialog = () => {
     setShowDialog(false);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,262 +134,274 @@ const TeamCard = ({ team }: any) => {
   };
 
   return (
-    <>
+    <div
+      style={{
+        background: 'rgba(255, 255, 255, 0.1)',
+        width: '40rem',
+        height: '30rem',
+        gap: '1rem',
+        borderRadius: '1rem',
+        boxShadow: '0 0 2rem rgba(0, 0, 0, 0.6)',
+        padding: '1rem 2rem',
+      }}
+    >
       <div
         style={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          width: '40rem',
-          height: '30rem',
-          gap: '1rem',
-          borderRadius: '1rem',
-          boxShadow: '0 0 2rem rgba(0, 0, 0, 0.6)',
-          padding: '1rem 2rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div>
+          <Typography
+            variant="h2"
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+            }}
+          >
+            {Team.team_name}
+          </Typography>
+
+          {Team.slogan && (
+            <Typography
+              variant="h5"
+              sx={{
+                color: 'white',
+                fontStyle: 'italic',
+              }}
+            >
+              "{Team.slogan}"
+            </Typography>
+          )}
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            gap: '1rem',
+            justifyContent: 'center',
+          }}
+        >
+          <Button
+            sx={{
+              minWidth: '4rem',
+              minHeight: '4rem',
+              color: 'white',
+              borderRadius: '20rem',
+              backgroundColor: '#3f51b5',
+              '&:hover': {
+                backgroundColor: '#303f9f',
+              },
+            }}
+            onClick={() => setShowDialog(!showDialog)}
+          >
+            <PersonAddAlt1RoundedIcon
+              sx={{
+                fontSize: '2rem',
+              }}
+            />
+          </Button>
+
+          <Button
+            sx={{
+              minWidth: '4rem',
+              minHeight: '4rem',
+              color: 'white',
+              borderRadius: '20rem',
+              backgroundColor: '#4caf50',
+              '&:hover': {
+                backgroundColor: '#388e3c',
+              },
+            }}
+            onClick={handleShowEditTeam}
+          >
+            <ModeEditOutlineRoundedIcon
+              sx={{
+                fontSize: '2rem',
+              }}
+            />
+          </Button>
+
+          <Button
+            sx={{
+              minWidth: '4rem',
+              minHeight: '4rem',
+              color: 'white',
+              borderRadius: '20rem',
+              backgroundColor: '#f44336',
+              '&:hover': {
+                backgroundColor: '#d32f2f',
+              },
+            }}
+            onClick={handleDeleteTeam}
+          >
+            <DeleteOutlineRoundedIcon
+              sx={{
+                fontSize: '2rem',
+              }}
+            />
+          </Button>
+        </div>
+      </div>
+
+      {showEditCard && (
+        <EditTeamCard
+          open={true}
+          onClose={handleCloseEditTeam}
+          team={Team}
+          onTeamEdited={handleEditTeam}
+        />
+      )}
+
+      <div
+        style={{
+          display: 'flex',
+          gap: '3rem',
         }}
       >
         <div
           style={{
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            flexDirection: 'column',
+            gap: '2rem',
+            padding: '2rem',
           }}
         >
-          <div>
-            <Typography
-              variant="h2"
-              sx={{
-                color: 'white',
-                fontWeight: 'bold',
-              }}
-            >
-              {Team.team_name}
-            </Typography>
-
-            {Team.slogan ? (
-              <Typography
-                variant="h5"
-                sx={{
-                  color: 'white',
-                  fontStyle: 'italic',
-                }}
-              >
-                "{Team.slogan}"
-              </Typography>
-            ) : null}
-          </div>
-
-          <div
+          <img
+            src={`assets/${ranks[Team?.rank_tier]}.svg`}
+            alt="rank image"
             style={{
-              display: 'flex',
-              gap: '1rem',
-              justifyContent: 'center',
+              width: '6.5rem',
+              height: '6.5rem',
             }}
-          >
-            <Button
-              sx={{
-                minWidth: '4rem',
-                minHeight: '4rem',
-                color: 'white',
-                borderRadius: '20rem',
-                backgroundColor: '#3f51b5',
-                '&:hover': {
-                  backgroundColor: '#303f9f',
-                },
-              }}
-              onClick={() => setShowDialog(!showDialog)}
-            >
-              <PersonAddAlt1RoundedIcon
-                sx={{
-                  fontSize: '2rem',
-                }}
-              />
-            </Button>
-
-            <Button
-              sx={{
-                minWidth: '4rem',
-                minHeight: '4rem',
-                color: 'white',
-                borderRadius: '20rem',
-                backgroundColor: '#4caf50',
-                '&:hover': {
-                  backgroundColor: '#388e3c',
-                },
-              }}
-              onClick={handleShowEditTeam}
-            >
-              <ModeEditOutlineRoundedIcon
-                sx={{
-                  fontSize: '2rem',
-                }}
-              />
-            </Button>
-
-            <Button
-              sx={{
-                minWidth: '4rem',
-                minHeight: '4rem',
-                color: 'white',
-                borderRadius: '20rem',
-                backgroundColor: '#f44336',
-                '&:hover': {
-                  backgroundColor: '#d32f2f',
-                },
-              }}
-              onClick={handleDeleteTeam}
-            >
-              <DeleteOutlineRoundedIcon
-                sx={{
-                  fontSize: '2rem',
-                }}
-              />
-            </Button>
-          </div>
-        </div>
-        {showEditCard && (
-          <EditTeamCard
-            open={true}
-            onClose={handleCloseEditTeam}
-            team={Team}
-            onTeamEdited={handleEditTeam}
           />
-        )}
-        <div
-          style={{
-            display: 'flex',
-            gap: '3rem',
-          }}
-        >
+
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '2rem',
-              padding: '2rem',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
             }}
           >
             <img
-              src={`assets/${ranks[Team?.rank_tier]}.svg`}
-              alt="rank image"
+              src="/assets/Rank.svg"
               style={{
-                width: '6.5rem',
-                height: '6.5rem',
+                width: '4rem',
+                height: '4rem',
               }}
             />
-
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <img
-                src="/assets/Rank.svg"
-                style={{
-                  width: '4rem',
-                  height: '4rem',
-                }}
-              />
-              <Typography variant="h4" sx={{ color: 'white' }}>
-                {Team?.rank_points}
-              </Typography>
-            </div>
-          </div>
-
-          <div>
-            <Typography
-              variant="h4"
-              sx={{
-                color: 'white',
-                fontWeight: 'bold',
-              }}
-            >
-              Members
+            <Typography variant="h4" sx={{ color: 'white' }}>
+              {Team?.rank_points}
             </Typography>
-            <ul
-              style={{
-                listStyle: 'none',
-                padding: '1rem 0',
-                margin: '0',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.5rem',
-              }}
-            >
-              {Team.members.map((member: string) => (
-                <li
-                  key={member}
+          </div>
+        </div>
+
+        <div>
+          <Typography
+            variant="h4"
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+            }}
+          >
+            Members
+          </Typography>
+          <ul
+            style={{
+              listStyle: 'none',
+              padding: '1rem 0',
+              margin: '0',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+            }}
+          >
+            {Team.members.map((member: string) => (
+              <li
+                key={member}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  padding: '0.5rem',
+                  borderRadius: '1rem',
+                  width: '24rem',
+                  display: 'flex',
+                  gap: '0.5rem',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    padding: '0.5rem',
-                    borderRadius: '1rem',
-                    width: '24rem',
                     display: 'flex',
                     gap: '0.5rem',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
                   }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '0.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <PersonRoundedIcon
-                      sx={{
-                        color: 'white',
-                        fontSize: '3rem',
-                      }}
-                    />
-                    <Typography variant="h4" sx={{ color: 'white' }}>
-                      {member}
-                    </Typography>
-                  </div>
-                  <Button
+                  <PersonRoundedIcon
                     sx={{
-                      minWidth: '4rem',
-                      minHeight: '4rem',
-                      borderRadius: '20rem',
                       color: 'white',
-                      backgroundColor: '#f44336',
-                      '&:hover': {
-                        backgroundColor: '#d32f2f',
-                      },
+                      fontSize: '3rem',
                     }}
-                    onClick={() => {
-                      axios
-                        .post(
-                          'http://localhost:5000/teams/remove_user',
-                          {
-                            team_name: Team.team_name,
-                            user: member,
+                  />
+                  <Typography variant="h4" sx={{ color: 'white' }}>
+                    {member}
+                  </Typography>
+                </div>
+                <Button
+                  sx={{
+                    minWidth: '4rem',
+                    minHeight: '4rem',
+                    borderRadius: '20rem',
+                    color: 'white',
+                    backgroundColor: '#f44336',
+                    '&:hover': {
+                      backgroundColor: '#d32f2f',
+                    },
+                  }}
+                  onClick={() => {
+                    axios
+                      .post(
+                        'http://localhost:5000/teams/remove_user',
+                        {
+                          team_name: Team.team_name,
+                          user: member,
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${auth.user.token}`,
+                            'Content-Type': 'application/json',
                           },
-                          {
-                            headers: {
-                              Authorization: `Bearer ${auth.user.token}`,
-                              'Content-Type': 'application/json',
-                            },
-                          },
-                        )
-                        .then(() => {
-                          location.reload();
+                        },
+                      )
+                      .then(() => {
+                        setSnackbar({
+                          open: true,
+                          message: 'Member removed successfully',
+                          severity: 'success',
                         });
+                        location.reload();
+                      })
+                      .catch(() => {
+                        setSnackbar({
+                          open: true,
+                          message: 'Error removing member',
+                          severity: 'error',
+                        });
+                      });
+                  }}
+                >
+                  <PersonRemoveRoundedIcon
+                    sx={{
+                      fontSize: '2rem',
                     }}
-                  >
-                    <PersonRemoveRoundedIcon
-                      sx={{
-                        fontSize: '2rem',
-                      }}
-                    />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </div>
+                  />
+                </Button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
@@ -393,7 +419,7 @@ const TeamCard = ({ team }: any) => {
               alignItems: 'center',
               zIndex: 3,
             }}
-            onClick={handleClose}
+            onClick={handleCloseDialog}
           >
             <Box
               sx={{
@@ -484,7 +510,7 @@ const TeamCard = ({ team }: any) => {
                     fontSize: '1.7rem',
                     textTransform: 'capitalize',
                   }}
-                  onClick={handleClose}
+                  onClick={handleCloseDialog}
                 >
                   Cancel
                 </Button>
@@ -506,7 +532,28 @@ const TeamCard = ({ team }: any) => {
           </Box>
         </Slide>
       )}
-    </>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity as AlertColor}
+          sx={{
+            fontSize: '1.5rem',
+            '& .MuiAlert-icon': {
+              fontSize: '2rem',
+            },
+          }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
+
 export default TeamCard;
