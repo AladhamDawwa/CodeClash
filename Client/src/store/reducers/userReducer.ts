@@ -25,6 +25,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    clearUserState: () => initialState,
   },
   extraReducers: builder => {
     builder
@@ -155,5 +156,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearUserData } = userSlice.actions;
+export const { clearUserData, clearUserState } = userSlice.actions;
 export default userSlice.reducer;

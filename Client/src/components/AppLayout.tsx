@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { styled, Theme, CSSObject } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
+import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Avatar,
   Divider,
@@ -11,13 +10,15 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
-import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Outlet, useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import MuiDrawer from '@mui/material/Drawer';
+import { CSSObject, Theme, styled } from '@mui/material/styles';
+import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { logout } from '../store/reducers/authReducer';
+import { clearUserState } from '../store/reducers/userReducer';
 import { RootState } from '../store/store';
-import { clearError, setAuthenticated } from '../store/reducers/authReducer';
 import RankFlag from './RankFlag/RankFlag';
 
 const drawerWidth = 200;
@@ -71,8 +72,9 @@ export default function MiniDrawer() {
   };
 
   const LogOut = () => {
-    dispatch(clearError());
-    dispatch(setAuthenticated(false));
+    dispatch(logout());
+    dispatch(clearUserState());
+
     navigate('/signIn');
   };
 
