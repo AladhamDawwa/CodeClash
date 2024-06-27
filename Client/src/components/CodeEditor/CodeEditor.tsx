@@ -25,6 +25,7 @@ const CodeEditor = ({ language, gameID }: { language: string, gameID : string })
 
   const handleEditorChange = (value: string | undefined, event: any) => {
     // TODO: Handle code change and send it to the server
+    setCode(value ? value : '');
     // console.log('handleEditorChange value', value);
   };
 
@@ -35,12 +36,11 @@ const CodeEditor = ({ language, gameID }: { language: string, gameID : string })
     socket.emit('uvu_game_server:submit_problem', 
       JSON.stringify({ source_code: encoded, game_id: gameID, language_id: 52 }), (response: any) => {
       console.log('response', response);
-      // console.log(decode(response.compile_output));
     });
 
-    // socket.on('uvu_game_client:send_game_result', (data: any) => {
-    //   console.log('game result', data);
-    // });
+    socket.on('uvu_game_client:send_game_result', (data: any) => {
+      console.log('game result', data);
+    });
   };
 
   return (
