@@ -16,7 +16,6 @@ import CodeIcon from '@mui/icons-material/Code';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import CodeEditor from '../../components/CodeEditor/CodeEditor';
 import Timer from '../../components/Timer/Timer';
-import NavBar from '../../components/NavBar/NavBar';
 import data from './problem.json';
 import ProblemDescription from './ProblemDescription';
 import ProblemSubmissions from './ProblemSubmissions';
@@ -24,6 +23,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useDispatch } from 'react-redux';
 import { getGameInfo } from '../../store/actions/userInfo';
+import { useLocation } from 'react-router-dom';
+import socket from '../../socket';
 interface TestCase {
   test_type: number;
   input: string;
@@ -38,9 +39,12 @@ const GamePage = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [problemOption, setProblemOption] = useState('description');
   const [testcaseOption, setTestcaseOption] = useState('testcase');
+  const { state } = useLocation();
 
   // TODO Change gameID
-  const gameId = '0Jn92yhtIgN1FPoPW6gs';
+  const jwtToken = authState.user?.token;
+  const gameId = state.game.id;
+  const problemId = state.game.problem_id;
 
   const dispatch = useDispatch();
 
@@ -49,6 +53,10 @@ const GamePage = () => {
   };
   const handleCaseClicked = (testCase: TestCase) => {
     setSelectedCase(testCase);
+  };
+
+  const handleSubmission = () => {
+
   };
 
   const submissions = data.problem.submissions;
@@ -62,11 +70,18 @@ const GamePage = () => {
     }
   }
 
-  useEffect(() => {
-    const jwtToken = authState.user?.token;
+  // const problem = useSelector((state: RootState) => state.auth.user.gameInfo); 
 
-    dispatch<any>(getGameInfo({ gameId, jwtToken }));
-  }, [authState.user?.token, dispatch]);
+  useEffect(() => {
+    dispatch<any>(getGameInfo({ problemId, jwtToken }));
+  }, [jwtToken, gameId, problemId, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      socket.disconnect();
+    }
+  }, []);
+  
   return (
     <>
       <div>
@@ -123,6 +138,7 @@ const GamePage = () => {
                 }}
                 disableRipple
                 disableElevation
+                onClick={handleSubmission}
               >
                 <img src="assets/submit.svg" alt="submit icon" />
                 submit
@@ -317,7 +333,7 @@ const GamePage = () => {
                       margin: '2rem 0',
                     }}
                   />
-                  <CodeEditor language={language} />
+                  <CodeEditor language={language}/>
                 </Box>
                 <Box
                   height={540}

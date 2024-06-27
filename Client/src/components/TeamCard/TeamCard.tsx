@@ -19,7 +19,6 @@ interface State extends SnackbarOrigin {
 }
 
 const TeamCard = ({team} : any) => {
-
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
@@ -276,7 +275,21 @@ const TeamCard = ({team} : any) => {
                     '&:hover': {
                       backgroundColor: '#d32f2f',
                     },
-                  }}>
+                  }}
+                  onClick={()=>{
+                    axios.post('http://localhost:5000/teams/remove_user', {
+                      team_name: team.team_name,
+                      user: member,
+                    }, {
+                      headers: {
+                        Authorization: `Bearer ${auth.user.token}`,
+                        'Content-Type': 'application/json',
+                      }
+                    }).then(() => {
+                      location.reload();
+                    })
+                  }}
+                  >
                     <PersonRemoveRoundedIcon sx={{
                       fontSize: '2rem',
                     }}/>

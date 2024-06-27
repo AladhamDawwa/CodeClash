@@ -1,48 +1,44 @@
 import { useSelector } from "react-redux";
 import LoadingMatchCard from "../../components/LoadingMatchCard/LoadingMatchCard"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { RootState } from "../../store/store";
-import { io } from "socket.io-client";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import socket from "../../socket";
 
 const MatchLoading = () => {
-  const [matchFound, setMatchFound] = useState(false);
-
   const auth = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
   const location = useLocation();
+  const { user } = auth;
 
   useEffect(() => {
-    const { user } = auth;
+    socket.io.opts.extraHeaders = {
+      token: user.token,
+    };
 
-    // const socket = io('http://localhost:5000', {
-    //   extraHeaders: {
-    //     token: user.token,
-    //   },
-    // });
+    socket.connect();
 
-    // socket.on('connect', () => {
-    //   console.log('connected', socket.id);
-    // });
+    socket.on('connect', () => {
+      console.log('connected', socket.id);
+    });
 
-// socket.emit(
-//   'match_maker_server:find_match',
-//   JSON.stringify({
-//     game_type: '0',
-//     game_mode: '0',
-//   }),
-// );
+    socket.emit(
+      'match_maker_server:find_match',
+      JSON.stringify({
+        game_type: 0,
+        game_mode: 0,
+      }),
+    );
 
-// // I need to print if the connection is closed or there is an error
-// socket.on('disconnect', () => {
-//   console.log('disconnected');
-// });
+    socket.on('match_maker_client:found_match', (game: any) => {
+      navigate('/gameSession', { state: { game } });
+    });
+  });
 
-// return () => {
-//   socket.disconnect();
-// };
-}, [auth]);
-return (
-<LoadingMatchCard gameSettings={location.state.gameSettings}></LoadingMatchCard>
-)
+  return (
+    <LoadingMatchCard 
+      gameSettings={location.state.gameSettings}
+    ></LoadingMatchCard>
+  )
 }
 export default MatchLoading

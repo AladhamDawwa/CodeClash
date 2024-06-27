@@ -8,7 +8,6 @@ import { getUserTeams } from '../../store/actions/userInfo';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 
 interface Team {
-  doc_id: string;
   slogan: string;
   team_name: string;
   members: string[];

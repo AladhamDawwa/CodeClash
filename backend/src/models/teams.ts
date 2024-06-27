@@ -101,6 +101,20 @@ export class Teams {
     return team;
   }
 
+  static async remove_user(team_name: string, username: string): Promise<Team | null> {
+    const snapshot = await teams_collection
+      .where("team_name", "==", team_name)
+      .get();
+    const team_doc = snapshot.docs[0];
+    const team = team_doc.data();
+    if (!team.members.includes(username)) {
+      return null;
+    }
+    team.members = team.members.filter((member: string) => member !== username);
+    await teams_collection.doc(team_doc.id).update({ members: team.members });
+    return team;
+  }
+
   //   static async get_rank(username: string): Promise<RankTier> {
   //     const snapshot = await users_collection
   //       .where("username", "==", username)
@@ -119,14 +133,14 @@ export class Teams {
     return true;
   }
 
-  // static async update(new_team: Team, team_name: string): Promise<Team> {
-  //   const snapshot = await teams_collection
-  //     .where("team_name", "==", team_name)
-  //     .get();
-  //   const team_doc = snapshot.docs[0];
-  //   await teams_collection.doc(team_doc.id).update(new_team);
-  //   return new_team;
-  // }
+  static async update(new_team: Team, team_name: string): Promise<Team> {
+    const snapshot = await teams_collection
+      .where("team_name", "==", team_name)
+      .get();
+    const team_doc = snapshot.docs[0];
+    await teams_collection.doc(team_doc.id).update(new_team);
+    return new_team;
+  }
 
   private static create_user_args(
     team_name: string,

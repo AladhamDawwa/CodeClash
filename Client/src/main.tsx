@@ -11,11 +11,9 @@ import AppWrapper from './App.tsx';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <StrictMode>
         <ThemeProvider theme={theme}>
           <AppWrapper />
         </ThemeProvider>
-      </StrictMode>
     </PersistGate>
   </Provider>,
 );

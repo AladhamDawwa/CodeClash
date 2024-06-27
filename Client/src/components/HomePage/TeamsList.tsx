@@ -24,7 +24,6 @@ interface Team {
   open: boolean;
   onClick: () => void;
   team: {
-    doc_id: string;
     slogan: string;
     team_name: string;
     members: string[];

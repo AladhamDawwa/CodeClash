@@ -4,9 +4,12 @@ import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
 import Skeleton from '@mui/material/Skeleton';
 import { useState } from 'react';
-export default function LoadingMatchCard({ gameSettings }: { gameSettings: any }) {
+import { useNavigate } from 'react-router-dom';
+import socket from '../../socket';
+export default function LoadingMatchCard({ gameSettings }: any) {
   const user = useSelector((state: RootState) => state.user.data);
   const [isOppFetched, setIsOppfetched] = useState(false);
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -63,9 +66,9 @@ export default function LoadingMatchCard({ gameSettings }: { gameSettings: any }
             gap: '8rem',
           }}
         >
-          {user.image ? (
+          {user?.image ? (
             <img
-              src={user.image}
+              src={user?.image}
               alt="user image"
               style={{ width: '12rem', height: '12rem', borderRadius: '100%' }}
             />
@@ -109,6 +112,10 @@ export default function LoadingMatchCard({ gameSettings }: { gameSettings: any }
             fontSize: '2.3rem',
             textTransform: 'capitalize',
             fontWeight: '700',
+          }}
+          onClick={() => {
+            socket.disconnect();
+            navigate('/');
           }}
         >
           Cancel

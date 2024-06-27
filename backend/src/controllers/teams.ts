@@ -46,11 +46,22 @@ export class TeamsController {
     res.json(team);
   }
 
-  // static async update(req: Request, res: Response) {
-  //   delete req.body.username;
-  //   const team = await Teams.update(req.body, req.params.team_name);
-  //   res.json(team);
-  // }
+  static async remove_user(req: Request, res: Response) {
+    const team_name = req.body.team_name;
+    const username = req.body.user;
+    const team = await Teams.remove_user(team_name, username);
+    if (team == null) {
+      res.status(400).json({ error: "user does not exist or is not a member" });
+      return;
+    }
+    res.json(team);
+  }
+
+  static async update(req: Request, res: Response) {
+    delete req.body.username;
+    const team = await Teams.update(req.body, req.params.team_name);
+    res.json(team);
+  }
 
   // static async get_by_team_name(req: Request, res: Response) {
   //   const team_name = req.params.team_name
@@ -98,8 +109,9 @@ export class TeamsController {
     app.delete("/teams/delete", authenticate, this.delete);
     app.get("/teams/all", authenticate, this.get_teams);
     // app.get("/teams/:team_name", authenticate, this.get_by_team_name);
-    // app.put("/teams/:team_name", authenticate, this.update);
+    app.put("/teams/:team_name", authenticate, this.update);
     app.post("/teams/invite", authenticate, this.invite_user);
+    app.post("/teams/remove_user", authenticate, this.remove_user);
     // app.put("/users/profile_picture", [upload.single('image'), authenticate], this.upload_profile_picture)
   }
 }

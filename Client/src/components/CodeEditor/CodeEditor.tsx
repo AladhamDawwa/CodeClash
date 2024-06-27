@@ -2,6 +2,7 @@ import Editor, { useMonaco } from '@monaco-editor/react';
 import 'monaco-themes/themes/Blackboard.json';
 import { useEffect, useState } from 'react';
 import './style.css';
+import { Button } from '@mui/material';
 const CodeEditor = ({ language }: { language: string }) => {
   const [code, setCode] = useState(`// Write your ${language} code here`);
   const monaco = useMonaco();
@@ -25,16 +26,33 @@ const CodeEditor = ({ language }: { language: string }) => {
     console.log('handleEditorChange value', value);
   };
 
+  const handleSubmission = () => {
+    // const encoded = Buffer.from(code, "utf8").toString("base64");
+    const encoded = btoa(code);
+    console.log(encoded);
+    // state.socket.emit('uvu_game_server:submit_problem', 
+    //   JSON.stringify({ source_code: encoded, game_id: state.gameSettings.id, language_id: 52 }), (response: any) => {
+    //   console.log('response', response);
+    // });
+  };
+
   return (
-    <Editor
-      height="36rem"
-      width="78rem"
-      defaultLanguage="cpp"
-      language={language}
-      value={code}
-      onChange={handleEditorChange}
-      theme="Blackboard"
-    />
+    <>
+      <Button
+        onClick={handleSubmission}
+      >
+        <h1>Run</h1>
+      </Button>
+      <Editor
+        height="36rem"
+        width="78rem"
+        defaultLanguage="cpp"
+        language={language}
+        value={code}
+        onChange={handleEditorChange}
+        theme="Blackboard"
+      />
+    </>
   );
 };
 
