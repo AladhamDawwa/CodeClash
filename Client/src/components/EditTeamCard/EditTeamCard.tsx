@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Paper,
-  Slide,
-  TextField,
-  Snackbar,
-  Alert,
-} from '@mui/material';
-import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import { Box, Button, Paper, Slide, TextField } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
-import { addTeam } from '../../store/actions/userInfo';
+import { editTeam } from '../../store/actions/userInfo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
@@ -21,32 +13,24 @@ const theme = createTheme({
   },
 });
 
-interface CreateTeamCardProps {
+interface funparams {
   open: boolean;
-  onClose: () => void;
-  onTeamCreated: (newTeam: any) => void;
+  onClose: any;
+  team: any;
+  onTeamEdited: any;
 }
 
-const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
+export default function EditTeamCard({
   open,
   onClose,
-  onTeamCreated,
-}) => {
+  team,
+  onTeamEdited,
+}: funparams) {
   const [teamNameError, setteamNameError] = useState(false);
-  const [repeatedTeamName, setRepeatedTeamName] = useState(false);
   const [teamName, setteamName] = useState('');
   const [slogan, setslogan] = useState('');
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
   const authState = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
-
-  const handleCloseSnack = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
 
   const handleteamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setteamName(e.target.value);
@@ -66,7 +50,7 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
     onClose();
   };
 
-  const handleCreateTeam = async () => {
+  const handleEditTeam = async () => {
     if (!teamName.trim()) {
       setteamNameError(true);
       return;
@@ -76,54 +60,30 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
 
     if (teamName) {
       const jwtToken = authState.user.token;
-      dispatch<any>(addTeam({ jwtToken, teamName, slogan }))
+      dispatch<any>(
+        editTeam({
+          jwtToken,
+          oldteamName: team.team_name,
+          newteamName: teamName,
+          slogan,
+        }),
+      )
         .then((responseData: { payload: any }) => {
-          if (responseData.payload === 'team name already exists') {
-            setRepeatedTeamName(true);
+          if (responseData.payload === '') {
+            //handle error
           } else {
-            setRepeatedTeamName(false);
-            onTeamCreated(responseData.payload);
+            onTeamEdited(responseData.payload);
             handleClose();
-            setSnackbar({
-              open: true,
-              message: 'Team created successfully',
-              severity: 'success',
-            });
           }
         })
         .catch((error: any) => {
           console.log(error);
-          setSnackbar({
-            open: true,
-            message: 'Error creating team',
-            severity: 'error',
-          });
         });
     }
   };
 
   return (
     <div>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnack}
-      >
-        <Alert
-          onClose={handleCloseSnack}
-          severity={snackbar.severity}
-          sx={{
-            fontSize: '1.5rem',
-            '& .MuiAlert-icon': {
-              fontSize: '2rem',
-            },
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-
       {open ? (
         <Box
           sx={{
@@ -134,7 +94,7 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
             height: '100vh',
             zIndex: 2,
             pointerEvents: open ? 'initial' : 'none',
-            background: '#0f0c292d',
+            background: '#0f0c294b',
             backdropFilter: 'blur(2px) opacity(0.5) contrast(0.8)',
           }}
         />
@@ -158,7 +118,7 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
             sx={{
               background: '#0f0c29',
               width: '50rem',
-              height: '35rem',
+              height: 'fitContent',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -190,23 +150,23 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
                   textTransform: 'capitalize',
                 }}
               >
-                Create your team
+                Edit your team
               </p>
-              <GroupsOutlinedIcon
-                sx={{ color: 'white', fontSize: '4rem', fontWeight: '400' }}
+              <EditIcon
+                sx={{
+                  color: 'white',
+                  fontSize: '2.5rem',
+                  fontWeight: '400',
+                  alignSelf: 'center',
+                }}
               />
             </div>
             <ThemeProvider theme={theme}>
               <TextField
+                placeholder={team.team_name}
                 required
-                error={teamNameError || repeatedTeamName}
-                helperText={
-                  teamNameError
-                    ? 'Team name is required'
-                    : repeatedTeamName
-                      ? 'Repeated team name'
-                      : ''
-                }
+                error={teamNameError}
+                helperText={teamNameError ? 'Team name is required' : ''}
                 onChange={handleteamNameChange}
                 sx={{
                   width: '30rem',
@@ -225,6 +185,7 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
                 variant="standard"
               />
               <TextField
+                placeholder={team.slogan}
                 onChange={handleSloganChange}
                 sx={{
                   width: '30rem',
@@ -272,9 +233,9 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
                     backgroundColor: '#303f9f',
                   },
                 }}
-                onClick={handleCreateTeam}
+                onClick={handleEditTeam}
               >
-                Add team
+                Edit team
               </Button>
             </div>
           </Paper>
@@ -282,6 +243,4 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
       </Slide>
     </div>
   );
-};
-
-export default CreateTeamCard;
+}

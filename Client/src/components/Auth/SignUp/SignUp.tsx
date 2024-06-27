@@ -21,6 +21,8 @@ import { signUpAction } from '../../../store/actions/authAction';
 import { clearError } from '../../../store/reducers/authReducer';
 import { store, RootState } from '../../../store/store';
 import './style.css';
+import { getUserByUsername } from '../../../store/actions/userInfo';
+import { clearUserData } from '../../../store/reducers/userReducer';
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -164,7 +166,7 @@ const SignUp = () => {
         email,
         password,
       }),
-    ).then(() => {
+    ).then(async () => {
       const state = store.getState();
       if (!state.auth.error) {
         setFirstName('');
@@ -173,7 +175,21 @@ const SignUp = () => {
         setEmail('');
         setPassword('');
         setPasswordConfirm('');
-        navigate('/home');
+        await dispatch(clearUserData());
+
+        if (
+          !state.auth.error &&
+          state.auth.user?.token &&
+          state.auth.user?.user?.username
+        ) {
+          await dispatch<any>(
+            getUserByUsername({
+              username: state.auth.user.user.username,
+              jwtToken: state.auth.user.token,
+            }),
+          );
+          navigate('/home');
+        }
       }
     });
   }
