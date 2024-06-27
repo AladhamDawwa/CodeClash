@@ -158,8 +158,8 @@ export class Users {
       .where("username", "==", username)
       .get();
     const user_doc = snapshot.docs[0];
-    const res = await users_collection.doc(user_doc.id).update(new_user);
-    return new_user;
+    await users_collection.doc(user_doc.id).update(new_user);
+    return { ...user_doc, ...new_user };
   }
 
   private static create_user_args(

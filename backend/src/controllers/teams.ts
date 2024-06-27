@@ -31,7 +31,8 @@ export class TeamsController {
 
   static async delete(req: Request, res: Response) {
     const team_name = req.body.team_name;
-    const team = await Teams.delete(team_name);
+    const username = req.body.username;
+    const team = await Teams.delete(username, team_name);
     res.json(team);
   }
 

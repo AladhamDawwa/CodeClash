@@ -59,11 +59,11 @@ export class UsersController {
 
   static async update(req: Request, res: Response) {
     let new_user: User = req.body.new_user;
+    const username = req.body.username;
 
-    let username = req.body.username;
     new_user = await Users.update(new_user, username);
 
-    res.json({ user: new_user });
+    res.json(new_user);
   }
 
   static async get_by_username(req: Request, res: Response) {

@@ -58,14 +58,13 @@ export class Teams {
     return team_creation_args;
   }
 
-  static async delete(team_name: string): Promise<Team> {
+  static async delete(username: string, team_name: string): Promise<Team[]> {
     const snapshot = await teams_collection
       .where("team_name", "==", team_name)
       .get();
     const team_doc = snapshot.docs[0];
-    const team = team_doc.data();
     await teams_collection.doc(team_doc.id).delete();
-    return team;
+    return this.get_teams_by_username(username);
   }
 
   static async get_teams_by_username(username: string): Promise<Team[]> {
