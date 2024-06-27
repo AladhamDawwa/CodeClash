@@ -139,7 +139,7 @@ export class Teams {
       .get();
     const team_doc = snapshot.docs[0];
     await teams_collection.doc(team_doc.id).update(new_team);
-    return new_team;
+    return { ...team_doc.data(), ...new_team };
   }
 
   private static create_user_args(
