@@ -20,6 +20,7 @@ import { logout } from '../store/reducers/authReducer';
 import { clearUserState } from '../store/reducers/userReducer';
 import { RootState } from '../store/store';
 import RankFlag from './RankFlag/RankFlag';
+import storage from 'redux-persist/lib/storage';
 
 const drawerWidth = 200;
 

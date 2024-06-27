@@ -120,7 +120,15 @@ function App() {
           </PrivateRoute>
         }
       />
-      <Route path="/signIn" element={<SignIn />} />
+      <Route path="/signIn" 
+        element={
+          useSelector((state: RootState) => state.auth.isAuthenticated) ? (
+            <Navigate to="/home" />
+          ) : (
+            <SignIn />
+          )
+        }
+      />
       <Route
         path="/signUp"
         element={
