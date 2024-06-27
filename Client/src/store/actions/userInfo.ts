@@ -52,7 +52,12 @@ interface CreateTeamParams {
   teamName: string;
   slogan: string;
 }
-
+interface EditTeamParams {
+  jwtToken: string;
+  oldteamName: string;
+  newteamName: string;
+  slogan: string;
+}
 interface GetUserByUsernameParams {
   username: string;
   jwtToken: string;
@@ -171,6 +176,41 @@ export const addTeam = createAsyncThunk(
     try {
       const response = await axios.post(
         'http://localhost:5000/teams/create',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseData>;
+      if (err.response && err.response.data) {
+        return thunkAPI.rejectWithValue(
+          err.response.data.error || 'Failed to create team',
+        );
+      }
+      throw error;
+    }
+  },
+);
+
+export const editTeam = createAsyncThunk(
+  'user/EditTeam',
+  async (
+    { jwtToken, oldteamName, newteamName, slogan }: EditTeamParams,
+    thunkAPI,
+  ) => {
+    const data = {
+      team_name: newteamName,
+      slogan: slogan,
+    };
+
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/teams/${oldteamName}`,
         data,
         {
           headers: {

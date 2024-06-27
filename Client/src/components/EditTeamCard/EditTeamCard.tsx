@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Button, Paper, Slide, TextField, Snackbar } from '@mui/material';
-import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import { Box, Button, Paper, Slide, TextField } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
-import { addTeam } from '../../store/actions/userInfo';
+import { editTeam } from '../../store/actions/userInfo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { SnackbarOrigin } from '@mui/material/Snackbar';
-
-interface State extends SnackbarOrigin {
-  openn: boolean;
-}
 
 const theme = createTheme({
   palette: {
@@ -21,26 +16,17 @@ const theme = createTheme({
 interface funparams {
   open: boolean;
   onClose: any;
-  onTeamCreated: (newTeam: any) => void;
+  team: any;
+  onTeamEdited: any;
 }
 
-export default function CreateTeamCard({
+export default function EditTeamCard({
   open,
   onClose,
-  onTeamCreated,
+  team,
+  onTeamEdited,
 }: funparams) {
-  const [state, setState] = useState<State>({
-    openn: false,
-    vertical: 'top',
-    horizontal: 'center',
-  });
-  const { openn } = state;
-
-  const handleCloseSnack = () => {
-    setState({ ...state, openn: false });
-  };
   const [teamNameError, setteamNameError] = useState(false);
-  const [repeatedTeamName, setRepeatedTeamName] = useState(false);
   const [teamName, setteamName] = useState('');
   const [slogan, setslogan] = useState('');
   const authState = useSelector((state: RootState) => state.auth);
@@ -64,7 +50,7 @@ export default function CreateTeamCard({
     onClose();
   };
 
-  const handleCreateTeam = async () => {
+  const handleEditTeam = async () => {
     if (!teamName.trim()) {
       setteamNameError(true);
       return;
@@ -74,15 +60,20 @@ export default function CreateTeamCard({
 
     if (teamName) {
       const jwtToken = authState.user.token;
-      dispatch<any>(addTeam({ jwtToken, teamName, slogan }))
+      dispatch<any>(
+        editTeam({
+          jwtToken,
+          oldteamName: team.teamName,
+          newteamName: teamName,
+          slogan,
+        }),
+      )
         .then((responseData: { payload: any }) => {
-          if (responseData.payload === 'team name already exists') {
-            setRepeatedTeamName(true);
+          if (responseData.payload === '') {
+            //handle error
           } else {
-            setRepeatedTeamName(false);
-            onTeamCreated(responseData.payload);
+            onTeamEdited(responseData.payload);
             handleClose();
-            setState({ ...state, openn: true });
           }
         })
         .catch((error: any) => {
@@ -93,24 +84,6 @@ export default function CreateTeamCard({
 
   return (
     <div>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        sx={{
-          fontSize: '2.5rem',
-          '& .MuiPaper-root': {
-            bgcolor: '#14751c',
-            fontSize: '1.5rem',
-            height: '5rem',
-            width: '4rem',
-            textTransform: 'capitalize',
-          },
-        }}
-        open={openn}
-        autoHideDuration={3000}
-        onClose={handleCloseSnack}
-        message="Team Created!"
-      />
-
       {open ? (
         <Box
           sx={{
@@ -121,7 +94,7 @@ export default function CreateTeamCard({
             height: '100vh',
             zIndex: 2,
             pointerEvents: open ? 'initial' : 'none',
-            background: '#0f0c292d',
+            background: '#0f0c294b',
             backdropFilter: 'blur(2px) opacity(0.5) contrast(0.8)',
           }}
         />
@@ -145,7 +118,7 @@ export default function CreateTeamCard({
             sx={{
               background: '#0f0c29',
               width: '50rem',
-              height: '35rem',
+              height: 'fitContent',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -177,23 +150,23 @@ export default function CreateTeamCard({
                   textTransform: 'capitalize',
                 }}
               >
-                Create your team
+                Edit your team
               </p>
-              <GroupsOutlinedIcon
-                sx={{ color: 'white', fontSize: '4rem', fontWeight: '400' }}
+              <EditIcon
+                sx={{
+                  color: 'white',
+                  fontSize: '2.5rem',
+                  fontWeight: '400',
+                  alignSelf: 'center',
+                }}
               />
             </div>
             <ThemeProvider theme={theme}>
               <TextField
+                placeholder={team.teamName}
                 required
-                error={teamNameError || repeatedTeamName}
-                helperText={
-                  teamNameError
-                    ? 'Team name is required'
-                    : repeatedTeamName
-                      ? 'Repeated team name'
-                      : ''
-                }
+                error={teamNameError}
+                helperText={teamNameError ? 'Team name is required' : ''}
                 onChange={handleteamNameChange}
                 sx={{
                   width: '30rem',
@@ -212,6 +185,7 @@ export default function CreateTeamCard({
                 variant="standard"
               />
               <TextField
+                placeholder={team.teamSlogan}
                 onChange={handleSloganChange}
                 sx={{
                   width: '30rem',
@@ -259,9 +233,9 @@ export default function CreateTeamCard({
                     backgroundColor: '#303f9f',
                   },
                 }}
-                onClick={handleCreateTeam}
+                onClick={handleEditTeam}
               >
-                Add team
+                Edit team
               </Button>
             </div>
           </Paper>

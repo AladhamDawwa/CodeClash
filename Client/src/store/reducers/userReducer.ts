@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   addTeam,
+  editTeam,
   getGameInfo,
   getUserByUsername,
   getUserTeams,
@@ -100,6 +101,22 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(addTeam.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to create a team';
+      })
+      .addCase(editTeam.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editTeam.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = {
+          ...state.data,
+          ...action.payload,
+        };
+        state.error = null;
+      })
+      .addCase(editTeam.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload || 'Failed to create a team';
       })
