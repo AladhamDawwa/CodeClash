@@ -1,18 +1,17 @@
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import { Button } from '@mui/material';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import './styles.css';
-import '../../index.css';
 import { ChangeEvent, useState } from 'react';
-import userData from './profile.json';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { uploadImage } from '../../store/actions/authAction';
-import { Button } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { getUserByUsername, updateUser } from '../../store/actions/userInfo';
+import { useDispatch, useSelector } from 'react-redux';
 import LoadingState from '../../components/LoadingState';
+import '../../index.css';
+import { uploadImage } from '../../store/actions/authAction';
+import { getUserByUsername, updateUser } from '../../store/actions/userInfo';
+import { RootState } from '../../store/store';
+import userData from './profile.json';
+import './styles.css';
 
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -79,7 +78,7 @@ const ProfilePage = () => {
           <Paper
             sx={{
               width: '60rem',
-              height: '90rem',
+              height: '96rem',
               backgroundColor: '#0f0c29',
               display: 'flex',
               flexDirection: 'column',
@@ -121,11 +120,10 @@ const ProfilePage = () => {
                 />
               </div>
               <div
-                className="profile-txt"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '1rem',
+                  gap: '2rem',
                 }}
               >
                 {isEditing ? (
@@ -134,24 +132,12 @@ const ProfilePage = () => {
                       type="text"
                       value={name}
                       onChange={e => setName(e.target.value)}
-                      style={{
-                        fontSize: '3rem',
-                        border: '1px solid white',
-                        textTransform: 'capitalize',
-                        padding: '1rem 1.5rem',
-                      }}
                       className="profile-edit"
                     />
                     <input
                       type="text"
                       value={username}
                       onChange={e => setUsername(e.target.value)}
-                      style={{
-                        fontSize: '2.2rem',
-                        color: '#999',
-                        border: '1px solid white',
-                        padding: '1rem 1.5rem',
-                      }}
                       className="profile-edit"
                     />
                   </>
@@ -162,7 +148,6 @@ const ProfilePage = () => {
                         color: 'white',
                         textTransform: 'capitalize',
                         fontSize: '3rem',
-                        padding: '1rem 1.5rem',
                       }}
                     >
                       {user?.first_name + ' ' + user?.last_name}
@@ -170,8 +155,7 @@ const ProfilePage = () => {
                     <p
                       style={{
                         color: '#999',
-                        fontSize: '2.2rem',
-                        padding: '1rem 1.5rem',
+                        fontSize: '2rem',
                       }}
                     >
                       {`#${user?.username}`}
@@ -182,11 +166,10 @@ const ProfilePage = () => {
             </div>
             <div>
               <Typography
-                variant="h2"
                 sx={{
                   color: 'white',
-                  fontWeight: 'bold',
                   marginBottom: '2rem',
+                  fontSize: '3rem',
                 }}
               >
                 Description
@@ -200,7 +183,6 @@ const ProfilePage = () => {
                   maxWidth: '50rem',
                   lineHeight: '1.8',
                   fontWeight: '500',
-                  padding: '1rem 1.5rem',
                 }}
               >
                 {isEditing ? (
@@ -213,15 +195,16 @@ const ProfilePage = () => {
                       textTransform: 'capitalize',
                       letterSpacing: '0.5px',
                       overflow: 'hidden',
-                      minWidth: '45rem',
+                      minWidth: '52rem',
                       minHeight: '12rem',
                       fontWeight: '500',
                       resize: 'none',
                       overflowY: 'auto',
                       scrollbarWidth: 'none',
-                      border: '1px solid white',
+                      border: '1px solid #5d6ba1',
                       fontFamily: 'inherit',
                       padding: '1rem 1.5rem',
+                      borderRadius: '0.5rem',
                     }}
                     className="profile-edit"
                   />
@@ -230,10 +213,7 @@ const ProfilePage = () => {
                 )}
               </p>
             </div>
-            <Typography
-              variant="h2"
-              sx={{ color: 'white', fontWeight: 'bold' }}
-            >
+            <Typography variant="h2" sx={{ color: 'white' }}>
               Languages
             </Typography>
             <div className="language">
@@ -321,7 +301,7 @@ const ProfilePage = () => {
             )}
           </Paper>
           <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '10rem' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}
           >
             <Paper
               sx={{
