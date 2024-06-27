@@ -30,9 +30,7 @@ const TeamCard = ({ team }: any) => {
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [showEditCard, setShowEditCard] = useState(false);
-  const [teamName, setteamName] = useState(team.team_name);
-  const [teamSlogan, setteamSlogan] = useState(team.slogan);
-  const editTeam = { teamName, teamSlogan };
+  const [Team, setTeam] = useState(team);
   const handleShowEditTeam = () => {
     setShowEditCard(true);
   };
@@ -59,7 +57,7 @@ const TeamCard = ({ team }: any) => {
           'Content-Type': 'application/json',
         },
         data: {
-          team_name: teamName,
+          team_name: Team.team_name,
         },
       })
       .then(() => {
@@ -78,9 +76,8 @@ const TeamCard = ({ team }: any) => {
     horizontal: 'center',
   });
 
-  const handleEditTeam = (respone: { team_name: string; slogan: string }) => {
-    setteamName(respone.team_name);
-    setteamSlogan(respone.slogan);
+  const handleEditTeam = (respone: string) => {
+    setTeam(respone);
   };
   const handleInvite = async () => {
     if (!teammateUsername.trim()) {
@@ -94,7 +91,7 @@ const TeamCard = ({ team }: any) => {
     dispatch<any>(
       inviteUser({
         jwtToken,
-        team_name: teamName,
+        team_name: Team.team_name,
         user: teammateUsername,
       }),
     )
@@ -150,10 +147,10 @@ const TeamCard = ({ team }: any) => {
                 fontWeight: 'bold',
               }}
             >
-              {teamName}
+              {Team.team_name}
             </Typography>
 
-            {teamSlogan ? (
+            {Team.slogan ? (
               <Typography
                 variant="h5"
                 sx={{
@@ -161,7 +158,7 @@ const TeamCard = ({ team }: any) => {
                   fontStyle: 'italic',
                 }}
               >
-                "{teamSlogan}"
+                "{Team.slogan}"
               </Typography>
             ) : null}
           </div>
@@ -238,7 +235,7 @@ const TeamCard = ({ team }: any) => {
           <EditTeamCard
             open={true}
             onClose={handleCloseEditTeam}
-            team={editTeam}
+            team={Team}
             onTeamEdited={handleEditTeam}
           />
         )}
@@ -257,7 +254,7 @@ const TeamCard = ({ team }: any) => {
             }}
           >
             <img
-              src={`assets/${ranks[team?.rank_tier]}.svg`}
+              src={`assets/${ranks[Team?.rank_tier]}.svg`}
               alt="rank image"
               style={{
                 width: '6.5rem',
@@ -282,7 +279,7 @@ const TeamCard = ({ team }: any) => {
                 }}
               />
               <Typography variant="h4" sx={{ color: 'white' }}>
-                {team?.rank_points}
+                {Team?.rank_points}
               </Typography>
             </div>
           </div>
@@ -307,7 +304,7 @@ const TeamCard = ({ team }: any) => {
                 gap: '0.5rem',
               }}
             >
-              {team.members.map((member: string) => (
+              {Team.members.map((member: string) => (
                 <li
                   key={member}
                   style={{
@@ -354,7 +351,7 @@ const TeamCard = ({ team }: any) => {
                         .post(
                           'http://localhost:5000/teams/remove_user',
                           {
-                            team_name: teamName,
+                            team_name: Team.team_name,
                             user: member,
                           },
                           {

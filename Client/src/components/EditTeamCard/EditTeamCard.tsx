@@ -63,7 +63,7 @@ export default function EditTeamCard({
       dispatch<any>(
         editTeam({
           jwtToken,
-          oldteamName: team.teamName,
+          oldteamName: team.team_name,
           newteamName: teamName,
           slogan,
         }),
@@ -163,7 +163,7 @@ export default function EditTeamCard({
             </div>
             <ThemeProvider theme={theme}>
               <TextField
-                placeholder={team.teamName}
+                placeholder={team.team_name}
                 required
                 error={teamNameError}
                 helperText={teamNameError ? 'Team name is required' : ''}
@@ -185,7 +185,7 @@ export default function EditTeamCard({
                 variant="standard"
               />
               <TextField
-                placeholder={team.teamSlogan}
+                placeholder={team.slogan}
                 onChange={handleSloganChange}
                 sx={{
                   width: '30rem',

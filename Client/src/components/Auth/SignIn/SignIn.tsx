@@ -23,6 +23,7 @@ import { clearError } from '../../../store/reducers/authReducer';
 import { store, RootState } from '../../../store/store';
 import './style.css';
 import { getUserByUsername } from '../../../store/actions/userInfo';
+import { clearUserData } from '../../../store/reducers/userReducer';
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const SignIn = () => {
     }
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username.trim()) {
       setUsernameError(true);
     } else {
@@ -80,24 +81,31 @@ const SignIn = () => {
     }
 
     if (username && password) {
-      dispatch<any>(signInAction({ username, password })).then(() => {
+      try {
+        await dispatch<any>(signInAction({ username, password }));
         const state = store.getState();
-        if (!state.auth.error) {
-          setUsername('');
-          setPassword('');
+
+        await dispatch(clearUserData());
+
+        if (
+          !state.auth.error &&
+          state.auth.user?.token &&
+          state.auth.user?.user?.username
+        ) {
+          await dispatch<any>(
+            getUserByUsername({
+              username: state.auth.user.user.username,
+              jwtToken: state.auth.user.token,
+            }),
+          );
           navigate('/home');
-          if (authState?.user?.token && authState?.user?.user?.username) {
-            dispatch<any>(
-              getUserByUsername({
-                username: authState?.user?.user?.username,
-                jwtToken: authState?.user?.token,
-              }),
-            );
-          }
         }
-      });
+      } catch (error) {
+        console.error('Error during login:', error);
+      }
     }
   };
+
   const handleClose = () => {
     dispatch(clearError());
     setOpenSnackbar(false);
@@ -107,7 +115,7 @@ const SignIn = () => {
     if (error) {
       setOpenSnackbar(true);
     }
-  }, [dispatch, error]);
+  }, [error]);
 
   return (
     <div className="container">
@@ -253,4 +261,5 @@ const SignIn = () => {
     </div>
   );
 };
+
 export default SignIn;
