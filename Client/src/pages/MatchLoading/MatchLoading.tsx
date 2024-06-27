@@ -18,9 +18,9 @@ const MatchLoading = () => {
 
     socket.connect();
 
-    socket.on('connect', () => {
-      console.log('connected', socket.id);
-    });
+    // socket.on('connect', () => {
+    //   console.log('connected', socket.id);
+    // });
 
     socket.emit(
       'match_maker_server:find_match',
@@ -36,9 +36,7 @@ const MatchLoading = () => {
   });
 
   return (
-    <LoadingMatchCard 
-      gameSettings={location.state.gameSettings}
-    ></LoadingMatchCard>
+    <LoadingMatchCard gameSettings={location.state.gameSettings} />
   )
 }
 export default MatchLoading

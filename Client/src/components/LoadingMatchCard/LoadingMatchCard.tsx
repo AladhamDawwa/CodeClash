@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
 import Skeleton from '@mui/material/Skeleton';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from '../../socket';
 export default function LoadingMatchCard({ gameSettings }: any) {
   const user = useSelector((state: RootState) => state.user.data);
-  const [isOppFetched, setIsOppfetched] = useState(false);
+  // const [isOppFetched, setIsOppFetched] = useState(false);
   const navigate = useNavigate();
   return (
     <Box
@@ -92,15 +92,15 @@ export default function LoadingMatchCard({ gameSettings }: any) {
           >
             VS
           </p>
-          {isOppFetched ? (
+          {/* {isOppFetched ? (
             <img src="" alt="" /> //handle the opponent image
-          ) : (
+          ) : ( */}
             <Skeleton
               sx={{ bgcolor: 'grey', width: '12rem', height: '12rem' }}
               variant="circular"
               animation="pulse"
             />
-          )}
+          {/* )} */}
         </div>
         <Button
           variant="contained"

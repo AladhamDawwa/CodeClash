@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createElement, useEffect, useRef, useState } from 'react';
 import '../../index.css';
 import './styles.css';
 import {
@@ -29,6 +29,14 @@ interface TestCase {
   test_type: number;
   input: string;
   output: string;
+}
+
+interface Problem {
+  problem: {
+    description: string;
+    submissions: any[];
+  };
+  testCases : string;
 }
 const GamePage = () => {
   const authState = useSelector((state: RootState) => state.auth);
@@ -70,20 +78,27 @@ const GamePage = () => {
     }
   }
 
-  // const problem = useSelector((state: RootState) => state.auth.user.gameInfo); 
+  const [problem, setProblem] = useState<any>();
 
   useEffect(() => {
-    dispatch<any>(getGameInfo({ problemId, jwtToken }));
-  }, [jwtToken, gameId, problemId, dispatch]);
+    dispatch<any>(getGameInfo({ problemId, jwtToken })).then((res: any) => {
+      setProblem(res.payload);
+    });
+  }, [dispatch, jwtToken, problemId]);
+
+  const [notification, setNotification] = useState<any>();
 
   useEffect(() => {
+    socket.on('uvu_game_client:submission_notification', (data: any) => {
+      alert(data);
+    });
     return () => {
       socket.disconnect();
     }
   }, []);
   
   return (
-    <>
+    ( problem &&
       <div>
         <Stack direction={'column'}>
           <Stack direction={'column'} alignItems={'center'}>
@@ -224,7 +239,9 @@ const GamePage = () => {
                     </Stack>
                   </Stack>
                 </Box>
-                {problemOption === 'description' && <ProblemDescription />}
+                {problemOption === 'description' 
+                  && 
+                  <ProblemDescription problem={problem.problem} testCases={problem.test_cases}/>}
                 {problemOption === 'submissions' && <ProblemSubmissions />}
               </Box>
               <Stack spacing={5} sx={{ width: '80rem' }}>
@@ -235,6 +252,7 @@ const GamePage = () => {
                     borderRadius: '1.3rem',
                     boxShadow: '0 0 0.3rem',
                     width: '100%',
+                    height: '100%',
                   }}
                 >
                   <Box
@@ -333,9 +351,9 @@ const GamePage = () => {
                       margin: '2rem 0',
                     }}
                   />
-                  <CodeEditor language={language}/>
+                  <CodeEditor language={language} gameID={gameId}/>
                 </Box>
-                <Box
+                {/* <Box
                   height={540}
                   sx={{
                     backgroundColor: '#0F0C29',
@@ -534,13 +552,13 @@ const GamePage = () => {
                       </div>
                     </Stack>
                   )}
-                </Box>
+                </Box> */}
               </Stack>
             </Stack>
           </Stack>
         </Stack>
       </div>
-    </>
+    )
   );
 };
 

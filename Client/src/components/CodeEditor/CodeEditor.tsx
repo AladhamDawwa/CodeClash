@@ -3,7 +3,9 @@ import 'monaco-themes/themes/Blackboard.json';
 import { useEffect, useState } from 'react';
 import './style.css';
 import { Button } from '@mui/material';
-const CodeEditor = ({ language }: { language: string }) => {
+import { decode, encode } from 'js-base64';
+import socket from '../../socket';
+const CodeEditor = ({ language, gameID }: { language: string, gameID : string }) => {
   const [code, setCode] = useState(`// Write your ${language} code here`);
   const monaco = useMonaco();
 
@@ -12,7 +14,7 @@ const CodeEditor = ({ language }: { language: string }) => {
       `${language === 'python' ? '#' : '//'} Write your ${language} code here`,
     );
     if (monaco) {
-      console.log('here is the monaco isntance:', monaco);
+      // console.log('here is the monaco isntance:', monaco);
       import('monaco-themes/themes/Blackboard.json')
         .then((data: any) => {
           monaco.editor.defineTheme('Blackboard', data);
@@ -23,16 +25,21 @@ const CodeEditor = ({ language }: { language: string }) => {
 
   const handleEditorChange = (value: string | undefined, event: any) => {
     // TODO: Handle code change and send it to the server
-    console.log('handleEditorChange value', value);
+    // console.log('handleEditorChange value', value);
   };
 
   const handleSubmission = () => {
     // const encoded = Buffer.from(code, "utf8").toString("base64");
-    const encoded = btoa(code);
-    console.log(encoded);
-    // state.socket.emit('uvu_game_server:submit_problem', 
-    //   JSON.stringify({ source_code: encoded, game_id: state.gameSettings.id, language_id: 52 }), (response: any) => {
-    //   console.log('response', response);
+    const encoded = encode(code);
+    // console.log(encoded);
+    socket.emit('uvu_game_server:submit_problem', 
+      JSON.stringify({ source_code: encoded, game_id: gameID, language_id: 52 }), (response: any) => {
+      console.log('response', response);
+      // console.log(decode(response.compile_output));
+    });
+
+    // socket.on('uvu_game_client:send_game_result', (data: any) => {
+    //   console.log('game result', data);
     // });
   };
 
@@ -44,7 +51,7 @@ const CodeEditor = ({ language }: { language: string }) => {
         <h1>Run</h1>
       </Button>
       <Editor
-        height="36rem"
+        height="100rem"
         width="78rem"
         defaultLanguage="cpp"
         language={language}

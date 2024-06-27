@@ -1,8 +1,8 @@
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import { decode } from 'js-base64';
 
-import data from './problem.json';
-export default function ProblemDescription() {
+export default function ProblemDescription({ problem, testCases } : any) {
   return (
     <Stack
       direction={'column'}
@@ -17,7 +17,7 @@ export default function ProblemDescription() {
           fontWeight: '800',
         }}
       >
-        {data.problem.header.title}
+        {problem.title}
       </p>
       <p
         style={{
@@ -29,64 +29,69 @@ export default function ProblemDescription() {
           lineHeight: '1.4',
         }}
       >
-        {data.problem.description.text}
+        {decode(problem.description)}
       </p>
-      <Stack spacing={6}>
-        {data.problem.examples.map((example, index) => (
-          <Box
-            key={index}
-            sx={{
-              color: 'white',
-              fontSize: '2rem',
-              backgroundColor: '#24243E',
-              width: '50.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              justifyContent: 'center',
-              padding: '2rem',
-              borderRadius: '2rem',
-            }}
-          >
-            <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
-              Example {index + 1}
-            </p>
-            <p>Input: {example.input}</p>
-            <p>Output: {example.output}</p>
-          </Box>
-        ))}
-        <Box>
-          <p
-            style={{
-              color: 'white',
-              fontSize: '3rem',
-              fontWeight: '400',
-              marginBottom: '1rem',
-            }}
-          >
-            Constraints:
-          </p>
-          {data.problem.constraints.map((constraint, index) => (
-            <p
-              key={index}
-              style={{
-                color: 'white',
-                fontSize: '1.8rem',
-                backgroundColor: '#24243E',
-                width: '20rem',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                padding: '1rem 2rem',
-                margin: ' 1.8rem 0',
-                borderRadius: '0.8rem',
-              }}
-            >
-              {constraint}
-            </p>
-          ))}
-        </Box>
-      </Stack>
+      <Box
+        sx={{
+          color: 'white',
+          fontSize: '2rem',
+          backgroundColor: '#24243E',
+          width: '50.5rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.5rem',
+          justifyContent: 'center',
+          padding: '2rem',
+          borderRadius: '2rem',
+        }}
+      >
+        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
+          Input Format :
+        </p>
+        <p>{decode(problem.input_format)}</p>
+      </Box>
+      <Box
+        sx={{
+          color: 'white',
+          fontSize: '2rem',
+          backgroundColor: '#24243E',
+          width: '50.5rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.5rem',
+          justifyContent: 'center',
+          padding: '2rem',
+          borderRadius: '2rem',
+        }}
+      >
+        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
+          Output Format :
+        </p>
+        <p>{decode(problem.output_format)}</p>
+      </Box>
+      <Box
+        sx={{
+          color: 'white',
+          fontSize: '2rem',
+          backgroundColor: '#24243E',
+          width: '50.5rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.5rem',
+          justifyContent: 'center',
+          padding: '2rem',
+          borderRadius: '2rem',
+        }}
+      >
+        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
+          Input :
+        </p>
+        <p>{decode(testCases[0].input)}</p>
+        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
+          Output :
+        </p>
+        <p>{decode(testCases[0].expected_output)}</p>
+      </Box>
     </Stack>
   );
 }
