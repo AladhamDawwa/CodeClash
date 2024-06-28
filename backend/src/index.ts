@@ -17,6 +17,8 @@ import { Problems } from './models/problem'
 import { Console } from 'console'
 import { UvUGameSocketController } from './socket_controllers/uvu_game'
 import { Tiers } from './models/tiers'
+import { SubmissionsController } from './controllers/submissions'
+import { GameHistoryController } from './controllers/game_history'
 
 
 dotenv.config()
@@ -31,6 +33,8 @@ app.use(express.json({ limit: '50mb' }))
 UsersController.routes(app)
 ProblemsController.routes(app)
 TeamsController.routes(app)
+SubmissionsController.routes(app)
+GameHistoryController.routes(app)
 
 // websockets
 const server = createServer(app)
