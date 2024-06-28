@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   addTeam,
   editTeam,
-  getGameInfo,
+  getProblemInfo,
   getUserByUsername,
   getUserTeams,
   inviteUser,
@@ -16,6 +16,19 @@ const initialState: IUserState = {
   error: null,
 };
 
+interface GameData {
+  duration: number;
+  end_time: Date;
+  start_time: Date;
+  game_mode: number;
+  game_type: number;
+  id: string;
+  problem_id: string;
+  submissions: any[];
+  username_a: string;
+  username_b: string;
+}
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -26,6 +39,12 @@ const userSlice = createSlice({
       state.error = null;
     },
     clearUserState: () => initialState,
+    foundMatch: (state, action: PayloadAction<GameData>) => {
+      state.data = {
+        ...state.data,
+        gameInfo: action.payload,
+      };
+    },
   },
   extraReducers: builder => {
     builder
@@ -53,23 +72,18 @@ const userSlice = createSlice({
           state.error = action.payload || 'Failed to fetch user data';
         },
       )
-      .addCase(getGameInfo.pending, state => {
+      .addCase(getProblemInfo.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getGameInfo.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        console.log('fullfilled action game', action.payload);
-        console.log('fullfilled state game', state.data);
-        const gameInfo = action.payload;
-
-        state.data = {
-          ...state.data,
-          gameInfo,
-        };
-        state.error = null;
-      })
-      .addCase(getGameInfo.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(
+        getProblemInfo.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = null;
+        },
+      )
+      .addCase(getProblemInfo.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload || 'Failed to fetch user data';
       })
@@ -156,5 +170,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearUserData, clearUserState } = userSlice.actions;
+export const { clearUserData, clearUserState, foundMatch } = userSlice.actions;
 export default userSlice.reducer;

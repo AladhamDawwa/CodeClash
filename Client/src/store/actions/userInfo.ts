@@ -62,7 +62,7 @@ interface GetUserByUsernameParams {
   username: string;
   jwtToken: string;
 }
-interface GetGameInfoParams {
+interface GetProblemInfoParams {
   problemId: string;
   jwtToken: string;
 }
@@ -99,9 +99,9 @@ export const getUserByUsername = createAsyncThunk(
     }
   },
 );
-export const getGameInfo = createAsyncThunk(
-  'user/getGameInfo',
-  async ({ problemId, jwtToken }: GetGameInfoParams, thunkAPI) => {
+export const getProblemInfo = createAsyncThunk(
+  'user/getProblemInfo',
+  async ({ problemId, jwtToken }: GetProblemInfoParams, thunkAPI) => {
     const url = `http://localhost:5000/problems/${problemId}`;
     try {
       const response = await axios.get(url, {

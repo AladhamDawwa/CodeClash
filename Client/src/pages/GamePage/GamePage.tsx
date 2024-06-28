@@ -1,30 +1,28 @@
-import { createElement, useEffect, useRef, useState } from 'react';
-import '../../index.css';
-import './styles.css';
+import CodeIcon from '@mui/icons-material/Code';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import {
   Box,
+  Button,
   FormControl,
   MenuItem,
   Select,
   SelectChangeEvent,
   Stack,
-  Button,
 } from '@mui/material';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import CodeIcon from '@mui/icons-material/Code';
-import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import CodeEditor from '../../components/CodeEditor/CodeEditor';
 import Timer from '../../components/Timer/Timer';
-import data from './problem.json';
+import '../../index.css';
+import socket from '../../socket';
+import { getProblemInfo } from '../../store/actions/userInfo';
+import { RootState } from '../../store/store';
 import ProblemDescription from './ProblemDescription';
 import ProblemSubmissions from './ProblemSubmissions';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { useDispatch } from 'react-redux';
-import { getGameInfo } from '../../store/actions/userInfo';
-import { useLocation } from 'react-router-dom';
-import socket from '../../socket';
+import data from './problem.json';
+import './styles.css';
 interface TestCase {
   test_type: number;
   input: string;
@@ -36,10 +34,11 @@ interface Problem {
     description: string;
     submissions: any[];
   };
-  testCases : string;
+  testCases: string;
 }
 const GamePage = () => {
   const authState = useSelector((state: RootState) => state.auth);
+  const userState = useSelector((state: RootState) => state.user);
   const [language, setLanguage] = useState('cpp');
   const [selectedCase, setSelectedCase] = useState<TestCase | null>(
     data.problem.testCases[0],
@@ -47,12 +46,12 @@ const GamePage = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [problemOption, setProblemOption] = useState('description');
   const [testcaseOption, setTestcaseOption] = useState('testcase');
-  const { state } = useLocation();
 
+  const { data: userData } = userState;
   // TODO Change gameID
   const jwtToken = authState.user?.token;
-  const gameId = state.game.id;
-  const problemId = state.game.problem_id;
+  const gameId = userData.gameInfo.id;
+  const problemId = userData.gameInfo.problem_id;
 
   const dispatch = useDispatch();
 
@@ -63,9 +62,7 @@ const GamePage = () => {
     setSelectedCase(testCase);
   };
 
-  const handleSubmission = () => {
-
-  };
+  const handleSubmission = () => {};
 
   const submissions = data.problem.submissions;
   let accepted = false;
@@ -81,7 +78,7 @@ const GamePage = () => {
   const [problem, setProblem] = useState<any>();
 
   useEffect(() => {
-    dispatch<any>(getGameInfo({ problemId, jwtToken })).then((res: any) => {
+    dispatch<any>(getProblemInfo({ problemId, jwtToken })).then((res: any) => {
       setProblem(res.payload);
     });
   }, [dispatch, jwtToken, problemId]);
@@ -92,13 +89,10 @@ const GamePage = () => {
     socket.on('uvu_game_client:submission_notification', (data: any) => {
       alert(data);
     });
-    return () => {
-      socket.disconnect();
-    }
   }, []);
-  
+
   return (
-    ( problem &&
+    problem && (
       <div>
         <Stack direction={'column'}>
           <Stack direction={'column'} alignItems={'center'}>
@@ -239,9 +233,12 @@ const GamePage = () => {
                     </Stack>
                   </Stack>
                 </Box>
-                {problemOption === 'description' 
-                  && 
-                  <ProblemDescription problem={problem.problem} testCases={problem.test_cases}/>}
+                {problemOption === 'description' && (
+                  <ProblemDescription
+                    problem={problem.problem}
+                    testCases={problem.test_cases}
+                  />
+                )}
                 {problemOption === 'submissions' && <ProblemSubmissions />}
               </Box>
               <Stack spacing={5} sx={{ width: '80rem' }}>
@@ -351,7 +348,7 @@ const GamePage = () => {
                       margin: '2rem 0',
                     }}
                   />
-                  <CodeEditor language={language} gameID={gameId}/>
+                  <CodeEditor language={language} gameID={gameId} />
                 </Box>
                 {/* <Box
                   height={540}

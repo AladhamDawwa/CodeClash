@@ -1,14 +1,17 @@
-import { useSelector } from "react-redux";
-import LoadingMatchCard from "../../components/LoadingMatchCard/LoadingMatchCard"
-import { useEffect } from "react";
-import { RootState } from "../../store/store";
-import { useLocation, useNavigate } from "react-router-dom";
-import socket from "../../socket";
+import { useSelector } from 'react-redux';
+import LoadingMatchCard from '../../components/LoadingMatchCard/LoadingMatchCard';
+import { useEffect } from 'react';
+import { RootState } from '../../store/store';
+import { useLocation, useNavigate } from 'react-router-dom';
+import socket from '../../socket';
+import { useDispatch } from 'react-redux';
+import { foundMatch } from '../../store/reducers/userReducer';
 
 const MatchLoading = () => {
   const auth = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const { user } = auth;
 
   useEffect(() => {
@@ -31,12 +34,11 @@ const MatchLoading = () => {
     );
 
     socket.on('match_maker_client:found_match', (game: any) => {
+      dispatch(foundMatch(game));
       navigate('/gameSession', { state: { game } });
     });
   });
 
-  return (
-    <LoadingMatchCard gameSettings={location.state.gameSettings} />
-  )
-}
-export default MatchLoading
+  return <LoadingMatchCard gameSettings={location.state.gameSettings} />;
+};
+export default MatchLoading;
