@@ -4,10 +4,15 @@ import bcrypt from "bcrypt";
 import { RankTier } from "../utils/definitions/rank_tier";
 import dotenv from "dotenv";
 import { UsersUnsolvedProblems } from "./users_unsolved_problems";
+import { firestore } from "firebase-admin";
 dotenv.config();
 
 const { SALT_ROUNDS, PEPPER } = process.env;
 
+export type UserStatus = {
+  in_uvu_game?: boolean
+  uvu_game_id?: string
+}
 export type User = {
   doc_id?: string;
   description?: string;
@@ -24,6 +29,7 @@ export type User = {
   username?: string;
   mmr?: number;
   profile_image_id?: string;
+  status?: UserStatus
 };
 
 const converter = {
@@ -94,6 +100,19 @@ export class Users {
     delete user.password
     delete user.doc_id
     return user;
+  }
+
+  static async clear_status(username: string, keys_to_remove: string[]) {
+    const snapshot = await users_collection
+      .where("username", "==", username)
+      .get();
+    const docRef = snapshot.docs[0].ref
+    const toBeRemovedData: { [key: string]: any } = {}
+    keys_to_remove.forEach(key => {
+      toBeRemovedData[`status.${key}`] = firestore.FieldValue.delete()
+    })
+
+    await docRef.update(toBeRemovedData)
   }
 
   static async get_rank(username: string): Promise<RankTier> {
