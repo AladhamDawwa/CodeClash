@@ -1,6 +1,7 @@
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
+import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import {
   Box,
   Button,
@@ -13,7 +14,7 @@ import {
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CodeEditor from '../../components/CodeEditor/CodeEditor';
 import Timer from '../../components/Timer/Timer';
 import '../../index.css';
@@ -57,6 +58,7 @@ const GamePage = () => {
   const problemId = userData.gameInfo.problem_id;
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value as string);
@@ -96,180 +98,65 @@ const GamePage = () => {
 
   return (
     <Stack direction={'column'} alignItems={'center'}>
+      <Button variant="contained" sx={{
+        position: 'absolute',
+        top: '1.5rem',
+        left: '2rem',
+        backgroundColor: '#0F0C29',
+        textTransform: 'capitalize',
+        color: 'red',
+        width: '11rem',
+        height: '5rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        fontSize: '2rem',
+        fontWeight: '400',
+        borderRadius: '1rem',
+        gap: '0.5rem',
+      }} onClick={()=>{
+        socket.disconnect();
+        navigate('/home');
+      }}>
+        <ExitToAppOutlinedIcon sx={{
+          fontSize: '2.4rem',
+          rotate: '180deg',
+        }}/>
+        Leave
+      </Button>
       <Box
         display={'flex'}
-        justifyContent={'space-between'}
+        justifyContent={'center'}
         alignItems={'center'}
         width={'100%'}
-        height={'10vh'}
+        height={'11vh'}
         sx={{
           backgroundColor: '#383560',
           borderRadius: '0.5rem',
           boxShadow: 2,
         }}
       >
-        <Button>
-          Cancel
-        </Button>
         <Timer />
-        <Box
-          display={'flex'}
-          justifyContent={'space-around'}
-          alignItems={'center'}
-          width={'33rem'}
-          height={'5.5rem'}
-          mt={3.3}
-          mb={5}
-          sx={{
-            backgroundColor: '#383560',
-            borderRadius: '0.5rem',
-            boxShadow: 2,
-          }}
-        >
-          <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#0F0C29',
-                textTransform: 'capitalize',
-                color: 'white',
-                width: '8.5rem',
-                height: '3rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                fontSize: '1.7rem',
-                fontWeight: '400',
-              }}
-              disableRipple
-              disableElevation
-            >
-              <img src="assets/run.svg" alt="run icon" />
-              run
-          </Button>
-          <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#0F0C29',
-                textTransform: 'capitalize',
-                color: '#2CBB5D',
-                width: '11rem',
-                height: '3rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                fontSize: '1.6rem',
-                fontWeight: '400',
-              }}
-              disableRipple
-              disableElevation
-              onClick={handleSubmission}
-          >
-            <img src="assets/submit.svg" alt="submit icon" />
-            submit
-          </Button>
-        </Box>
       </Box>
 
-      { problem && 
-        <Splitter style={{ 
-          height: '90vh',
-          width: '100vw',
-          overflow: 'hidden',
+    { problem && 
+      <Splitter style={{ 
+        height: '89vh',
+        width: '100vw',
+        overflow: 'hidden',
+      }}>
+        <SplitterPanel style={{
+          width: '70%',
+          borderRadius: '1.3rem',
+          margin: '1rem'
         }}>
-          <SplitterPanel style={{
-            width: '70%',
-            borderRadius: '1.3rem',
-            margin: '1rem'
-          }}>
-            <Box
-              height={'100%'}
-              sx={{
-                borderRadius: '1.3rem',
-                position: 'relative',
-              }}
-            >
-              <Box
-                width={'100%'}
-                height={'5rem'}
-                display={'flex'}
-                alignItems={'center'}
-                sx={{
-                  backgroundColor: '#24243e',
-                  borderRadius: '1.3rem 1.3rem 0 0',
-                  position: 'sticky',
-                  top: 0,
-                  zIndex: 1,
-                }}
-              >
-                <Stack ml={'1rem'} direction={'row'}>
-                  <Stack>
-                    <Button
-                      disableRipple
-                      onClick={() => setProblemOption('description')}
-                      sx={{
-                        color: 'white',
-                        display: 'flex',
-                        gap: '1rem',
-                        fontSize: '1.8rem',
-                        textTransform: 'capitalize',
-                        opacity:
-                          problemOption === 'description' ? '100%' : '40%',
-                        transition: 'opacity 0.3s',
-                      }}
-                    >
-                      <DescriptionOutlinedIcon sx={{ fontSize: '2rem' }} />
-                      <p>description</p>
-                    </Button>
-                  </Stack>
-                  <p
-                    style={{
-                      color: 'white',
-                      fontSize: '2rem',
-                      padding: '1rem 0.5rem',
-                    }}
-                  >
-                    |
-                  </p>
-                  <Stack>
-                    <Button
-                      onClick={() => setProblemOption('submissions')}
-                      sx={{
-                        color: 'white',
-                        display: 'flex',
-                        gap: '1rem',
-                        fontSize: '1.8rem',
-                        textTransform: 'capitalize',
-                        opacity:
-                          problemOption != 'description' ? '100%' : '40%',
-                        transition: 'opacity 0.3s',
-                      }}
-                      disableRipple
-                    >
-                      <HistoryOutlinedIcon sx={{ fontSize: '2rem' }} />
-                      <p>submissions</p>
-                    </Button>
-                  </Stack>
-                </Stack>
-              </Box>
-              <Box sx={{
-                background: '#0F0C29',
-                height: 'calc(100% - 5rem)',
-                overflowY: 'auto',
-                scrollbarWidth: 'thin',
-                scrollbarColor: '#383560 #0F0C29',
-              }}>
-                {problemOption === 'description' 
-                  && 
-                  <ProblemDescription problem={problem.problem} testCases={problem.test_cases}/>}
-                {problemOption === 'submissions' && <ProblemSubmissions />}
-              </Box>
-            </Box>
-          </SplitterPanel>
-          <SplitterPanel style={{
-            width: '30%',
-            borderRadius: '1.3rem',
-            margin: '1rem'
-          }}>
+          <Box
+            height={'100%'}
+            sx={{
+              borderRadius: '1.3rem',
+              position: 'relative',
+            }}
+          >
             <Box
               width={'100%'}
               height={'5rem'}
@@ -278,91 +165,163 @@ const GamePage = () => {
               sx={{
                 backgroundColor: '#24243e',
                 borderRadius: '1.3rem 1.3rem 0 0',
+                position: 'sticky',
+                top: 0,
+                zIndex: 1,
               }}
             >
-              <Stack
-                ml={'3rem'}
-                direction={'row'}
-                spacing={1.5}
-                justifyContent={'start'}
-                color={'white'}
-                fontSize={'1.8rem'}
-                textTransform={'capitalize'}
-              >
-                <Stack
-                  direction={'row'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  gap={1}
-                  // margin={'1rem'}
-                >
-                  <CodeIcon sx={{ fontSize: '2.5rem' }} />
-                  <p style={{ color: 'white', fontWeight: '500' }}>
-                    Code
-                  </p>
-                </Stack>
-                <FormControl
-                  sx={{
-                    marginLeft: '3rem',
-                    marginTop: '1.5rem',
-                    width: 'fit-content',
-                  }}
-                >
-                  <Select
-                    value={language}
-                    onChange={handleChange}
+              <Stack ml={'1rem'} direction={'row'}>
+                <Stack>
+                  <Button
+                    disableRipple
+                    onClick={() => setProblemOption('description')}
                     sx={{
                       color: 'white',
-                      backgroundColor: '#24243E',
-                      fontSize: '1.6rem',
-                      '.MuiSelect-icon': {
-                        color: 'white',
-                        fontSize: '2rem',
-                      },
-                    }}
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          width: '15rem',
-                          backgroundColor: '#24243E',
-                          color: 'white',
-                          padding: '1rem 0',
-                        },
-                      },
+                      display: 'flex',
+                      gap: '1rem',
+                      fontSize: '1.8rem',
+                      textTransform: 'capitalize',
+                      opacity:
+                        problemOption === 'description' ? '100%' : '40%',
+                      transition: 'opacity 0.3s',
                     }}
                   >
-                    <MenuItem
-                      sx={{ fontSize: '1.5rem' }}
-                      value={'javascript'}
-                    >
-                      JavaScript
-                    </MenuItem>
-                    <MenuItem
-                      sx={{ fontSize: '1.5rem' }}
-                      value={'typescript'}
-                    >
-                      TypeScript
-                    </MenuItem>
-                    <MenuItem sx={{ fontSize: '1.5rem' }} value={'python'}>
-                      Python
-                    </MenuItem>
-                    <MenuItem sx={{ fontSize: '1.5rem' }} value={'java'}>
-                      Java
-                    </MenuItem>
-                    <MenuItem sx={{ fontSize: '1.5rem' }} value={'csharp'}>
-                      C#
-                    </MenuItem>
-                    <MenuItem sx={{ fontSize: '1.5rem' }} value={'cpp'}>
-                      C++
-                    </MenuItem>
-                  </Select>
-                </FormControl>
+                    <DescriptionOutlinedIcon sx={{ fontSize: '2rem' }} />
+                    <p>description</p>
+                  </Button>
+                </Stack>
+                <p
+                  style={{
+                    color: 'white',
+                    fontSize: '2rem',
+                    padding: '1rem 0.5rem',
+                  }}
+                >
+                  |
+                </p>
+                <Stack>
+                  <Button
+                    onClick={() => setProblemOption('submissions')}
+                    sx={{
+                      color: 'white',
+                      display: 'flex',
+                      gap: '1rem',
+                      fontSize: '1.8rem',
+                      textTransform: 'capitalize',
+                      opacity:
+                        problemOption != 'description' ? '100%' : '40%',
+                      transition: 'opacity 0.3s',
+                    }}
+                    disableRipple
+                  >
+                    <HistoryOutlinedIcon sx={{ fontSize: '2rem' }} />
+                    <p>submissions</p>
+                  </Button>
+                </Stack>
               </Stack>
             </Box>
-            <CodeEditor language={language} gameID={gameId} />
-          </SplitterPanel>
-        </Splitter>
-      }
+            <Box sx={{
+              background: '#0F0C29',
+              height: 'calc(100% - 5rem)',
+              overflowY: 'auto',
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#383560 #0F0C29',
+            }}>
+              {problemOption === 'description' 
+                && 
+                <ProblemDescription problem={problem.problem} testCases={problem.test_cases}/>}
+              {problemOption === 'submissions' && <ProblemSubmissions />}
+            </Box>
+          </Box>
+        </SplitterPanel>
+        <SplitterPanel style={{
+          width: '30%',
+          borderRadius: '1.3rem',
+          margin: '1rem'
+        }}>
+          <Box
+            width={'100%'}
+            height={'5rem'}
+            display={'flex'}
+            alignItems={'center'}
+            sx={{
+              backgroundColor: '#24243e',
+              borderRadius: '1.3rem 1.3rem 0 0',
+            }}
+          >
+            <Stack
+              ml={'3rem'}
+              direction={'row'}
+              spacing={1.5}
+              justifyContent={'space-between'}
+              color={'white'}
+              fontSize={'1.8rem'}
+              textTransform={'capitalize'}
+              width={'100%'}
+            >
+              <Stack
+                direction={'row'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                gap={1}
+              >
+                <CodeIcon sx={{ fontSize: '2.5rem' }} />
+                <p style={{ color: 'white', fontWeight: '500' }}>
+                  Code
+                </p>
+              </Stack>
+              <FormControl>
+                <Select
+                  value={language}
+                  onChange={handleChange}
+                  sx={{
+                    marginRight: '2rem',
+                    height: '3rem',
+                    backgroundColor: '#1E1E36',
+                    borderRadius: '1rem',
+                    color: 'white',
+                    fontSize: '1.5rem',
+                    border: '2px solid white',
+                    '.MuiSelect-icon': {
+                      color: 'white',
+                      fontSize: '2rem',
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: '#24243E',
+                        color: 'white',
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'javascript'}>
+                    JavaScript
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'typescript'}>
+                    TypeScript
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'python'}>
+                    Python
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'java'}>
+                    Java
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'csharp'}>
+                    C#
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'cpp'}>
+                    C++
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
+          </Box>
+          <CodeEditor language={language} gameID={gameId} />
+        </SplitterPanel>
+      </Splitter>
+    }
     </Stack>
   );
 };

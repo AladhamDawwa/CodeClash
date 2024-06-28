@@ -45,25 +45,39 @@ const CodeEditor = ({ language, gameID }: { language: string, gameID : string })
 
   return (
     <>
-      {/* <Button
+      <Button variant="contained"
+        sx={{
+          position: 'absolute',
+          top: '1.5rem',
+          right: '2rem',
+          backgroundColor: '#0F0C29',
+          textTransform: 'capitalize',
+          color: '#2CBB5D',
+          width: '11rem',
+          height: '5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: '1.7rem',
+          fontWeight: '400',
+          borderRadius: '1rem',
+        }}
+        disableRipple
+        disableElevation
         onClick={handleSubmission}
       >
-        <h1>Run</h1>
-      </Button> */}
-      <div style={{ 
-        height: '100%', 
-        width: '100%' 
-      }}
-      >
-        <Editor
-          width={'100%'}
-          defaultLanguage="cpp"
-          language={language}
-          value={code}
-          onChange={handleEditorChange}
-          theme="Blackboard"
-        />
-      </div>
+        <img src="assets/submit.svg" alt="submit icon" />
+        submit
+      </Button>
+      <Editor
+        width={'100%'}
+        height={'calc(100vh - 15rem)'}
+        defaultLanguage="cpp"
+        language={language}
+        value={code}
+        onChange={handleEditorChange}
+        theme="Blackboard"
+      />
     </>
   );
 };
