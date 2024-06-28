@@ -71,6 +71,11 @@ interface GetGameHistory {
   username: string;
   jwtToken: string;
 }
+interface GetGameSubmissions {
+  username: string;
+  jwtToken: string;
+  gameId: string;
+}
 
 interface getTeamsParams {
   jwtToken: string;
@@ -167,6 +172,30 @@ export const getGameHistory = createAsyncThunk(
       });
 
       return response.data as GameHistory[];
+    } catch (error) {
+      const err = error as AxiosError<ResponseData>;
+      if (err.response && err.response.data) {
+        return thunkAPI.rejectWithValue(
+          err.response.data.error || 'Failed to fetch user data',
+        );
+      }
+    }
+  },
+);
+
+export const getGameSubmissions = createAsyncThunk(
+  'user/getGameSubmissions',
+  async ({ gameId, username, jwtToken }: GetGameSubmissions, thunkAPI) => {
+    const url = `http://localhost:5000/submissions/${gameId}/${username}`;
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.data as any[];
     } catch (error) {
       const err = error as AxiosError<ResponseData>;
       if (err.response && err.response.data) {

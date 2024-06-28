@@ -23,6 +23,8 @@ type MatchInfo = {
   oppImage: string;
   status: string;
   amount: number;
+  submissions: any;
+  gameCard: any;
 };
 
 function createData(
@@ -35,13 +37,13 @@ function createData(
   return { status, time, language, runtime, memory };
 }
 
-const rows = [
-  createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-  createData('time limit', 'Aug 04, 2023', 'C++', 17, 10.8),
-  createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-  createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-  createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-];
+// const rows = [
+//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
+//   createData('time limit', 'Aug 04, 2023', 'C++', 17, 10.8),
+//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
+//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
+//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
+// ];
 
 export default function MatchCard({
   problemName,
@@ -49,8 +51,11 @@ export default function MatchCard({
   oppImage,
   status,
   amount,
+  gameCard,
+  submissions,
 }: MatchInfo) {
   const [open, setOpen] = useState(false);
+  console.log('submissions', submissions);
 
   let textColor: string;
   switch (status) {
@@ -64,6 +69,11 @@ export default function MatchCard({
       textColor = '#2cbb5d';
       break;
   }
+
+  const handleExpandClick = () => {
+    setOpen(!open);
+  };
+
   const user = useSelector((state: RootState) => state.user.data);
   return (
     <div style={{ marginBottom: '5rem' }}>
@@ -132,12 +142,12 @@ export default function MatchCard({
           {open ? (
             <ExpandLessIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
-              onClick={() => setOpen(!open)}
+              onClick={handleExpandClick}
             />
           ) : (
             <ExpandMoreIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
-              onClick={() => setOpen(!open)}
+              onClick={handleExpandClick}
             />
           )}
         </Stack>
@@ -195,7 +205,7 @@ export default function MatchCard({
               </TableHead>
 
               <TableBody>
-                {rows.map((row, index) => (
+                {submissions?.map((row: any, index: number) => (
                   <TableRow
                     key={index}
                     sx={{

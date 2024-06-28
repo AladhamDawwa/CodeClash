@@ -3,6 +3,7 @@ import {
   addTeam,
   editTeam,
   getGameHistory,
+  getGameSubmissions,
   getProblemInfo,
   getUserByUsername,
   getUserTeams,
@@ -57,8 +58,6 @@ const userSlice = createSlice({
         getUserByUsername.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          console.log('fullfilled action', action.payload);
-          console.log('fullfilled state', state.data);
           state.data = {
             ...state.data,
             ...action.payload,
@@ -68,6 +67,27 @@ const userSlice = createSlice({
       )
       .addCase(
         getUserByUsername.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload || 'Failed to fetch user data';
+        },
+      )
+      .addCase(getGameSubmissions.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getGameSubmissions.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = {
+            ...state.data,
+          };
+          state.error = null;
+        },
+      )
+      .addCase(
+        getGameSubmissions.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload || 'Failed to fetch user data';
