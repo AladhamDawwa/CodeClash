@@ -45,20 +45,25 @@ const CodeEditor = ({ language, gameID }: { language: string, gameID : string })
 
   return (
     <>
-      <Button
+      {/* <Button
         onClick={handleSubmission}
       >
         <h1>Run</h1>
-      </Button>
-      <Editor
-        height="100rem"
-        width="78rem"
-        defaultLanguage="cpp"
-        language={language}
-        value={code}
-        onChange={handleEditorChange}
-        theme="Blackboard"
-      />
+      </Button> */}
+      <div style={{ 
+        height: '100%', 
+        width: '100%' 
+      }}
+      >
+        <Editor
+          width={'100%'}
+          defaultLanguage="cpp"
+          language={language}
+          value={code}
+          onChange={handleEditorChange}
+          theme="Blackboard"
+        />
+      </div>
     </>
   );
 };

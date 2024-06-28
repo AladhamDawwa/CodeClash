@@ -36,6 +36,7 @@ const MatchLoading = () => {
     socket.on('match_maker_client:found_match', (game: any) => {
       dispatch(foundMatch(game));
       navigate('/gameSession', { state: { game } });
+      // dispatch
     });
   });
 

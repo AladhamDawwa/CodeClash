@@ -33,8 +33,6 @@ export default function ProblemSubmissions() {
       component={Paper}
       sx={{
         borderRadius: '0 0 0.5rem 0.5rem',
-        overflow: 'hidden',
-        backgroundColor: '#1E1E36',
       }}
     >
       <Table sx={{ width: '100%' }} aria-label="simple table">

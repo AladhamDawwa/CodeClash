@@ -22,3 +22,14 @@
 html {
   font-size: 62.5%;
 }
+
+.p-splitter-gutter {
+  background-color: gray;
+  border: 1px solid #0f0c29;
+  opacity: 0.5;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.p-splitter-gutter-handle {
+  background-color: whitesmoke;
+}

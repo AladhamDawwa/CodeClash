@@ -6,14 +6,14 @@ export default function ProblemDescription({ problem, testCases } : any) {
   return (
     <Stack
       direction={'column'}
-      spacing={7}
-      sx={{ ml: '3rem', mt: '4rem', paddingBottom: '4rem' }}
+      spacing={3}
+      sx={{ mx: '3rem', pt: '3rem', paddingBottom: '4rem' }}
     >
       <p
         style={{
           color: 'white',
           textTransform: 'capitalize',
-          fontSize: '2.8rem',
+          fontSize: '3rem',
           fontWeight: '800',
         }}
       >
@@ -22,21 +22,22 @@ export default function ProblemDescription({ problem, testCases } : any) {
       <p
         style={{
           color: 'white',
-          fontSize: '2rem',
-          width: '70rem',
+          fontSize: '1.5rem',
           letterSpacing: '0.3px',
-          fontWeight: '500',
           lineHeight: '1.4',
         }}
       >
         {decode(problem.description)}
       </p>
+      <p style={{ color: 'white', fontWeight: '600', fontSize: '2.3rem' }}>
+        Input Format :
+      </p>
       <Box
         sx={{
           color: 'white',
-          fontSize: '2rem',
+          fontSize: '1.5rem',
           backgroundColor: '#24243E',
-          width: '50.5rem',
+          width: '90%',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.5rem',
@@ -45,17 +46,17 @@ export default function ProblemDescription({ problem, testCases } : any) {
           borderRadius: '2rem',
         }}
       >
-        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
-          Input Format :
-        </p>
         <p>{decode(problem.input_format)}</p>
       </Box>
+      <p style={{ color:'white', fontWeight: '600', fontSize: '2.3rem' }}>
+        Output Format :
+      </p>
       <Box
         sx={{
           color: 'white',
-          fontSize: '2rem',
+          fontSize: '1.5rem',
           backgroundColor: '#24243E',
-          width: '50.5rem',
+          width: '90%',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.5rem',
@@ -64,17 +65,17 @@ export default function ProblemDescription({ problem, testCases } : any) {
           borderRadius: '2rem',
         }}
       >
-        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
-          Output Format :
-        </p>
         <p>{decode(problem.output_format)}</p>
       </Box>
+      <p style={{ color:'white', fontWeight: '600', fontSize: '2.3rem' }}>
+        Sample Test Cases:
+      </p>
       <Box
         sx={{
           color: 'white',
-          fontSize: '2rem',
+          fontSize: '1.5rem',
           backgroundColor: '#24243E',
-          width: '50.5rem',
+          width: '90%',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.5rem',
