@@ -51,13 +51,13 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
 
   private calculate_delta(old_tier_and_pts: { tier: RankTier, points: number }, new_tier_and_pts: { tier: RankTier, points: number }) {
     if (old_tier_and_pts.tier == new_tier_and_pts.tier) {
-      return Math.abs(old_tier_and_pts.points - new_tier_and_pts.points)
+      return new_tier_and_pts.points - old_tier_and_pts.points
     }
     else if (old_tier_and_pts.tier < new_tier_and_pts.tier) {
       return (100 - old_tier_and_pts.points) + (new_tier_and_pts.points)
     }
     else {
-      return old_tier_and_pts.points + (100 - new_tier_and_pts.points)
+      return (old_tier_and_pts.points + (100 - new_tier_and_pts.points)) * -1
     }
   }
   private async calculate_tier_and_points(mmr: number): Promise<{ tier: RankTier, points: number }> {
