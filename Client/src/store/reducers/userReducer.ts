@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   addTeam,
   editTeam,
+  getGameHistory,
   getProblemInfo,
   getUserByUsername,
   getUserTeams,
@@ -72,6 +73,27 @@ const userSlice = createSlice({
           state.error = action.payload || 'Failed to fetch user data';
         },
       )
+      .addCase(getGameHistory.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getGameHistory.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          const gameHistory = action.payload;
+
+          state.data = {
+            ...state.data,
+            gameHistory,
+          };
+          state.error = null;
+        },
+      )
+      .addCase(getGameHistory.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to fetch user data';
+      })
       .addCase(getProblemInfo.pending, state => {
         state.loading = true;
         state.error = null;

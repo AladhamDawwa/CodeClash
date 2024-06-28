@@ -67,6 +67,11 @@ interface GetProblemInfoParams {
   jwtToken: string;
 }
 
+interface GetGameHistory {
+  username: string;
+  jwtToken: string;
+}
+
 interface getTeamsParams {
   jwtToken: string;
 }
@@ -75,6 +80,32 @@ interface inviteUserParams {
   jwtToken: string;
   team_name: string;
   user: string;
+}
+
+interface GameHistory {
+  id: string;
+  game_mode: number;
+  game_type: number;
+  problem_id: string;
+  duration: number;
+  start_time: { _seconds: number; _nanoseconds: number };
+  end_time: { _seconds: number; _nanoseconds: number };
+  user_a_result: {
+    new_points: number;
+    delta: number;
+    new_tier: number;
+    username: string;
+    status: number;
+  };
+  user_b_result: {
+    new_points: number;
+    delta: number;
+    new_tier: number;
+    username: string;
+    status: number;
+  };
+  submissions: any[];
+  username_b: string;
 }
 
 export const getUserByUsername = createAsyncThunk(
@@ -113,6 +144,29 @@ export const getProblemInfo = createAsyncThunk(
       console.log('response', response.data);
 
       return response.data as ProblemData;
+    } catch (error) {
+      const err = error as AxiosError<ResponseData>;
+      if (err.response && err.response.data) {
+        return thunkAPI.rejectWithValue(
+          err.response.data.error || 'Failed to fetch user data',
+        );
+      }
+    }
+  },
+);
+export const getGameHistory = createAsyncThunk(
+  'user/getGameHistory',
+  async ({ username, jwtToken }: GetGameHistory, thunkAPI) => {
+    const url = `http://localhost:5000/game_history/${username}`;
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.data as GameHistory[];
     } catch (error) {
       const err = error as AxiosError<ResponseData>;
       if (err.response && err.response.data) {
