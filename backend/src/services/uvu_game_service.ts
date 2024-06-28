@@ -1,5 +1,5 @@
 import { EloUvUGameCalculator } from "../game/evaluator/elo_uvu_game_calculator";
-import gameUvUStore from "../game/store/game_uvu_fire_store";
+import gameUvUStore, { GameUvUFireStore } from "../game/store/game_uvu_fire_store";
 import { UvUGameState } from "../game/store/i_game_uvu_store";
 import { Submission, Submissions } from "../models/submissions";
 import { Users } from "../models/users";
@@ -53,6 +53,11 @@ export class UvUGameService {
   }
 
   static async end_game(game: UvUGameState) {
+    const game_exists = await gameUvUStore.game_exists(game.id as string)
+    if (!game_exists) {
+      return
+    }
+    await gameUvUStore.delete(game.id as string)
     const game_submissions = await Submissions.get_submissions_by_game_id(game.id!)
     const user_a_score_and_penalty = this.calculate_score_and_penalty(game.start_time!, game_submissions, game.username_a!)
     const user_b_score_and_penalty = this.calculate_score_and_penalty(game.start_time!, game_submissions, game.username_b!)
@@ -61,7 +66,6 @@ export class UvUGameService {
     await this.update_users_rank_and_mmr(game_result.user_a_result)
     await this.update_users_rank_and_mmr(game_result.user_b_result)
     UvUGameSocketController.send_game_result_to_users(game_result)
-
   }
 
   static async update_users_rank_and_mmr(user_result: UvUUserResult) {

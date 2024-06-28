@@ -21,15 +21,14 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
     )
     const expected_outcome_user_a = this.calculate_expected_outcome(user_a.mmr!, user_b.mmr!)
     const expected_outcome_user_b = 1 - expected_outcome_user_a
-
     const new_user_a_mmr = this.calculate_new_mmr(
       user_a.mmr!, this.get_score(user_a_uvu_game_result.status!), expected_outcome_user_a
     )
     const new_user_b_mmr = this.calculate_new_mmr(
       user_b.mmr!, this.get_score(user_b_uvu_game_result.status!), expected_outcome_user_b
     )
-    user_a_uvu_game_result.new_mmr = Math.max(new_user_a_mmr, 800)
-    user_b_uvu_game_result.new_mmr = Math.max(new_user_b_mmr, 800)
+    user_a_uvu_game_result.new_mmr = new_user_a_mmr
+    user_b_uvu_game_result.new_mmr = new_user_b_mmr
 
     const user_a_new_tier_and_points = await this.calculate_tier_and_points(new_user_a_mmr)
     const user_b_new_tier_and_points = await this.calculate_tier_and_points(new_user_b_mmr)
@@ -82,10 +81,10 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
   }
 
   private get_score(uvu_user_game_status: UvUUserGameStatus) {
-    if (uvu_user_game_status = UvUUserGameStatus.Win) {
+    if (uvu_user_game_status == UvUUserGameStatus.Win) {
       return 1;
     }
-    else if (uvu_user_game_status = UvUUserGameStatus.Lose) {
+    else if (uvu_user_game_status == UvUUserGameStatus.Lose) {
       return 0;
     }
     else {
@@ -99,7 +98,7 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
 
   private calculate_new_mmr(old_mmr: number, score: number, expected_score: number) {
     const new_mmr = old_mmr + K * (score - expected_score)
-    return new_mmr
+    return Math.max(new_mmr, 800)
   }
 
   private determine_winner(user_a_score_and_penalty: UserScoreAndPenalty,
@@ -107,12 +106,12 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
     user_a_uvu_game_result: UvUUserResult,
     user_b_uvu_game_result: UvUUserResult) {
     if (user_a_score_and_penalty.score > user_b_score_and_penalty.score) {
-      user_b_uvu_game_result.status = UvUUserGameStatus.Win
-      user_a_uvu_game_result.status = UvUUserGameStatus.Lose
-    }
-    else if (user_a_score_and_penalty.score < user_a_score_and_penalty.score) {
       user_a_uvu_game_result.status = UvUUserGameStatus.Win
       user_b_uvu_game_result.status = UvUUserGameStatus.Lose
+    }
+    else if (user_a_score_and_penalty.score < user_b_score_and_penalty.score) {
+      user_b_uvu_game_result.status = UvUUserGameStatus.Win
+      user_a_uvu_game_result.status = UvUUserGameStatus.Lose
     }
     else {
       if (user_a_score_and_penalty.penalty < user_b_score_and_penalty.penalty) {

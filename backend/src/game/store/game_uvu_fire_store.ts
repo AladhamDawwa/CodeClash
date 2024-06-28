@@ -40,11 +40,20 @@ export class GameUvUFireStore implements IGameUvUStore {
     const ref = uvu_games_collection.doc(game_id)
     await ref.update(new_game_state)
   }
-  async get(game_id: string): Promise<UvUGameState> {
+  async get(game_id: string): Promise<UvUGameState | null> {
     const ref = await uvu_games_collection.doc(game_id)
     const doc = await ref.get()
+    if (!doc.exists) {
+      return null
+    }
     const game_state = doc.data()
     return game_state!
+  }
+
+  async game_exists(game_id: string): Promise<boolean> {
+    const ref = await uvu_games_collection.doc(game_id)
+    const doc = await ref.get()
+    return doc.exists
   }
 }
 

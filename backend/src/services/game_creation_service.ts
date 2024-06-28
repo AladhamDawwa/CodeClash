@@ -2,10 +2,12 @@ import { GameUvUFireStore } from "../game/store/game_uvu_fire_store";
 import { IGameUvUStore, UvUGameState } from "../game/store/i_game_uvu_store";
 import { ProblemLevels } from "../models/problem_levels";
 import { User, Users } from "../models/users";
+import { UsersUnsolvedProblems } from "../models/users_unsolved_problems";
 import { GameMode, GameType } from "../utils/definitions/games_types";
 import { ProblemPickerService } from "./problem_picker_service";
 import { addMinutes, addSeconds } from 'date-fns';
 import dotenv from 'dotenv'
+import { UvUGameService } from "./uvu_game_service";
 dotenv.config();
 
 const { UVU_GAME_START_TIME_DELAY } = process.env;
@@ -27,6 +29,9 @@ export class GameCreationService {
     )
     const game_id = await this.game_uvu_store.create(uvu_game_state)
     uvu_game_state.id = game_id
+    // UsersUnsolvedProblems.remove_problem(user_a.username!, problem?.id!, problem?.rating!)
+    // UsersUnsolvedProblems.remove_problem(user_b.username!, problem?.id!, problem?.rating!)
+    setTimeout(() => { UvUGameService.end_game(uvu_game_state) }, uvu_game_state.end_time?.getTime()! - Date.now())
     return uvu_game_state
   }
 
