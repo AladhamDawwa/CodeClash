@@ -37,8 +37,14 @@ export class MatchMakerSocketController {
   }
 
   send_uvu_game_to_users(uvu_game_state: UvUGameState) {
-    ConnectedUsers.get_socket(uvu_game_state.username_a!).emit("match_maker_client:found_match", uvu_game_state)
-    ConnectedUsers.get_socket(uvu_game_state.username_b!).emit("match_maker_client:found_match", uvu_game_state)
+    this.send_uvu_game_to_user(uvu_game_state.username_a!, uvu_game_state)
+    this.send_uvu_game_to_user(uvu_game_state.username_b!, uvu_game_state)
+  }
+
+  send_uvu_game_to_user(username: string, uvu_game_state: UvUGameState) {
+    const socket = ConnectedUsers.get_socket(username)
+    socket && socket.emit("match_maker_client:found_match", uvu_game_state)
+
   }
 
   register_events() {

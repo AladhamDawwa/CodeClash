@@ -4,7 +4,7 @@ import { db } from "../firebase";
 import { User, Users } from "./users";
 import { firestore } from "firebase-admin";
 import { Filter } from "firebase-admin/firestore";
-
+import * as firestore_admin from 'firebase-admin'
 dotenv.config();
 export type UserUnsolvedProblems = {
   id?: string;
@@ -175,8 +175,16 @@ export class UsersUnsolvedProblems {
     console.log(`Problem ${problem_title} added to users`)
   }
 
-  static async remove_problem(usernmae: string, problem_id: string, problem_rate: string) {
-
+  static async remove_problem(username: string, problem_id: string, problem_rate: string) {
+    const snapshot = await users_unsolved_problems_collection.where("username", "==", username).get()
+    snapshot.forEach(async (doc) => {
+      const docRef = doc.ref
+      const updateData: {
+        [key: string]: firestore_admin.firestore.FieldValue
+      } = {};
+      updateData[`rating_${problem_rate}`] = firestore_admin.firestore.FieldValue.arrayRemove(problem_id);
+      await docRef.update(updateData)
+    });
   }
 
   static async record_for_user_exists(username: string): Promise<boolean> {
