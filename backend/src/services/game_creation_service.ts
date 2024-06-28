@@ -32,8 +32,25 @@ export class GameCreationService {
     // UsersUnsolvedProblems.remove_problem(user_a.username!, problem?.id!, problem?.rating!)
     // UsersUnsolvedProblems.remove_problem(user_b.username!, problem?.id!, problem?.rating!)
     setTimeout(() => { UvUGameService.end_game(uvu_game_state) }, uvu_game_state.end_time?.getTime()! - Date.now())
+    this.update_users_statuses(game_id as string, username_a, username_b)
     return uvu_game_state
   }
+
+  static update_users_statuses(game_id: string, username_a: string, username_b: string) {
+    Users.update({
+      status: {
+        in_uvu_game: true,
+        uvu_game_id: game_id as string
+      }
+    }, username_a)
+    Users.update({
+      status: {
+        in_uvu_game: true,
+        uvu_game_id: game_id as string
+      }
+    }, username_b)
+  }
+
 
   static create_uvu_game_state(username_a: string, username_b: string, game_mode: GameMode, problem_id: string, game_duration: number): UvUGameState {
     let start_time = new Date()

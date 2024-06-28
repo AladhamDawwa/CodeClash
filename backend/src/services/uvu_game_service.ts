@@ -67,7 +67,13 @@ export class UvUGameService {
     await this.update_users_rank_and_mmr(game_result.user_a_result)
     await this.update_users_rank_and_mmr(game_result.user_b_result)
     UvUGameSocketController.send_game_result_to_users(game_result)
+    this.clear_users_statuses(game.username_a!, game.username_b!)
     UvUGamesHistory.create(game, game_result)
+  }
+
+  static clear_users_statuses(username_a: string, username_b: string) {
+    Users.clear_status(username_a, ["in_uvu_game", "uvu_game_id"])
+    Users.clear_status(username_b, ["in_uvu_game", "uvu_game_id"])
   }
 
   static async update_users_rank_and_mmr(user_result: UvUUserResult) {

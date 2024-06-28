@@ -19,6 +19,7 @@ import { UvUGameSocketController } from './socket_controllers/uvu_game'
 import { Tiers } from './models/tiers'
 import { SubmissionsController } from './controllers/submissions'
 import { GameHistoryController } from './controllers/game_history'
+import { Users } from './models/users'
 
 
 dotenv.config()
@@ -56,3 +57,6 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
+
+
+Users.clear_status("mmr_800_1", ["in_uvu_game", "uvu_game_id"])
