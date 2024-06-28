@@ -18,6 +18,7 @@ export const db = {
   problem_levels: firestore.collection("problem_levels"),
   submissions: firestore.collection("submissions"),
   teams: firestore.collection("teams"),
+  uvu_games_history: firestore.collection("uvu_games_history")
 }
 
 

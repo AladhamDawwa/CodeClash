@@ -71,17 +71,19 @@ export class Submissions {
       ).
       orderBy("submission_time")
       .get();
-    const data = snapshot.docs.map(doc => doc.data());
-    const submissions: Submission[] = []
-    for (const submission of data) {
-      submissions.push({
-        username: submission["username"],
-        score: submission["score"],
-        submission_time: submission["submission_time"],
-        status: submission["status"]
-      })
-    }
-    return submissions
+
+    const submissions: Submission[] = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        username: data["username"],
+        score: data["score"],
+        submission_time: data["submission_time"],
+        status: data["status"],
+      };
+    });
+
+    return submissions;
   }
 
   static async get_by_id(submission_id: string) {
@@ -89,6 +91,15 @@ export class Submissions {
     const doc = await ref.get()
     const submission = doc.data()
     return submission!
+  }
+
+  static async get_by_game_id_and_username(game_id: string | number, username: string): Promise<Submission[]> {
+    const snapshot = await submissions_collection
+      .where("username", "==", username)
+      .where("game_id", "==", game_id)
+      .get()
+    const submissions = snapshot.docs.map((doc) => doc.data());
+    return submissions
   }
 
 } 

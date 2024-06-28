@@ -3,6 +3,7 @@ import gameUvUStore, { GameUvUFireStore } from "../game/store/game_uvu_fire_stor
 import { UvUGameState } from "../game/store/i_game_uvu_store";
 import { Submission, Submissions } from "../models/submissions";
 import { Users } from "../models/users";
+import { UvUGamesHistory } from "../models/uvu_game_history";
 import { UvUGameSocketController, UvUGameSubmissionRequest } from "../socket_controllers/uvu_game";
 import { RankTier } from "../utils/definitions/rank_tier";
 import { JudgeResult, JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
@@ -66,6 +67,7 @@ export class UvUGameService {
     await this.update_users_rank_and_mmr(game_result.user_a_result)
     await this.update_users_rank_and_mmr(game_result.user_b_result)
     UvUGameSocketController.send_game_result_to_users(game_result)
+    UvUGamesHistory.create(game, game_result)
   }
 
   static async update_users_rank_and_mmr(user_result: UvUUserResult) {
