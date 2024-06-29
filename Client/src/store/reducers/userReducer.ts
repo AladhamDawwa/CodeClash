@@ -47,6 +47,13 @@ const userSlice = createSlice({
         gameInfo: action.payload,
       };
     },
+    updateGameResult: (state, action: PayloadAction<any>) => {
+      state.data = {
+        ...state.data,
+        gameInfo: null,
+        ...action.payload,
+      };
+    },
   },
   extraReducers: builder => {
     builder
@@ -212,5 +219,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearUserData, clearUserState, foundMatch } = userSlice.actions;
+export const { clearUserData, clearUserState, foundMatch, updateGameResult } =
+  userSlice.actions;
 export default userSlice.reducer;
