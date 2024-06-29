@@ -9,7 +9,7 @@ import {
 } from '../../store/actions/userInfo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-
+import GAME_STATUS from '../../utils/game_status';
 const GameHistory = () => {
   const dispatch = useDispatch();
 
@@ -40,7 +40,7 @@ const GameHistory = () => {
       },
     );
   }, [dispatch, username, jwtToken]);
-
+  console.log(gameHistory);
   return (
     <div
       style={{
@@ -58,13 +58,11 @@ const GameHistory = () => {
         <Stack direction="column" spacing={5}>
           {gameHistory.map((match, index) => (
             <MatchCard
-              problemName="reverse integer"
-              date="April 06, 2023"
+              problemName={match.id}
               oppImage="/assets/avatar.png"
-              status="loser"
-              amount={50}
+              status={GAME_STATUS[match.user_a_result.status]}
+              amount={match.user_a_result.delta}
               key={index}
-              gameCard={match}
               submissions={gameSubmissions[index]}
             />
           ))}
