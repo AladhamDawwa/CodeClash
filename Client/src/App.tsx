@@ -22,6 +22,7 @@ import AppLayout from './components/AppLayout';
 import { useEffect } from 'react';
 import MatchLoading from './pages/MatchLoading/MatchLoading';
 import Teams from './pages/Teams/Teams';
+import Test from './components/testComponent/Test';
 
 interface PrivateRouteProps {
   children: JSX.Element;
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <Routes>
+      <Route path="/test" element={<Test />} />
       <Route path="/entry" element={<EntryPage />} />
       <Route element={<AppLayout />}>
         <Route

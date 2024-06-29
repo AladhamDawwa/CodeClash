@@ -1,7 +1,32 @@
 import { Stack } from "@mui/material";
 import Timer from "../Timer";
+import { useEffect, useState } from "react";
+import GAME_STATUS from "../../utils/game_status";
+import ResultCard from "../ResultCard";
 
 const Test = () => {
+  const [gameFinished, setGameFinished] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setGameFinished(true);
+    }, 3000);
+  }, []);
+  return (
+    <>
+      <div style={{
+        height: '100vh',
+        backgroundColor: 'red',
+        fontSize: '20rem',
+      }}>Hello</div>
+      {gameFinished &&
+        <ResultCard 
+          status={GAME_STATUS[1]}
+          rank={-10}
+          level={0}
+        />
+      }
+    </>
+  )
   // const problem = '';
   // return ( problem &&
     
