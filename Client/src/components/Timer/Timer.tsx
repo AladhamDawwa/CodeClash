@@ -41,7 +41,7 @@ const Timer = () => {
       userData.username === userData.gameInfo.username_a
         ? userData.gameInfo.username_b
         : userData.gameInfo.username_a;
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/${opponentName}`;
+    const url = `https://codeclash-backend.packetmasr.shop/users/${opponentName}`;
     axios
       .get(url, {
         headers: {

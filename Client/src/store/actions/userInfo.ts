@@ -128,7 +128,7 @@ interface GameHistory {
 export const getUserByUsername = createAsyncThunk(
   'user/getUserByUsername',
   async ({ username, jwtToken }: GetUserByUsernameParams, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/${username}`;
+    const url = `https://codeclash-backend.packetmasr.shop/users/${username}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -150,7 +150,7 @@ export const getUserByUsername = createAsyncThunk(
 export const getProblemInfo = createAsyncThunk(
   'user/getProblemInfo',
   async ({ problemId, jwtToken }: GetProblemInfoParams, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/problems/${problemId}`;
+    const url = `https://codeclash-backend.packetmasr.shop/problems/${problemId}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -174,7 +174,7 @@ export const getProblemInfo = createAsyncThunk(
 export const getGameHistory = createAsyncThunk(
   'user/getGameHistory',
   async ({ username, jwtToken }: GetGameHistory, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/game_history/${username}`;
+    const url = `https://codeclash-backend.packetmasr.shop/game_history/${username}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -198,7 +198,7 @@ export const getGameHistory = createAsyncThunk(
 export const getGameSubmissions = createAsyncThunk(
   'user/getGameSubmissions',
   async ({ gameId, username, jwtToken }: GetGameSubmissions, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/submissions/${gameId}/${username}`;
+    const url = `https://codeclash-backend.packetmasr.shop/submissions/${gameId}/${username}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -242,7 +242,7 @@ export const updateUser = createAsyncThunk(
 
     try {
       const response = await axios.put(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users',
+        'https://codeclash-backend.packetmasr.shop/users',
         newData,
         {
           headers: {
@@ -274,7 +274,7 @@ export const addTeam = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/create',
+        'https://codeclash-backend.packetmasr.shop/teams/create',
         data,
         {
           headers: {
@@ -309,7 +309,7 @@ export const editTeam = createAsyncThunk(
 
     try {
       const response = await axios.put(
-        `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/${oldteamName}`,
+        `https://codeclash-backend.packetmasr.shop/teams/${oldteamName}`,
         data,
         {
           headers: {
@@ -336,7 +336,7 @@ export const getUserTeams = createAsyncThunk(
   async ({ jwtToken }: getTeamsParams, thunkAPI) => {
     try {
       const response = await axios.get(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/all',
+        'https://codeclash-backend.packetmasr.shop/teams/all',
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -367,7 +367,7 @@ export const inviteUser = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/invite',
+        'https://codeclash-backend.packetmasr.shop/teams/invite',
         data,
         {
           headers: {

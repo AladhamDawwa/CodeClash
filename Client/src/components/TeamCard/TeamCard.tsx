@@ -38,18 +38,15 @@ const TeamCard = ({ team }: any) => {
 
   const handleDeleteTeam = () => {
     axios
-      .delete(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/delete',
-        {
-          headers: {
-            Authorization: `Bearer ${auth.user.token}`,
-            'Content-Type': 'application/json',
-          },
-          data: {
-            team_name: Team.team_name,
-          },
+      .delete('https://codeclash-backend.packetmasr.shop/teams/delete', {
+        headers: {
+          Authorization: `Bearer ${auth.user.token}`,
+          'Content-Type': 'application/json',
         },
-      )
+        data: {
+          team_name: Team.team_name,
+        },
+      })
       .then(() => {
         setSnackbar({
           open: true,
@@ -367,7 +364,7 @@ const TeamCard = ({ team }: any) => {
                   onClick={() => {
                     axios
                       .post(
-                        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/remove_user',
+                        'https://codeclash-backend.packetmasr.shop/teams/remove_user',
                         {
                           team_name: Team.team_name,
                           user: member,
