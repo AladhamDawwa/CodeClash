@@ -28,6 +28,7 @@ import './styles.css';
 import ResultCard from '../../components/ResultCard';
 import GAME_STATUS from '../../utils/game_status';
 import { updateGameResult } from '../../store/reducers/userReducer';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 const GamePage = () => {
   const authState = useSelector((state: RootState) => state.auth);
@@ -51,6 +52,7 @@ const GamePage = () => {
   const [problem, setProblem] = useState<any>();
   const [gameFinished, setGameFinished] = useState(false);
   const [gameResult, setGameResult] = useState<any>();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     dispatch<any>(getProblemInfo({ problemId, jwtToken })).then((res: any) => {
@@ -60,7 +62,7 @@ const GamePage = () => {
 
   useEffect(() => {
     socket.on('uvu_game_client:submission_notification', (data: any) => {
-      alert(data);
+      enqueueSnackbar(data, { variant : 'info' });
     });
 
     socket.on('uvu_game_client:send_game_result', (data: any) => {
@@ -72,10 +74,10 @@ const GamePage = () => {
       setGameFinished(true);
       setGameResult(data);
     });
-  }, [dispatch, gameId]);
+  }, [dispatch, gameId, enqueueSnackbar]);
 
   return (
-    <>
+    <>    
       { gameId &&
         <Stack direction={'column'} alignItems={'center'}>
           <Button variant="contained" sx={{
@@ -319,4 +321,16 @@ const GamePage = () => {
   );
 };
 
-export default GamePage;
+const IntegrationNotifyStack = () => {
+  return (
+    <SnackbarProvider maxSnack={3} style={{
+      color: 'white',
+      fontSize: '1.8rem',
+      borderRadius: '1rem',
+    }}>
+      <GamePage />
+    </SnackbarProvider>
+  );
+};
+
+export default IntegrationNotifyStack;

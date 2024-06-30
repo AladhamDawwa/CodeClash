@@ -6,10 +6,13 @@ import { Button } from '@mui/material';
 import { encode } from 'js-base64';
 import socket from '../../socket';
 import languages from '../../pages/GamePage/languages.json';
+import { useSnackbar } from 'notistack';
+import SubmissionStatus from '../../utils/submission_status';
 const CodeEditor = ({ languageId, gameID }: any) => {
   const [language, setLanguage] = useState<string>('cpp');
   const [code, setCode] = useState(`// Write your ${language} code here`);
   const monaco = useMonaco();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setLanguage(languages.find((lang) => lang.id == Number.parseInt(languageId))?.code || 'C++');
@@ -35,6 +38,14 @@ const CodeEditor = ({ languageId, gameID }: any) => {
       JSON.stringify({ source_code: encoded, game_id: gameID, language_id: languageId }), 
       (response: any) => {
         console.log('response', response);
+        const message = SubmissionStatus[response.status];
+        if (response.status == 3) {
+          enqueueSnackbar(message, { variant: 'success' });
+        } else if(response.status == 5) {
+          enqueueSnackbar(message, { variant: "warning" });
+        } else {
+          enqueueSnackbar(message, { variant: 'error' });
+        }
     });
   };
 

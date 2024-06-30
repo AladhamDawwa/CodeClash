@@ -1,5 +1,6 @@
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Avatar,
@@ -20,7 +21,6 @@ import { logout } from '../store/reducers/authReducer';
 import { clearUserState } from '../store/reducers/userReducer';
 import { RootState } from '../store/store';
 import RankFlag from './RankFlag/RankFlag';
-import storage from 'redux-persist/lib/storage';
 
 const drawerWidth = 200;
 
@@ -293,6 +293,45 @@ export default function MiniDrawer() {
               </ListItemIcon>
               <ListItemText
                 primary={'Game History'}
+                primaryTypographyProps={{
+                  letterSpacing: 1,
+                  fontSize: '1.5rem',
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+
+          {/* Create Problem */}
+          <ListItem
+            key={'Create Problem'}
+            disablePadding
+            sx={{
+              display: 'block',
+              '&:hover': {
+                backgroundColor: '#1a1a1a',
+              },
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                px: 1.5,
+              }}
+              onClick={() => {
+                handleDrawerClose();
+                navigate('/createProblem');
+              }}
+            >
+              <ListItemIcon>
+                <PostAddRoundedIcon
+                  sx={{
+                    color: 'white',
+                    fontSize: '4rem',
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={'Create Problem'}
                 primaryTypographyProps={{
                   letterSpacing: 1,
                   fontSize: '1.5rem',

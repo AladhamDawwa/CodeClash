@@ -23,6 +23,7 @@ import { useEffect } from 'react';
 import MatchLoading from './pages/MatchLoading/MatchLoading';
 import Teams from './pages/Teams/Teams';
 import Test from './components/testComponent/Test';
+import CreateProblem from './pages/CreateProblem/CreateProblem';
 
 interface PrivateRouteProps {
   children: JSX.Element;
@@ -84,6 +85,14 @@ function App() {
           element={
             <PrivateRoute>
               <Teams />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/createProblem"
+          element={
+            <PrivateRoute>
+              <CreateProblem />
             </PrivateRoute>
           }
         />
