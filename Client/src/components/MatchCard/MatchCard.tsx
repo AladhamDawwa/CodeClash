@@ -19,6 +19,7 @@ import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import SubmissionStatus from '../../utils/submission_status';
+
 type MatchInfo = {
   problemName: string;
   oppImage: string;
@@ -54,6 +55,7 @@ const language: { [key: number]: string } = {
   74: 'typescript',
   76: 'cpp',
 };
+
 function formatDate(dateString: string): string {
   if (!dateString) {
     return 'Invalid date';
@@ -100,6 +102,7 @@ export default function MatchCard({
   };
 
   const user = useSelector((state: RootState) => state.user.data);
+
   return (
     <div style={{ marginBottom: '5rem' }}>
       <List sx={{ padding: '0' }}>
@@ -172,30 +175,7 @@ export default function MatchCard({
               {amount}
             </p>
           </Stack>
-          {submissions.length === 0 ? (
-            <Tooltip
-              title="No submissions"
-              componentsProps={{
-                tooltip: {
-                  sx: {
-                    fontSize: '1.5rem',
-                    padding: '1rem',
-                    bgcolor: '#e33c37',
-                    textTransform: 'capitalize',
-                  },
-                },
-              }}
-            >
-              <span>
-                <ExpandMoreIcon
-                  style={{
-                    color: 'grey',
-                    fontSize: '5rem',
-                  }}
-                />
-              </span>
-            </Tooltip>
-          ) : open ? (
+          {open ? (
             <ExpandLessIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
               onClick={handleExpandClick}
@@ -210,114 +190,131 @@ export default function MatchCard({
       </List>
       <div>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <TableContainer
-            component={Paper}
-            sx={{
-              borderRadius: '0 0 0.5rem 0.5rem',
-              backgroundColor: '#0f0c29',
-            }}
-          >
-            <Table sx={{ width: '100%' }} aria-label="simple table">
-              <TableHead>
-                <TableRow
-                  sx={{
-                    backgroundColor: '#1E1E36',
-                    '& th': {
-                      color: 'white',
-                      fontSize: '2.5rem',
-                      border: 'none',
-                      textTransform: 'capitalize',
-                      height: '5rem',
-                    },
-                  }}
-                >
-                  <TableCell align="center">
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                    >
-                      <div>Status</div>
-                      <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
-                    </Stack>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                    >
-                      <div>Language</div>
-                      <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
-                    </Stack>
-                  </TableCell>
-                  <TableCell align="left">RunTime</TableCell>
-                  <TableCell align="left">Memory</TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {submissions?.map((row, index) => (
+          {submissions.length === 0 ? (
+            <div
+              style={{
+                padding: '2rem',
+                color: 'white',
+                textAlign: 'center',
+                backgroundColor: '#1E1E36',
+                borderRadius: '0 0 0.5rem 0.5rem',
+                fontSize: '2.3rem',
+                textTransform: 'capitalize',
+              }}
+            >
+              No submissions found!
+            </div>
+          ) : (
+            <TableContainer
+              component={Paper}
+              sx={{
+                borderRadius: '0 0 0.5rem 0.5rem',
+                backgroundColor: '#0f0c29',
+              }}
+            >
+              <Table sx={{ width: '100%' }} aria-label="simple table">
+                <TableHead>
                   <TableRow
-                    key={index}
                     sx={{
-                      '& td': {
-                        border: 'none',
+                      backgroundColor: '#1E1E36',
+                      '& th': {
                         color: 'white',
-                        fontSize: '2rem',
+                        fontSize: '2.5rem',
+                        border: 'none',
+                        textTransform: 'capitalize',
+                        height: '5rem',
                       },
-                      backgroundColor: index % 2 === 0 ? '#24243E' : '#1E1E36',
                     }}
                   >
                     <TableCell align="center">
                       <Stack
-                        direction="column"
+                        direction="row"
                         spacing={1}
-                        sx={{ fontSize: '1.3rem' }}
+                        alignItems={'center'}
+                        justifyContent={'center'}
                       >
-                        <div
-                          style={{
-                            color:
-                              SubmissionStatus[row.status] === 'Wrong Answer'
-                                ? '#e33c37'
-                                : SubmissionStatus[row.status] === 'Accepted'
-                                  ? '#2cbb5d'
-                                  : '#E3BD37',
-                            fontSize: '2rem',
-                          }}
-                        >
-                          {SubmissionStatus[row.status]}
-                        </div>
-                        <div style={{ color: '#999' }}>
-                          {formatDate(row.submission_time)}
-                        </div>
+                        <div>Status</div>
+                        <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
                       </Stack>
                     </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{ textTransform: 'capitalize' }}
-                    >
-                      {language[row.language_id]}
-                    </TableCell>
-                    <TableCell>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <AccessTimeOutlinedIcon sx={{ fontSize: '2.5rem' }} />
-                        <div>{row.time * 1000} ms</div>
+                    <TableCell align="center">
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                      >
+                        <div>Language</div>
+                        <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
                       </Stack>
                     </TableCell>
-                    <TableCell>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />
-                        <div>{`${row.memory} KB`}</div>
-                      </Stack>
-                    </TableCell>
+                    <TableCell align="left">RunTime</TableCell>
+                    <TableCell align="left">Memory</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+
+                <TableBody>
+                  {submissions.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        '& td': {
+                          border: 'none',
+                          color: 'white',
+                          fontSize: '2rem',
+                        },
+                        backgroundColor:
+                          index % 2 === 0 ? '#24243E' : '#1E1E36',
+                      }}
+                    >
+                      <TableCell align="center">
+                        <Stack
+                          direction="column"
+                          spacing={1}
+                          sx={{ fontSize: '1.3rem' }}
+                        >
+                          <div
+                            style={{
+                              color:
+                                SubmissionStatus[row.status] === 'Wrong Answer'
+                                  ? '#e33c37'
+                                  : SubmissionStatus[row.status] === 'Accepted'
+                                    ? '#2cbb5d'
+                                    : '#E3BD37',
+                              fontSize: '2rem',
+                            }}
+                          >
+                            {SubmissionStatus[row.status]}
+                          </div>
+                          <div style={{ color: '#999' }}>
+                            {formatDate(row.submission_time)}
+                          </div>
+                        </Stack>
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{ textTransform: 'capitalize' }}
+                      >
+                        {language[row.language_id]}
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <AccessTimeOutlinedIcon sx={{ fontSize: '2.5rem' }} />
+                          <div>{row.time * 1000} ms</div>
+                        </Stack>
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />
+                          <div>{`${row.memory} KB`}</div>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </Collapse>
       </div>
     </div>
