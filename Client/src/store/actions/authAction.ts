@@ -10,7 +10,7 @@ export const signInAction = createAsyncThunk(
   async (credentials: { username: string; password: string }) => {
     try {
       const response = await axios.post(
-        'http://localhost:5000/users/login',
+        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/login',
         credentials,
         {
           headers: { 'Content-Type': 'application/json' },
@@ -37,7 +37,7 @@ export const signUpAction = createAsyncThunk(
   }) => {
     try {
       const response = await axios.post(
-        'http://localhost:5000/users/signup',
+        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/signup',
         credentials,
         {
           headers: { 'Content-Type': 'application/json' },
@@ -58,7 +58,8 @@ export const uploadImage = async (
   file: File,
   jwtToken: string,
 ): Promise<void> => {
-  const url = 'http://localhost:5000/users/profile_picture';
+  const url =
+    'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/profile_picture';
   const formData = new FormData();
   formData.append('image', file);
 
