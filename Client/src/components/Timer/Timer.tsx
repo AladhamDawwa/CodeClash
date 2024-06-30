@@ -16,7 +16,9 @@ const Timer = () => {
   const { data: userData } = userState;
 
   useEffect(() => {
-    const endTime = new Date(userData.gameInfo.start_time).getTime() + userData.gameInfo.duration * 60 * 1000;
+    const endTime =
+      new Date(userData.gameInfo.start_time).getTime() +
+      userData.gameInfo.duration * 60 * 1000;
     const intervalId = setInterval(() => {
       const newTimeLeft = endTime - Date.now();
 
@@ -35,16 +37,21 @@ const Timer = () => {
   const [opponent, setOpponent] = useState<any>(null);
 
   useEffect(() => {
-    const opponentName = userData.username === userData.gameInfo.username_a ? userData.gameInfo.username_b : userData.gameInfo.username_a;
-    const url = `http://localhost:5000/users/${opponentName}`;
-    axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
-      },
-    }).then((res) => {
-      setOpponent(res.data);
-    });
+    const opponentName =
+      userData.username === userData.gameInfo.username_a
+        ? userData.gameInfo.username_b
+        : userData.gameInfo.username_a;
+    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/${opponentName}`;
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(res => {
+        setOpponent(res.data);
+      });
   }, [jwtToken, userData]);
 
   const hours = Math.floor(timeLeft / (60 * 60 * 1000));
@@ -53,7 +60,7 @@ const Timer = () => {
 
   return (
     <Box
-      display="flex" 
+      display="flex"
       alignItems="center"
       justifyContent="space-between"
       width="60rem"
@@ -67,23 +74,31 @@ const Timer = () => {
         },
       }}
     >
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem',
-      }}>
-        {
-          userData && <Avatar alt="user 1" src={`assets/${ranks[userData.rank_tier]}.svg`} />
-        }
-        { userData?.image ? 
-          <Avatar alt="user 1" src={`${userData.image}`} /> : 
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+        }}
+      >
+        {userData && (
+          <Avatar
+            alt="user 1"
+            src={`assets/${ranks[userData.rank_tier]}.svg`}
+          />
+        )}
+        {userData?.image ? (
+          <Avatar alt="user 1" src={`${userData.image}`} />
+        ) : (
           <Avatar alt="user 1" src="assets/avatar.png" />
-        }
-        <p style={{
-          color: '#fff',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-        }}>
+        )}
+        <p
+          style={{
+            color: '#fff',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+          }}
+        >
           {userData.username}
         </p>
       </div>
@@ -103,25 +118,35 @@ const Timer = () => {
       >
         <Box fontSize={22}>{`${hours} : ${minutes} : ${seconds}`}</Box>
       </Box>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem',
-      }}>
-        <p style={{
-          color: '#fff',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-        }}>
-          {userData.username === userData.gameInfo.username_a ? userData.gameInfo.username_b : userData.gameInfo.username_a}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+        }}
+      >
+        <p
+          style={{
+            color: '#fff',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+          }}
+        >
+          {userData.username === userData.gameInfo.username_a
+            ? userData.gameInfo.username_b
+            : userData.gameInfo.username_a}
         </p>
-        { opponent?.image ? 
-          <Avatar alt="user 2" src={`${opponent.image}`} /> : 
+        {opponent?.image ? (
+          <Avatar alt="user 2" src={`${opponent.image}`} />
+        ) : (
           <Avatar alt="user 2" src="assets/avatar.png" />
-        }
-        {
-          opponent && <Avatar alt="user 1" src={`assets/${ranks[opponent.rank_tier]}.svg`} />
-        }
+        )}
+        {opponent && (
+          <Avatar
+            alt="user 1"
+            src={`assets/${ranks[opponent.rank_tier]}.svg`}
+          />
+        )}
       </div>
     </Box>
   );

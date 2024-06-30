@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000', {
-  autoConnect: false
+const socket = io('https://codeclash-backend-t4cnvcfzcq-ew.a.run.app', {
+  autoConnect: false,
 });
 
 export default socket;
