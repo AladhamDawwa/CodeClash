@@ -16,47 +16,72 @@ import MemoryOutlinedIcon from '@mui/icons-material/MemoryOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import SubmissionStatus from '../../utils/submission_status';
 type MatchInfo = {
   problemName: string;
-  date: string;
   oppImage: string;
   status: string;
   amount: number;
-  submissions: any;
-  gameCard: any;
+  submissions: Submission[];
 };
 
-function createData(
-  status: string,
-  time: string,
-  language: string,
-  runtime: number,
-  memory: number,
-) {
-  return { status, time, language, runtime, memory };
+interface Submission {
+  compile_output: string | null;
+  exit_code: number;
+  exit_signal: string | null;
+  game_id: string;
+  id: string;
+  language_id: number;
+  memory: number;
+  message: string | null;
+  number_of_accepted_testcases: number;
+  score: number;
+  source_code: string;
+  status: number;
+  submission_time: string;
+  time: number;
+  total_number_of_testcases: number;
+  username: string;
 }
 
-// const rows = [
-//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-//   createData('time limit', 'Aug 04, 2023', 'C++', 17, 10.8),
-//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-//   createData('wrong answer', 'Aug 04, 2023', 'C++', 17, 10.8),
-// ];
+const language: { [key: number]: string } = {
+  52: 'cpp',
+  53: 'cpp',
+  54: 'cpp',
+  63: 'javascript',
+  74: 'typescript',
+  76: 'cpp',
+};
+function formatDate(dateString: string): string {
+  if (!dateString) {
+    return 'Invalid date';
+  }
+
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    return 'Invalid date';
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  };
+
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+}
 
 export default function MatchCard({
   problemName,
-  date,
   oppImage,
   status,
   amount,
-  gameCard,
-  submissions,
+  submissions = [],
 }: MatchInfo) {
   const [open, setOpen] = useState(false);
-  console.log('submissions', submissions);
-
   let textColor: string;
   switch (status) {
     case 'loser':
@@ -92,14 +117,19 @@ export default function MatchCard({
           }}
         >
           <div>
-            <Stack direction="column" spacing={1}>
-              <p className="level-p">{problemName}</p>
-              <p style={{ color: 'grey', fontSize: '1.7rem' }}>{date}</p>
-            </Stack>
+            <p className="level-p">{problemName}</p>
           </div>
           <div>
             <Stack direction="row" spacing={4} alignContent={'center'}>
-              <img src={user.image} alt="user image" className="user-img" />
+              {user?.data?.image === undefined ? (
+                <Avatar sx={{ width: '5rem', height: '5rem' }} />
+              ) : (
+                <img
+                  src={user?.data.image}
+                  alt="user image"
+                  className="user-img"
+                />
+              )}
               <p
                 style={{
                   color: 'white',
@@ -109,7 +139,11 @@ export default function MatchCard({
               >
                 VS
               </p>
-              <img src={oppImage} alt="opponent image" className="user-img" />
+              <img
+                src={oppImage}
+                alt="opponent image"
+                style={{ width: '5rem', height: '5rem', borderRadius: '100%' }}
+              />
             </Stack>
           </div>
           <p
@@ -135,11 +169,33 @@ export default function MatchCard({
                 fontWeight: 'bold',
               }}
             >
-              {status === 'loser' ? `- ${amount}` : `${amount}`}
+              {amount}
             </p>
           </Stack>
-
-          {open ? (
+          {submissions.length === 0 ? (
+            <Tooltip
+              title="No submissions"
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    fontSize: '1.5rem',
+                    padding: '1rem',
+                    bgcolor: '#e33c37',
+                    textTransform: 'capitalize',
+                  },
+                },
+              }}
+            >
+              <span>
+                <ExpandMoreIcon
+                  style={{
+                    color: 'grey',
+                    fontSize: '5rem',
+                  }}
+                />
+              </span>
+            </Tooltip>
+          ) : open ? (
             <ExpandLessIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
               onClick={handleExpandClick}
@@ -156,47 +212,45 @@ export default function MatchCard({
         <Collapse in={open} timeout="auto" unmountOnExit>
           <TableContainer
             component={Paper}
-            sx={{ borderRadius: '0 0 0.5rem 0.5rem' }}
+            sx={{
+              borderRadius: '0 0 0.5rem 0.5rem',
+              backgroundColor: '#0f0c29',
+            }}
           >
             <Table sx={{ width: '100%' }} aria-label="simple table">
               <TableHead>
                 <TableRow
                   sx={{
-                    backgroundColor: '#24243E',
+                    backgroundColor: '#1E1E36',
                     '& th': {
                       color: 'white',
                       fontSize: '2.5rem',
                       border: 'none',
                       textTransform: 'capitalize',
                       height: '5rem',
-                      textAlign: 'start',
                     },
                   }}
                 >
-                  <TableCell>
+                  <TableCell align="center">
                     <Stack
                       direction="row"
                       spacing={1}
                       alignItems={'center'}
-                      justifyContent={'flex-start'}
+                      justifyContent={'center'}
                     >
                       <div>Status</div>
-                      <div>
-                        <FilterAltOutlinedIcon sx={{ fontSize: '3rem' }} />
-                      </div>
+                      <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
                     </Stack>
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="center">
                     <Stack
                       direction="row"
                       spacing={1}
                       alignItems={'center'}
-                      justifyContent={'flex-start'}
+                      justifyContent={'center'}
                     >
                       <div>Language</div>
-                      <div>
-                        <FilterAltOutlinedIcon sx={{ fontSize: '3rem' }} />
-                      </div>
+                      <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
                     </Stack>
                   </TableCell>
                   <TableCell align="left">RunTime</TableCell>
@@ -205,7 +259,7 @@ export default function MatchCard({
               </TableHead>
 
               <TableBody>
-                {submissions?.map((row: any, index: number) => (
+                {submissions?.map((row, index) => (
                   <TableRow
                     key={index}
                     sx={{
@@ -213,54 +267,49 @@ export default function MatchCard({
                         border: 'none',
                         color: 'white',
                         fontSize: '2rem',
-                        textTransform: 'capitalize',
-                        textAlign: 'start',
                       },
-                      backgroundColor: index % 2 === 0 ? '#0f0c29' : '#24243E',
+                      backgroundColor: index % 2 === 0 ? '#24243E' : '#1E1E36',
                     }}
                   >
                     <TableCell align="center">
                       <Stack
                         direction="column"
                         spacing={1}
-                        sx={{ fontSize: '1.7rem' }}
+                        sx={{ fontSize: '1.3rem' }}
                       >
                         <div
                           style={{
                             color:
-                              row.status === 'wrong answer'
+                              SubmissionStatus[row.status] === 'Wrong Answer'
                                 ? '#e33c37'
-                                : row.status === 'accepted'
+                                : SubmissionStatus[row.status] === 'Accepted'
                                   ? '#2cbb5d'
                                   : '#E3BD37',
                             fontSize: '2rem',
                           }}
                         >
-                          {row.status}
+                          {SubmissionStatus[row.status]}
                         </div>
-                        <div style={{ color: '#999' }}>{row.time}</div>
+                        <div style={{ color: '#999' }}>
+                          {formatDate(row.submission_time)}
+                        </div>
                       </Stack>
                     </TableCell>
-                    <TableCell align="center">{row.language}</TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{ textTransform: 'capitalize' }}
+                    >
+                      {language[row.language_id]}
+                    </TableCell>
                     <TableCell>
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        justifyContent={'left'}
-                      >
-                        {<AccessTimeOutlinedIcon sx={{ fontSize: '2.5rem' }} />}
-                        <div>{`${row.runtime}ms`}</div>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <AccessTimeOutlinedIcon sx={{ fontSize: '2.5rem' }} />
+                        <div>{row.time * 1000} ms</div>
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        justifyContent={'left'}
-                      >
-                        {<MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />}
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />
                         <div>{`${row.memory} KB`}</div>
                       </Stack>
                     </TableCell>
