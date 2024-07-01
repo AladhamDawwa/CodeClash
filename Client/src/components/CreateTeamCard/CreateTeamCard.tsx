@@ -7,7 +7,6 @@ import { addTeam } from '../../store/actions/userInfo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useSnackbar } from 'notistack';
-
 const theme = createTheme({
   palette: {
     mode: 'dark',
@@ -62,7 +61,7 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
       const jwtToken = authState.user.token;
       dispatch<any>(addTeam({ jwtToken, teamName, slogan }))
         .then((responseData: { payload: any }) => {
-          if (responseData.payload === 'Team name already exists') {
+          if (responseData.payload === 'team name already exists') {
             setRepeatedTeamName(true);
             enqueueSnackbar('Team name is repeated', { variant: 'error' });
           } else {
