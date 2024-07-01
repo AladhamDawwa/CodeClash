@@ -64,9 +64,9 @@ class UsersController {
     static update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let new_user = req.body.new_user;
-            let username = req.body.username;
+            const username = req.body.username;
             new_user = yield users_1.Users.update(new_user, username);
-            res.json({ user: new_user });
+            res.json(new_user);
         });
     }
     static get_by_username(req, res) {

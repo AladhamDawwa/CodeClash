@@ -12,7 +12,7 @@ const MatchMaker = () => {
   useEffect(() => {
     const { user } = auth;
 
-    const socket = io('http://localhost:5000', {
+    const socket = io('https://codeclash-backend-t4cnvcfzcq-ew.a.run.app', {
       extraHeaders: {
         token: user.token,
       },
