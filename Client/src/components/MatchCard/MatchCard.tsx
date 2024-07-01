@@ -17,8 +17,8 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import SubmissionStatus from '../../utils/submission_status';
+import language from '../../pages/GamePage/languages.json';
 
 type MatchInfo = {
   problemName: string;
@@ -26,6 +26,7 @@ type MatchInfo = {
   status: string;
   amount: number;
   submissions: Submission[];
+  startDate: any;
 };
 
 interface Submission {
@@ -46,15 +47,6 @@ interface Submission {
   total_number_of_testcases: number;
   username: string;
 }
-
-const language: { [key: number]: string } = {
-  52: 'cpp',
-  53: 'cpp',
-  54: 'cpp',
-  63: 'javascript',
-  74: 'typescript',
-  76: 'cpp',
-};
 
 function formatDate(dateString: string): string {
   if (!dateString) {
@@ -77,11 +69,11 @@ function formatDate(dateString: string): string {
 }
 
 export default function MatchCard({
-  problemName,
   oppImage,
   status,
   amount,
   submissions = [],
+  startDate,
 }: MatchInfo) {
   const [open, setOpen] = useState(false);
   let textColor: string;
@@ -103,6 +95,17 @@ export default function MatchCard({
 
   const user = useSelector((state: RootState) => state.user.data);
 
+  const milliseconds =
+    startDate._seconds * 1000 + startDate._nanoseconds / 1000000;
+  const gameDate = new Date(milliseconds);
+
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  };
+  const formattedDate = gameDate.toLocaleDateString('en-US', options);
+
   return (
     <div style={{ marginBottom: '5rem' }}>
       <List sx={{ padding: '0' }}>
@@ -119,10 +122,10 @@ export default function MatchCard({
             padding: '0 2rem',
           }}
         >
-          <div>
-            <p className="level-p">{problemName}</p>
+          <div style={{ width: '15%' }}>
+            <p className="level-p">{formattedDate}</p>
           </div>
-          <div>
+          <div style={{ width: '15%' }}>
             <Stack direction="row" spacing={4} alignContent={'center'}>
               {user?.data?.image === undefined ? (
                 <Avatar sx={{ width: '5rem', height: '5rem' }} />
@@ -155,11 +158,17 @@ export default function MatchCard({
               fontSize: '3rem',
               fontWeight: 'bold',
               textTransform: 'capitalize',
+              width: '15%',
             }}
           >
             {status}
           </p>
-          <Stack direction="row" spacing={1} alignItems={'center'}>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems={'center'}
+            sx={{ width: '15%' }}
+          >
             <img
               src="/assets/Rank.svg"
               alt="level image"
@@ -226,30 +235,35 @@ export default function MatchCard({
                       },
                     }}
                   >
-                    <TableCell align="center">
+                    <TableCell align="center" sx={{ width: '15%' }}>
                       <Stack
                         direction="row"
                         spacing={1}
                         alignItems={'center'}
-                        justifyContent={'center'}
+                        justifyContent={'flex-start'}
                       >
                         <div>Status</div>
                         <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
                       </Stack>
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell align="center" sx={{ width: '15%' }}>
                       <Stack
                         direction="row"
                         spacing={1}
                         alignItems={'center'}
-                        justifyContent={'center'}
+                        justifyContent={'flex-start'}
                       >
                         <div>Language</div>
                         <FilterAltOutlinedIcon sx={{ fontSize: '2.5rem' }} />
                       </Stack>
                     </TableCell>
-                    <TableCell align="left">RunTime</TableCell>
-                    <TableCell align="left">Memory</TableCell>
+                    <TableCell align="left" sx={{ width: '15%' }}>
+                      RunTime
+                    </TableCell>
+                    <TableCell align="left" sx={{ width: '15%' }}>
+                      Memory
+                    </TableCell>
+                    <TableCell align="left" sx={{ width: '2%' }}></TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -267,7 +281,7 @@ export default function MatchCard({
                           index % 2 === 0 ? '#24243E' : '#1E1E36',
                       }}
                     >
-                      <TableCell align="center">
+                      <TableCell align="left">
                         <Stack
                           direction="column"
                           spacing={1}
@@ -292,10 +306,13 @@ export default function MatchCard({
                         </Stack>
                       </TableCell>
                       <TableCell
-                        align="center"
+                        align="left"
                         sx={{ textTransform: 'capitalize' }}
                       >
-                        {language[row.language_id]}
+                        {
+                          language.find(lang => lang.id === row.language_id)
+                            ?.name
+                        }
                       </TableCell>
                       <TableCell>
                         <Stack direction="row" spacing={1} alignItems="center">
@@ -309,6 +326,7 @@ export default function MatchCard({
                           <div>{`${row.memory} KB`}</div>
                         </Stack>
                       </TableCell>
+                      <TableCell></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -1,3 +1,5 @@
+import { CircularProgress } from '@mui/material';
+
 export default function LoadingState() {
   return (
     <div
@@ -9,7 +11,14 @@ export default function LoadingState() {
         gap: '2rem',
       }}
     >
-      <p style={{ color: 'white', fontSize: '2rem' }}>Loading...</p>
+      {/* <p style={{ color: 'white', fontSize: '2rem' }}>Loading...</p> */}
+      <CircularProgress
+        sx={{
+          color: 'white',
+          width: '6rem',
+          height: '6rem',
+        }}
+      />
       <img
         src="assets/logo.svg"
         alt="logo image"

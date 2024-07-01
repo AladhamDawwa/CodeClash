@@ -10,12 +10,14 @@ import {
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import GAME_STATUS from '../../utils/game_status';
+import LoadingState from '../../components/LoadingState';
 const GameHistory = () => {
   const dispatch = useDispatch();
 
-  const user = useSelector((state: RootState) => state.user.data);
   const authState = useSelector((state: RootState) => state.auth);
-  const username = user?.username;
+  const { loading, data } = useSelector((state: RootState) => state.user);
+
+  const username = data?.username;
   const [gameHistory, setGameHistory] = useState<any[]>([]);
   const [gameSubmissions, setGameSubmissions] = useState<any[]>([]);
 
@@ -42,33 +44,39 @@ const GameHistory = () => {
   }, [dispatch, username, jwtToken]);
   console.log(gameHistory);
   return (
-    <div
-      style={{
-        width: '100%',
-        padding: '3rem 6rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '3rem',
-      }}
-    >
-      <Typography variant="h2" sx={{ color: 'white', fontWeight: 'bold' }}>
-        Latest Matches
-      </Typography>
-      <div>
-        <Stack direction="column" spacing={5}>
-          {gameHistory.map((match, index) => (
-            <MatchCard
-              problemName={match.id}
-              oppImage="/assets/avatar.png"
-              status={GAME_STATUS[match.user_a_result.status]}
-              amount={match.user_a_result.delta}
-              key={index}
-              submissions={gameSubmissions[index]}
-            />
-          ))}
-        </Stack>
-      </div>
-    </div>
+    <>
+      {loading && <LoadingState />}
+      {!loading && gameHistory && (
+        <div
+          style={{
+            width: '100%',
+            padding: '3rem 6rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3rem',
+          }}
+        >
+          <Typography variant="h2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            Latest Matches
+          </Typography>
+          <div>
+            <Stack direction="column" spacing={5}>
+              {gameHistory.map((match, index) => (
+                <MatchCard
+                  startDate={match.start_time}
+                  problemName={match.id}
+                  oppImage="/assets/avatar.png"
+                  status={GAME_STATUS[match.user_a_result.status]}
+                  amount={match.user_a_result.delta}
+                  key={index}
+                  submissions={gameSubmissions[index]}
+                />
+              ))}
+            </Stack>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 export default GameHistory;
