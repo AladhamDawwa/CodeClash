@@ -5,14 +5,13 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { ChangeEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadingState from '../../components/LoadingState';
 import '../../index.css';
 import { uploadImage } from '../../store/actions/authAction';
 import { getUserByUsername, updateUser } from '../../store/actions/userInfo';
 import { RootState } from '../../store/store';
 import userData from './profile.json';
 import './styles.css';
-
+import { useSnackbar } from 'notistack';
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const user = useSelector((state: RootState) => state.user.data);
@@ -24,7 +23,7 @@ const ProfilePage = () => {
   const userLanguages = userData.user.languages;
   const PointsToRank = userData.user.pointsToRank;
   const PointsToLevelUp = userData.user.pointsToLevel;
-
+  const { enqueueSnackbar } = useSnackbar();
   const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
   const dispatch = useDispatch();
 
@@ -36,7 +35,12 @@ const ProfilePage = () => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       const jwtToken = authState.user.token;
-      uploadImage(file, jwtToken);
+      uploadImage(file, jwtToken).then(() => {
+        enqueueSnackbar('Image is being updated', { variant: 'info' });
+        dispatch<any>(getUserByUsername({ jwtToken, username })).then(() => {
+          enqueueSnackbar('Image is  updated', { variant: 'success' });
+        });
+      });
     }
   };
 
@@ -59,12 +63,9 @@ const ProfilePage = () => {
           username,
           description,
         }),
-      ).then((result: any) => {
-        if (updateUser.pending.match(result)) {
-          <LoadingState />;
-        } else if (updateUser.fulfilled.match(result)) {
-          dispatch<any>(getUserByUsername({ jwtToken, username }));
-        }
+      ).then(() => {
+        enqueueSnackbar('User Info is Updated', { variant: 'success' });
+        dispatch<any>(getUserByUsername({ jwtToken, username }));
       });
     } else {
       return;

@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Paper,
-  Slide,
-  TextField,
-  Snackbar,
-  Alert,
-} from '@mui/material';
+import { Box, Button, Paper, Slide, TextField } from '@mui/material';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
 import { addTeam } from '../../store/actions/userInfo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { useSnackbar } from 'notistack';
 
 const theme = createTheme({
   palette: {
@@ -36,18 +29,9 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
   const [repeatedTeamName, setRepeatedTeamName] = useState(false);
   const [teamName, setteamName] = useState('');
   const [slogan, setslogan] = useState('');
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
   const authState = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
-
-  const handleCloseSnack = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
-
+  const { enqueueSnackbar } = useSnackbar();
   const handleteamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setteamName(e.target.value);
 
@@ -78,52 +62,24 @@ const CreateTeamCard: React.FC<CreateTeamCardProps> = ({
       const jwtToken = authState.user.token;
       dispatch<any>(addTeam({ jwtToken, teamName, slogan }))
         .then((responseData: { payload: any }) => {
-          if (responseData.payload === 'team name already exists') {
+          if (responseData.payload === 'Team name already exists') {
             setRepeatedTeamName(true);
+            enqueueSnackbar('Team name is repeated', { variant: 'error' });
           } else {
             setRepeatedTeamName(false);
             onTeamCreated(responseData.payload);
             handleClose();
-            setSnackbar({
-              open: true,
-              message: 'Team created successfully',
-              severity: 'success',
-            });
+            enqueueSnackbar('New team created', { variant: 'success' });
           }
         })
         .catch((error: any) => {
           console.log(error);
-          setSnackbar({
-            open: true,
-            message: 'Error creating team',
-            severity: 'error',
-          });
         });
     }
   };
 
   return (
     <div>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnack}
-      >
-        <Alert
-          onClose={handleCloseSnack}
-          severity={snackbar.severity}
-          sx={{
-            fontSize: '1.5rem',
-            '& .MuiAlert-icon': {
-              fontSize: '2rem',
-            },
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-
       {open ? (
         <Box
           sx={{
