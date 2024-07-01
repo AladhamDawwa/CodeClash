@@ -14,6 +14,7 @@ const Timer = () => {
   const userState = useSelector((state: RootState) => state.user);
   const jwtToken = authState.user?.token;
   const { data: userData } = userState;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const endTime =
@@ -41,7 +42,7 @@ const Timer = () => {
       userData.username === userData.gameInfo.username_a
         ? userData.gameInfo.username_b
         : userData.gameInfo.username_a;
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/${opponentName}`;
+    const url = `${apiUrl}/users/${opponentName}`;
     axios
       .get(url, {
         headers: {

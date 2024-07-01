@@ -125,10 +125,12 @@ interface GameHistory {
   username_b: string;
 }
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const getUserByUsername = createAsyncThunk(
   'user/getUserByUsername',
   async ({ username, jwtToken }: GetUserByUsernameParams, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/${username}`;
+    const url = `${apiUrl}/users/${username}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -150,7 +152,7 @@ export const getUserByUsername = createAsyncThunk(
 export const getProblemInfo = createAsyncThunk(
   'user/getProblemInfo',
   async ({ problemId, jwtToken }: GetProblemInfoParams, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/problems/${problemId}`;
+    const url = `${apiUrl}/problems/${problemId}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -174,7 +176,7 @@ export const getProblemInfo = createAsyncThunk(
 export const getGameHistory = createAsyncThunk(
   'user/getGameHistory',
   async ({ username, jwtToken }: GetGameHistory, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/game_history/${username}`;
+    const url = `${apiUrl}/game_history/${username}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -198,7 +200,7 @@ export const getGameHistory = createAsyncThunk(
 export const getGameSubmissions = createAsyncThunk(
   'user/getGameSubmissions',
   async ({ gameId, username, jwtToken }: GetGameSubmissions, thunkAPI) => {
-    const url = `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/submissions/${gameId}/${username}`;
+    const url = `${apiUrl}/submissions/${gameId}/${username}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -241,16 +243,12 @@ export const updateUser = createAsyncThunk(
     };
 
     try {
-      const response = await axios.put(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users',
-        newData,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.put(`${apiUrl}/users`, newData, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
       return response.data;
     } catch (error) {
@@ -273,16 +271,12 @@ export const addTeam = createAsyncThunk(
     };
 
     try {
-      const response = await axios.post(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/create',
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.post(`${apiUrl}/teams/create`, data, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
       return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseData>;
@@ -308,16 +302,12 @@ export const editTeam = createAsyncThunk(
     };
 
     try {
-      const response = await axios.put(
-        `https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/${oldteamName}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.put(`${apiUrl}/teams/${oldteamName}`, data, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
       return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseData>;
@@ -335,15 +325,12 @@ export const getUserTeams = createAsyncThunk(
   'user/getUserTeams',
   async ({ jwtToken }: getTeamsParams, thunkAPI) => {
     try {
-      const response = await axios.get(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/all',
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.get(`${apiUrl}/teams/all`, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
       return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseData>;
@@ -366,16 +353,12 @@ export const inviteUser = createAsyncThunk(
     };
 
     try {
-      const response = await axios.post(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/teams/invite',
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.post(`${apiUrl}/teams/invite`, data, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
       return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseData>;

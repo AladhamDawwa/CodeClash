@@ -8,11 +8,12 @@ const MatchMaker = () => {
   const [matchFound, setMatchFound] = useState(false);
 
   const auth = useSelector((state: RootState) => state.auth);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const { user } = auth;
 
-    const socket = io('https://codeclash-backend-t4cnvcfzcq-ew.a.run.app', {
+    const socket = io(apiUrl, {
       extraHeaders: {
         token: user.token,
       },

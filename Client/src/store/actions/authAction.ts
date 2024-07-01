@@ -5,17 +5,15 @@ interface ResponseData {
   error?: string;
 }
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const signInAction = createAsyncThunk(
   'auth/signIn',
   async (credentials: { username: string; password: string }) => {
     try {
-      const response = await axios.post(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/login',
-        credentials,
-        {
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
+      const response = await axios.post(`${apiUrl}/users/login`, credentials, {
+        headers: { 'Content-Type': 'application/json' },
+      });
 
       return response.data;
     } catch (error) {
@@ -36,13 +34,9 @@ export const signUpAction = createAsyncThunk(
     password: string;
   }) => {
     try {
-      const response = await axios.post(
-        'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/signup',
-        credentials,
-        {
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
+      const response = await axios.post(`${apiUrl}/users/signup`, credentials, {
+        headers: { 'Content-Type': 'application/json' },
+      });
 
       return response.data;
     } catch (error) {
@@ -58,8 +52,7 @@ export const uploadImage = async (
   file: File,
   jwtToken: string,
 ): Promise<void> => {
-  const url =
-    'https://codeclash-backend-t4cnvcfzcq-ew.a.run.app/users/profile_picture';
+  const url = `${apiUrl}/users/profile_picture`;
   const formData = new FormData();
   formData.append('image', file);
 

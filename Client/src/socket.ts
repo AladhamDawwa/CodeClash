@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client';
+const apiUrl = import.meta.env.VITE_API_URL;
 
-const socket = io('https://codeclash-backend-t4cnvcfzcq-ew.a.run.app', {
+const socket = io(apiUrl, {
   autoConnect: false,
 });
 
