@@ -3,7 +3,7 @@ import { db } from "../firebase";
 
 export type Problem = {
   id?: string;
-  title: String
+  title: string
   description: string;
   input_format: string;
   output_format: string

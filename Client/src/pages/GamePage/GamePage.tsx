@@ -55,10 +55,12 @@ const GamePage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    console.log("problemId", problemId);
+    
     dispatch<any>(getProblemInfo({ problemId, jwtToken })).then((res: any) => {
       setProblem(res.payload);
     });
-  }, [dispatch, jwtToken, problemId]);
+  }, []);
 
   useEffect(() => {
     socket.on('uvu_game_client:submission_notification', (data: any) => {

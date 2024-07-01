@@ -24,6 +24,9 @@ const Home = () => {
           style={{
             margin: '2rem',
             padding: '4rem 2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20rem',
         }}>
           <div style={{
             display: 'flex',
@@ -50,21 +53,41 @@ const Home = () => {
                 MODES
               </div>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-                gap: '2rem',
-                width: '100%',
-                flexWrap: "wrap"
-              }}
-            >
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              alignItems: 'center',
+              gap: '2rem',
+              width: '100%',
+              flexWrap: "wrap"
+            }}>
               <GameModesCard type="1 V 1" />
               <GameModesCard type="3 V 3" />
               <GameModesCard type="Last Man Standing" />
             </div>
           </div>
+          {/* <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            minHeight: '500px',
+            gap: '4rem',
+          }}>
+            <div
+                style={{
+                  display: 'flex',
+                  width: 'fit-content',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <div className="glitch" data-text="EVENTS">
+                  EVENTS
+                </div>
+            </div>
+          </div> */}
           <div className="left-right">
             <div className="left">
               <Paper

@@ -77,7 +77,7 @@ export class ProblemsController {
     const problem_id = req.params.problem_id
     const problem = await Problems.get_problem(problem_id)
     const test_cases = await TestCases.get_sample_testcases(problem_id)
-
+    console.log("Our problem", problem);
     ProblemsController.remove_problem_protected_fields(problem)
     ProblemsController.remove_testcases_protected_fields(test_cases)
 
