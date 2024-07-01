@@ -35,8 +35,8 @@ const ProfilePage = () => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       const jwtToken = authState.user.token;
+      enqueueSnackbar('Image is being updated', { variant: 'info' });
       uploadImage(file, jwtToken).then(() => {
-        enqueueSnackbar('Image is being updated', { variant: 'info' });
         dispatch<any>(getUserByUsername({ jwtToken, username })).then(() => {
           enqueueSnackbar('Image is  updated', { variant: 'success' });
         });
