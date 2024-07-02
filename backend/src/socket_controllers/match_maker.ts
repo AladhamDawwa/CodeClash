@@ -28,6 +28,7 @@ export class MatchMakerSocketController {
   async find_uvu(match_maker_request: MatchMakerRequest) {
     match_maker_request.username = this.socket.data.username;
     const match_maker_response = await MatchMakerService.find_uvu(match_maker_request)
+    console.log(match_maker_response)
     if (match_maker_response.status == "MatchFound") {
       const uvu_game_state = await GameCreationService.create_uvu(
         this.socket.data.username, match_maker_response.user?.username!, match_maker_request.game_mode!
@@ -50,7 +51,7 @@ export class MatchMakerSocketController {
   register_events() {
     this.socket.on("match_maker_server:find_match", this.find_match);
     this.socket.on("disconnect", () => {
-      // MatchMakerService.handle_disconnection(this.socket.data.username)
+      MatchMakerService.handle_disconnection(this.socket.data.username)
       ConnectedUsers.remove_user(this.socket.data.username);
     });
   }

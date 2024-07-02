@@ -7,12 +7,19 @@ import { UsersUnsolvedProblems } from "./users_unsolved_problems";
 import { firestore } from "firebase-admin";
 dotenv.config();
 
-const { SALT_ROUNDS, PEPPER } = process.env;
+const { SALT_ROUNDS, PEPPER, LEVEL_K } = process.env;
 
 export type UserStatus = {
   in_uvu_game?: boolean
   uvu_game_id?: string
 }
+export type UserLevel = {
+  rating: string,
+  level: number,
+  xp: number,
+  xp_for_next_level: number
+}
+
 export type User = {
   doc_id?: string;
   description?: string;
@@ -28,8 +35,20 @@ export type User = {
   registeration_date?: Timestamp;
   username?: string;
   mmr?: number;
+  normal_mmr?: number
   profile_image_id?: string;
-  status?: UserStatus
+  status?: UserStatus,
+  user_level_a?: UserLevel;
+  user_level_b?: UserLevel;
+  user_level_c?: UserLevel;
+  user_level_d?: UserLevel;
+  user_level_e?: UserLevel;
+  user_level_f?: UserLevel;
+  user_level_g?: UserLevel;
+  user_level_h?: UserLevel;
+  user_level_i?: UserLevel;
+  user_level_j?: UserLevel;
+
 };
 
 const converter = {
@@ -54,7 +73,18 @@ const converter = {
       registeration_date: data.registeration_date,
       username: data.username,
       mmr: data.mmr,
-      profile_image_id: data.profile_image_id
+      normal_mmr: data.mmr,
+      profile_image_id: data.profile_image_id,
+      user_level_a: data.user_level_a,
+      user_level_b: data.user_level_b,
+      user_level_c: data.user_level_c,
+      user_level_d: data.user_level_d,
+      user_level_e: data.user_level_e,
+      user_level_f: data.user_level_f,
+      user_level_g: data.user_level_g,
+      user_level_h: data.user_level_h,
+      user_level_i: data.user_level_i,
+      user_level_j: data.user_level_j,
     };
   },
 };
@@ -200,7 +230,18 @@ export class Users {
       registeration_date: Timestamp.now(),
       username: username,
       mmr: 800,
-      description: "Hey There ! I am using codeclash"
+      normal_mmr: 800,
+      description: "Hey There ! I am using codeclash",
+      user_level_a: { level: 0, xp: 0, rating: "a", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_b: { level: 0, xp: 0, rating: "b", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_c: { level: 0, xp: 0, rating: "c", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_d: { level: 0, xp: 0, rating: "d", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_e: { level: 0, xp: 0, rating: "e", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_f: { level: 0, xp: 0, rating: "f", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_g: { level: 0, xp: 0, rating: "g", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_h: { level: 0, xp: 0, rating: "h", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_i: { level: 0, xp: 0, rating: "i", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
+      user_level_j: { level: 0, xp: 0, rating: "j", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) }
     };
   }
 }

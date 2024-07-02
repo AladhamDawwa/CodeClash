@@ -52,6 +52,10 @@ export class Problems {
     return problem!
   }
 
+  static async get_problem_rate(problem_id: string): Promise<string> {
+    const problem = await this.get_problem(problem_id)
+    return problem.rating!
+  }
   static create_in_transaction(problem: Problem, transaction: Transaction): string {
     const ref = problems_collection.doc()
     transaction.set(ref, problem)

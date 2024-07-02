@@ -1,18 +1,20 @@
 import { EloUvUGameCalculator } from "../game/evaluator/elo_uvu_game_calculator";
 import gameUvUStore, { GameUvUFireStore } from "../game/store/game_uvu_fire_store";
 import { UvUGameState } from "../game/store/i_game_uvu_store";
+import { Problems } from "../models/problem";
 import { Submission, Submissions } from "../models/submissions";
-import { Users } from "../models/users";
+import { UserLevel, Users } from "../models/users";
 import { UvUGamesHistory } from "../models/uvu_game_history";
 import { UvUGameSocketController, UvUGameSubmissionRequest } from "../socket_controllers/uvu_game";
 import { RankTier } from "../utils/definitions/rank_tier";
-import { JudgeResult, JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
-import { differenceInMinutes, differenceInSeconds } from 'date-fns';
+import { JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
+import { differenceInSeconds } from 'date-fns';
 
 export type UserScoreAndPenalty = {
   score: number,
   penalty: number,
-  username: string
+  username: string,
+  number_of_incorrect_submissions?: number
 }
 
 export enum UvUUserGameStatus {
@@ -32,7 +34,9 @@ export type UvUUserResult = {
   delta?: number,
   new_mmr?: number
   new_tier?: RankTier,
-  new_points?: number
+  new_points?: number,
+  new_level?: UserLevel,
+  new_normal_mmr?: number
 }
 
 export class UvUGameService {
@@ -92,11 +96,13 @@ export class UvUGameService {
       username: user_b_score_and_penalty.username
     }
 
-    const uvu_game_result = new EloUvUGameCalculator().calculate_users_rank(
+    const uvu_game_result = new EloUvUGameCalculator().calculate(
       user_a_score_and_penalty,
       user_b_score_and_penalty,
       user_a_uvu_game_result,
       user_b_uvu_game_result,
+      game.game_mode!,
+      await Problems.get_problem_rate(game.problem_id!),
       await Users.get_by_username(user_a_score_and_penalty.username),
       await Users.get_by_username(user_b_score_and_penalty.username)
     )
@@ -106,10 +112,11 @@ export class UvUGameService {
 
 
   static calculate_score_and_penalty(game_start_time: Date, game_submissions: Submission[], username: string): UserScoreAndPenalty {
-    const user_score_and_penalty = {
+    const user_score_and_penalty: UserScoreAndPenalty = {
       score: 0,
       penalty: 0,
-      username: username
+      username: username,
+      number_of_incorrect_submissions: 0
     }
     const index_of_max_score = this.get_max_score_index(game_submissions, username)
     this.calculate_score_and_penalty_given_max_score_index(game_start_time, game_submissions, index_of_max_score, user_score_and_penalty)
@@ -130,6 +137,7 @@ export class UvUGameService {
       const game_submission = game_submissions[i]
       if (game_submission.username == user_score_and_penalty.username && game_submission.status != SubmissionStatus.CompilationError) {
         const submission_penalty = (10 * ((100 - game_submission.score!) / 100))
+        user_score_and_penalty.number_of_incorrect_submissions! += 1
         user_score_and_penalty.penalty += submission_penalty
       }
     }

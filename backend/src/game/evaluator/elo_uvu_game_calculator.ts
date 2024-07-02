@@ -1,15 +1,18 @@
 import { Tiers } from "../../models/tiers";
 import { User, Users } from "../../models/users";
 import { UserScoreAndPenalty, UvUGameResult, UvUUserGameStatus, UvUUserResult } from "../../services/uvu_game_service";
+import { GameMode } from "../../utils/definitions/games_types";
 import { RankTier } from "../../utils/definitions/rank_tier";
 import { IUvUGameCalculator } from "./I_uvu_game_calculator";
 const K = 32
 export class EloUvUGameCalculator implements IUvUGameCalculator {
-  async calculate_users_rank(
+  async calculate(
     user_a_score_and_penalty: UserScoreAndPenalty,
     user_b_score_and_penalty: UserScoreAndPenalty,
     user_a_uvu_game_result: UvUUserResult,
     user_b_uvu_game_result: UvUUserResult,
+    game_mode: GameMode,
+    problem_rate: string,
     user_a: User,
     user_b: User): Promise<UvUGameResult> {
 
@@ -19,29 +22,42 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
       user_a_uvu_game_result,
       user_b_uvu_game_result
     )
-    const expected_outcome_user_a = this.calculate_expected_outcome(user_a.mmr!, user_b.mmr!)
-    const expected_outcome_user_b = 1 - expected_outcome_user_a
-    const new_user_a_mmr = this.calculate_new_mmr(
-      user_a.mmr!, this.get_score(user_a_uvu_game_result.status!), expected_outcome_user_a
-    )
-    const new_user_b_mmr = this.calculate_new_mmr(
-      user_b.mmr!, this.get_score(user_b_uvu_game_result.status!), expected_outcome_user_b
-    )
-    user_a_uvu_game_result.new_mmr = new_user_a_mmr
-    user_b_uvu_game_result.new_mmr = new_user_b_mmr
+    if (game_mode == GameMode.Ranked) {
+      const expected_outcome_user_a = this.calculate_expected_outcome(user_a.mmr!, user_b.mmr!)
+      const expected_outcome_user_b = 1 - expected_outcome_user_a
+      const new_user_a_mmr = this.calculate_new_mmr(
+        user_a.mmr!, this.get_score(user_a_uvu_game_result.status!), expected_outcome_user_a
+      )
+      const new_user_b_mmr = this.calculate_new_mmr(
+        user_b.mmr!, this.get_score(user_b_uvu_game_result.status!), expected_outcome_user_b
+      )
+      user_a_uvu_game_result.new_mmr = new_user_a_mmr
+      user_b_uvu_game_result.new_mmr = new_user_b_mmr
 
-    const user_a_new_tier_and_points = await this.calculate_tier_and_points(new_user_a_mmr)
-    const user_b_new_tier_and_points = await this.calculate_tier_and_points(new_user_b_mmr)
-    user_a_uvu_game_result.new_tier = user_a_new_tier_and_points.tier
-    user_b_uvu_game_result.new_tier = user_b_new_tier_and_points.tier
-    user_a_uvu_game_result.new_points = user_a_new_tier_and_points.points
-    user_b_uvu_game_result.new_points = user_b_new_tier_and_points.points
+      const user_a_new_tier_and_points = await this.calculate_tier_and_points(new_user_a_mmr)
+      const user_b_new_tier_and_points = await this.calculate_tier_and_points(new_user_b_mmr)
+      user_a_uvu_game_result.new_tier = user_a_new_tier_and_points.tier
+      user_b_uvu_game_result.new_tier = user_b_new_tier_and_points.tier
+      user_a_uvu_game_result.new_points = user_a_new_tier_and_points.points
+      user_b_uvu_game_result.new_points = user_b_new_tier_and_points.points
 
-    const user_a_delta = this.calculate_delta({ tier: user_a.rank_tier!, points: user_a.rank_points! }, user_a_new_tier_and_points)
-    const user_b_delta = this.calculate_delta({ tier: user_b.rank_tier!, points: user_b.rank_points! }, user_b_new_tier_and_points)
-    user_a_uvu_game_result.delta = user_a_delta!
-    user_b_uvu_game_result.delta = user_b_delta!
-
+      const user_a_delta = this.calculate_delta({ tier: user_a.rank_tier!, points: user_a.rank_points! }, user_a_new_tier_and_points)
+      const user_b_delta = this.calculate_delta({ tier: user_b.rank_tier!, points: user_b.rank_points! }, user_b_new_tier_and_points)
+      user_a_uvu_game_result.delta = user_a_delta!
+      user_b_uvu_game_result.delta = user_b_delta!
+    }
+    if (game_mode == GameMode.Normal) {
+      const expected_outcome_user_a = this.calculate_expected_outcome(user_a.normal_mmr!, user_b.normal_mmr!)
+      const expected_outcome_user_b = 1 - expected_outcome_user_a
+      const new_user_a_normal_mmr = this.calculate_new_mmr(
+        user_a.normal_mmr!, this.get_score(user_a_uvu_game_result.status!), expected_outcome_user_a
+      )
+      const new_user_b_normal_mmr = this.calculate_new_mmr(
+        user_b.normal_mmr!, this.get_score(user_b_uvu_game_result.status!), expected_outcome_user_b
+      )
+      user_a_uvu_game_result.new_normal_mmr = new_user_a_normal_mmr
+      user_b_uvu_game_result.new_normal_mmr = new_user_b_normal_mmr
+    }
     return {
       user_a_result: user_a_uvu_game_result,
       user_b_result: user_b_uvu_game_result

@@ -1,7 +1,8 @@
-import { User } from "../../models/users";
-import { EloMatchMakerEvaluator } from "../evaluator/elo_match_maker_evaluator";
-import { IMatchMakerEvaluator } from "../evaluator/match_maker_evaluator";
-import { IMatchMakerQueue } from "./i_match_maker_queue";
+import { User } from "../../../models/users";
+import { GameMode } from "../../../utils/definitions/games_types";
+import { EloUvUMatchMakerEvaluator } from "../../evaluator/uvu/elo_uvu_match_maker_evaluator";
+import { IUvUMatchMakerEvaluator } from "../../evaluator/uvu/uvu_match_maker_evaluator";
+import { IUvUMatchMakerQueue } from "../uvu/i_uvu_match_maker_queue";
 
 class Node {
   user: User;
@@ -15,12 +16,12 @@ class Node {
   }
 }
 
-export class MatchMakerQueueLocal implements IMatchMakerQueue {
+export class UvUNormalMatchMakerQueueLocal implements IUvUMatchMakerQueue {
   private head: Node | null;
   private tail: Node | null;
   private size: number;
   private nodeMap: Map<User, Node>
-  private matchMakerEvaluator: IMatchMakerEvaluator = new EloMatchMakerEvaluator()
+  private matchMakerEvaluator: IUvUMatchMakerEvaluator = new EloUvUMatchMakerEvaluator(GameMode.Normal)
 
   constructor() {
     this.head = null

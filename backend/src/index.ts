@@ -58,5 +58,3 @@ server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
 
-
-Users.clear_status("mmr_800_1", ["in_uvu_game", "uvu_game_id"])

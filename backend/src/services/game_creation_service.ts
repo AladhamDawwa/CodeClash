@@ -58,7 +58,6 @@ export class GameCreationService {
     let end_time = addMinutes(start_time, game_duration)
 
     const game: UvUGameState = {
-      id: "asdasd",
       username_a: username_a,
       username_b: username_b,
       game_mode: game_mode,
