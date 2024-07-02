@@ -216,8 +216,11 @@ export class UsersUnsolvedProblems {
   static async admin_create_for_all() {
     const users = await Users.index()
     for (const user of users) {
-      this.init(user.username!)
+
+      user.username && await this.init(user.username)
+      console.log(`added for ${user.username}`)
     }
+    console.log("Finished adding")
   }
 
 }

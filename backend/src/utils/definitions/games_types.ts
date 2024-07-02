@@ -5,6 +5,6 @@ export enum GameType {
 }
 
 export enum GameMode {
-  Normal,
-  Ranked
+  Ranked,
+  Normal
 }
