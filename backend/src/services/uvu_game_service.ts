@@ -6,6 +6,7 @@ import { Submission, Submissions } from "../models/submissions";
 import { UserLevel, Users } from "../models/users";
 import { UvUGamesHistory } from "../models/uvu_game_history";
 import { UvUGameSocketController, UvUGameSubmissionRequest } from "../socket_controllers/uvu_game";
+import { GameMode } from "../utils/definitions/games_types";
 import { RankTier } from "../utils/definitions/rank_tier";
 import { JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
 import { differenceInSeconds } from 'date-fns';
@@ -36,7 +37,8 @@ export type UvUUserResult = {
   new_tier?: RankTier,
   new_points?: number,
   new_level?: UserLevel,
-  new_normal_mmr?: number
+  new_normal_mmr?: number,
+  xp_delta?: number
 }
 
 export class UvUGameService {
@@ -68,13 +70,55 @@ export class UvUGameService {
     const user_b_score_and_penalty = this.calculate_score_and_penalty(game.start_time!, game_submissions, game.username_b!)
     const game_result = await this.calculate_game_result(user_a_score_and_penalty, user_b_score_and_penalty, game)
     console.log(game_result)
-    await this.update_users_rank_and_mmr(game_result.user_a_result)
-    await this.update_users_rank_and_mmr(game_result.user_b_result)
+    if (game.game_mode == GameMode.Ranked) {
+      await this.update_users_rank_and_mmr(game_result.user_a_result)
+      await this.update_users_rank_and_mmr(game_result.user_b_result)
+    }
+    if (game.game_mode == GameMode.Normal) {
+      await Users.update({ normal_mmr: game_result.user_a_result.new_normal_mmr }, game_result.user_a_result.username!)
+      await Users.update({ normal_mmr: game_result.user_b_result.new_normal_mmr }, game_result.user_b_result.username!)
+    }
+    this.update_user_level_and_xp(game_result.user_a_result.new_level!, game_result.user_a_result.username!)
+    this.update_user_level_and_xp(game_result.user_b_result.new_level!, game_result.user_b_result.username!)
     UvUGameSocketController.send_game_result_to_users(game_result)
     this.clear_users_statuses(game.username_a!, game.username_b!)
     UvUGamesHistory.create(game, game_result)
   }
 
+  static update_user_level_and_xp(user_level: UserLevel, username: string) {
+    switch (user_level.rating) {
+      case 'a':
+        Users.update({ user_level_a: user_level }, username)
+        break
+      case 'b':
+        Users.update({ user_level_b: user_level }, username)
+        break
+      case 'c':
+        Users.update({ user_level_c: user_level }, username)
+        break
+      case 'd':
+        Users.update({ user_level_d: user_level }, username)
+        break
+      case 'e':
+        Users.update({ user_level_e: user_level }, username)
+        break
+      case 'f':
+        Users.update({ user_level_f: user_level }, username)
+        break
+      case 'g':
+        Users.update({ user_level_g: user_level }, username)
+        break
+      case 'h':
+        Users.update({ user_level_h: user_level }, username)
+        break
+      case 'i':
+        Users.update({ user_level_i: user_level }, username)
+        break
+      case 'j':
+        Users.update({ user_level_j: user_level }, username)
+        break
+    }
+  }
   static clear_users_statuses(username_a: string, username_b: string) {
     Users.clear_status(username_a, ["in_uvu_game", "uvu_game_id"])
     Users.clear_status(username_b, ["in_uvu_game", "uvu_game_id"])
@@ -102,6 +146,7 @@ export class UvUGameService {
       user_a_uvu_game_result,
       user_b_uvu_game_result,
       game.game_mode!,
+      game.duration!,
       await Problems.get_problem_rate(game.problem_id!),
       await Users.get_by_username(user_a_score_and_penalty.username),
       await Users.get_by_username(user_b_score_and_penalty.username)
