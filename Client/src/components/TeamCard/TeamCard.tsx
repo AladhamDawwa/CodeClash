@@ -5,9 +5,6 @@ import {
   Box,
   Paper,
   TextField,
-  Snackbar,
-  Alert,
-  AlertColor,
 } from '@mui/material';
 import axios from 'axios';
 import { RootState } from '../../store/store';
@@ -21,16 +18,17 @@ import PersonRemoveRoundedIcon from '@mui/icons-material/PersonRemoveRounded';
 import { useState } from 'react';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import EditTeamCard from '../EditTeamCard/EditTeamCard';
+import { useSnackbar } from 'notistack';
 
 const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
 
 const TeamCard = ({ team }: any) => {
   const apiUrl = import.meta.env.VITE_API_URL;
-
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [showEditCard, setShowEditCard] = useState(false);
   const [Team, setTeam] = useState(team);
+  const { enqueueSnackbar } = useSnackbar();
   const handleShowEditTeam = () => {
     setShowEditCard(true);
   };
@@ -50,19 +48,8 @@ const TeamCard = ({ team }: any) => {
         },
       })
       .then(() => {
-        setSnackbar({
-          open: true,
-          message: 'Team deleted successfully',
-          severity: 'success',
-        });
+        enqueueSnackbar('Team is deleted', { variant: 'success' });
         location.reload();
-      })
-      .catch(error => {
-        setSnackbar({
-          open: true,
-          message: 'Error deleting team',
-          severity: 'error',
-        });
       });
   };
 
@@ -70,19 +57,9 @@ const TeamCard = ({ team }: any) => {
   const [teammateError, setTeammateError] = useState(false);
   const [teammateUsername, setTeammateUsername] = useState('');
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
-
   const handleEditTeam = (response: string) => {
     setTeam(response);
-    setSnackbar({
-      open: true,
-      message: 'Team edited successfully',
-      severity: 'success',
-    });
+    enqueueSnackbar('Team data updated', { variant: 'success' });
   };
 
   const handleInvite = async () => {
@@ -103,31 +80,19 @@ const TeamCard = ({ team }: any) => {
     )
       .then((responseData: { payload: any }) => {
         if (responseData.payload.members) {
-          setSnackbar({
-            open: true,
-            message: 'User invited successfully',
-            severity: 'success',
-          });
+          enqueueSnackbar('User invited', { variant: 'success' });
           setTeam(responseData.payload);
           handleCloseDialog();
         }
       })
       .catch((error: any) => {
-        setSnackbar({
-          open: true,
-          message: 'Error inviting user',
-          severity: 'error',
-        });
+        enqueueSnackbar('Error inviting user', { variant: 'error' });
         console.log(error);
       });
   };
 
   const handleCloseDialog = () => {
     setShowDialog(false);
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
   };
 
   const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -379,18 +344,14 @@ const TeamCard = ({ team }: any) => {
                         },
                       )
                       .then(() => {
-                        setSnackbar({
-                          open: true,
-                          message: 'Member removed successfully',
-                          severity: 'success',
+                        enqueueSnackbar('Member is removed', {
+                          variant: 'success',
                         });
                         location.reload();
                       })
                       .catch(() => {
-                        setSnackbar({
-                          open: true,
-                          message: 'Error removing member',
-                          severity: 'error',
+                        enqueueSnackbar('Error removing user', {
+                          variant: 'error',
                         });
                       });
                   }}
@@ -534,26 +495,6 @@ const TeamCard = ({ team }: any) => {
           </Box>
         </Slide>
       )}
-
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity as AlertColor}
-          sx={{
-            fontSize: '1.5rem',
-            '& .MuiAlert-icon': {
-              fontSize: '2rem',
-            },
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </div>
   );
 };

@@ -24,7 +24,7 @@ import MatchLoading from './pages/MatchLoading/MatchLoading';
 import Teams from './pages/Teams/Teams';
 import Test from './components/testComponent/Test';
 import CreateProblem from './pages/CreateProblem/CreateProblem';
-
+import { SnackbarProvider } from 'notistack';
 interface PrivateRouteProps {
   children: JSX.Element;
 }
@@ -131,7 +131,8 @@ function App() {
           </PrivateRoute>
         }
       />
-      <Route path="/signIn" 
+      <Route
+        path="/signIn"
         element={
           useSelector((state: RootState) => state.auth.isAuthenticated) ? (
             <Navigate to="/home" />
@@ -157,9 +158,18 @@ function App() {
 
 function AppWrapper() {
   return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <SnackbarProvider
+      maxSnack={3}
+      style={{
+        color: 'white',
+        fontSize: '1.8rem',
+        borderRadius: '1rem',
+      }}
+    >
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </SnackbarProvider>
   );
 }
 
