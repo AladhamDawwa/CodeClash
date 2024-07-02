@@ -114,8 +114,14 @@ export class ProblemsController {
     return problem
   }
 
+  static remove_unsolved_problem_from_all_users(req: Request, res: Response) {
+    UsersUnsolvedProblems.remove_problem_from_all_users(req.params.problem_id, 'a');
+    res.json("Problem removed from all users")
+  }
+
   static routes(app: express.Application) {
     app.post('/problems/create', this.create_problems)
     app.get('/problems/:problem_id', this.get_problem)
+    app.get('/problems/remove/:problem_id', this.remove_unsolved_problem_from_all_users)
   }
 }

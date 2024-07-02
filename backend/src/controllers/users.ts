@@ -108,5 +108,6 @@ export class UsersController {
     app.put("/users", authenticate, this.update);
     app.get("/users/:username", authenticate, this.get_by_username)
     app.put("/users/profile_picture", [upload.single('image'), authenticate], this.upload_profile_picture)
+
   }
 }

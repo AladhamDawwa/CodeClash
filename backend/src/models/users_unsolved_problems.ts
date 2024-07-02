@@ -213,6 +213,69 @@ export class UsersUnsolvedProblems {
     return problem_ids
   }
 
+  static async remove_problem_from_all_users(problem_id: string, problem_rate: string) {
+    const snapshot = await users_unsolved_problems_collection.get()
+    const batch = firestore().batch();
+    snapshot.forEach(doc => {
+      const docRef = doc.ref
+      switch (problem_rate) {
+        case 'a':
+          batch.update(docRef, {
+            rating_a: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'b':
+          batch.update(docRef, {
+            rating_b: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'c':
+          batch.update(docRef, {
+            rating_c: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'd':
+          batch.update(docRef, {
+            rating_d: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'e':
+          batch.update(docRef, {
+            rating_e: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'f':
+          batch.update(docRef, {
+            rating_f: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'g':
+          batch.update(docRef, {
+            rating_g: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'h':
+          batch.update(docRef, {
+            rating_h: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'i':
+          batch.update(docRef, {
+            rating_i: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+        case 'j':
+          batch.update(docRef, {
+            rating_j: firestore.FieldValue.arrayRemove(problem_id)
+          })
+          break
+      }
+    })
+
+    await batch.commit()
+    console.log(`Problem ${problem_id} removed from all users`)
+  }
+
   static async admin_create_for_all() {
     const users = await Users.index()
     for (const user of users) {
