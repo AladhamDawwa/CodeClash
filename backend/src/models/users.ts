@@ -5,13 +5,16 @@ import { RankTier } from "../utils/definitions/rank_tier";
 import dotenv from "dotenv";
 import { UsersUnsolvedProblems } from "./users_unsolved_problems";
 import { firestore } from "firebase-admin";
+import { GameMode, GameType } from "../utils/definitions/games_types";
 dotenv.config();
 
 const { SALT_ROUNDS, PEPPER, LEVEL_K } = process.env;
 
 export type UserStatus = {
-  in_uvu_game?: boolean
-  uvu_game_id?: string
+  in_game: boolean,
+  game_id: string;
+  game_type: GameType,
+  game_mode: GameMode
 }
 export type UserLevel = {
   rating: string,

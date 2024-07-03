@@ -38,7 +38,7 @@ export class ProblemLevels {
     }
     return this.problem_levels
   }
-  static async get_uvu_game_duration(problem_rating: string): Promise<number> {
+  static async get_game_duration(problem_rating: string): Promise<number> {
     if (!this.problem_levels.length) {
       await this.index()
     }

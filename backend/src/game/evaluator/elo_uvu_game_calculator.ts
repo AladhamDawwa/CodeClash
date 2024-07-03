@@ -1,6 +1,6 @@
 import { Tiers } from "../../models/tiers";
 import { User, UserLevel, Users } from "../../models/users";
-import { UserScoreAndPenalty, UvUGameResult, UvUUserGameStatus, UvUUserResult } from "../../services/uvu_game_service";
+import { UserScoreAndPenalty, UvUGameResult, UvUUserGameStatus, UserResult } from "../../services/uvu_game_service";
 import { GameMode } from "../../utils/definitions/games_types";
 import { RankTier } from "../../utils/definitions/rank_tier";
 import { IUvUGameCalculator } from "./I_uvu_game_calculator";
@@ -13,8 +13,8 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
   async calculate(
     user_a_score_and_penalty: UserScoreAndPenalty,
     user_b_score_and_penalty: UserScoreAndPenalty,
-    user_a_uvu_game_result: UvUUserResult,
-    user_b_uvu_game_result: UvUUserResult,
+    user_a_uvu_game_result: UserResult,
+    user_b_uvu_game_result: UserResult,
     game_mode: GameMode,
     game_duration: number,
     problem_rate: string,
@@ -123,7 +123,7 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
 
   private calculate_new_level_and_xp(
     user_score_and_penalty: UserScoreAndPenalty,
-    user_uvu_game_result: UvUUserResult,
+    user_uvu_game_result: UserResult,
     user_level: UserLevel,
     game_duration: number) {
     const gained_xp = (user_score_and_penalty.score / 100) * this.get_base_xp(user_level.level) * (1 - this.penalty_factor(user_score_and_penalty, game_duration))
@@ -193,8 +193,8 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
 
   private determine_winner(user_a_score_and_penalty: UserScoreAndPenalty,
     user_b_score_and_penalty: UserScoreAndPenalty,
-    user_a_uvu_game_result: UvUUserResult,
-    user_b_uvu_game_result: UvUUserResult) {
+    user_a_uvu_game_result: UserResult,
+    user_b_uvu_game_result: UserResult) {
     if (user_a_score_and_penalty.score > user_b_score_and_penalty.score) {
       user_a_uvu_game_result.status = UvUUserGameStatus.Win
       user_b_uvu_game_result.status = UvUUserGameStatus.Lose

@@ -1,6 +1,6 @@
 import { Filter } from "firebase-admin/firestore";
 import { db } from "../firebase";
-import { UvUGameState } from "../game/store/i_game_uvu_store";
+import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
 import { UvUGameResult, UvUUserResult } from "../services/uvu_game_service";
 import { GameMode, GameType } from "../utils/definitions/games_types";
 import { RankTier } from "../utils/definitions/rank_tier";
