@@ -258,11 +258,22 @@ export default function MiniDrawer() {
                   letterSpacing: 1,
                 }}
               />
+              <p
+                style={{
+                  // textAlign: 'center',
+                  fontStyle: 'italic',
+                  fontSize: '1.5rem',
+                }}
+              >
+                {`"${user.current_team}"`}
+              </p>
             </ListItemButton>
           </ListItem>
 
           {/* Game History */}
+          {/* {open && (
 
+          )} */}
           <ListItem
             key={'Inbox'}
             disablePadding

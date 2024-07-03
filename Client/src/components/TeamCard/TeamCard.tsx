@@ -92,6 +92,9 @@ const TeamCard = ({ team }: any) => {
           enqueueSnackbar('User invited', { variant: 'success' });
           setTeam(responseData.payload);
           handleCloseDialog();
+        } else {
+          enqueueSnackbar('No username matched', { variant: 'error' });
+          return;
         }
       })
       .catch((error: any) => {
