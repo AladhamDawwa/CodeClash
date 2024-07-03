@@ -1,5 +1,5 @@
 import { Tiers } from "../../models/tiers";
-import { User, UserLevel, Users } from "../../models/users";
+import { User, UserLevel } from "../../models/users";
 import { UserScoreAndPenalty, UvUGameResult, UvUUserGameStatus, UserResult } from "../../services/uvu_game_service";
 import { GameMode } from "../../utils/definitions/games_types";
 import { RankTier } from "../../utils/definitions/rank_tier";

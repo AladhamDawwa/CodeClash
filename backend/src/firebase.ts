@@ -11,6 +11,7 @@ export const firestore = getFirestore()
 export const db = {
   users: firestore.collection("users"),
   uvu_games: firestore.collection("uvu_games"),
+  tvt_games: firestore.collection("tvt_games"),
   problems: firestore.collection("problems"),
   testcases: firestore.collection("testcases"),
   users_unsolved_problems: firestore.collection("users_unsolved_problems"),

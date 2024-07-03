@@ -75,13 +75,11 @@ export class Teams {
     return teams;
   }
 
-  // static async get_by_team_name(team_name: string) {
-  //   const snapshot = await teams_collection.where("team_name", "==", team_name).get();
-  //   const team = snapshot.docs[0].data();
-  //   delete team.team_name
-  //   delete team.doc_id
-  //   return team;
-  // }
+  static async get_by_team_name(team_name: string) {
+    const snapshot = await teams_collection.where("team_name", "==", team_name).get();
+    const team = snapshot.docs[0].data();
+    return team;
+  }
 
   static async invite_user(team_name: string, username: string): Promise<Team | null> {
     if (await Users.user_exists(username) === false) {

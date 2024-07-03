@@ -1,5 +1,3 @@
-import { User } from "../../../models/users";
-
 export interface IUsersMatchMakerEvaluator {
-  is_good_match(user_a: User, user_b: User): boolean
+  is_good_match(user_a_mmr: number, user_b_mmr: number): boolean
 }

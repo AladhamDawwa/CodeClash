@@ -10,6 +10,7 @@ import data from './users.json';
 import FriendsList from '../../components/HomePage/FriendsList';
 import { useState } from 'react';
 import './glitchText.scss';
+import { GameType } from '../../utils/game_settings';
 const Home = () => {
   const [openList, setOpenList] = useState(-1);
 
@@ -61,9 +62,9 @@ const Home = () => {
               width: '100%',
               flexWrap: "wrap"
             }}>
-              <GameModesCard type="1 V 1" />
-              <GameModesCard type="3 V 3" />
-              <GameModesCard type="Last Man Standing" />
+              <GameModesCard text="1 V 1" type={GameType.OneVsOne}/>
+              <GameModesCard text="3 V 3" type={GameType.TeamVsTeam}/>
+              <GameModesCard text="Last Man Standing" type={GameType.LastManStanding}/>
             </div>
           </div>
           {/* <div style={{

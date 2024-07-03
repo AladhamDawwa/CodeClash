@@ -19,6 +19,7 @@ import { useState } from 'react';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import EditTeamCard from '../EditTeamCard/EditTeamCard';
 import { useSnackbar } from 'notistack';
+import { activateTeam } from '../../store/reducers/userReducer';
 
 const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
 
@@ -235,8 +236,7 @@ const TeamCard = ({ team }: any) => {
             padding: '2rem',
           }}
         >
-          <img
-            src={`assets/${ranks[Team?.rank_tier]}.svg`}
+          <img src={`assets/${ranks[Team?.rank_tier]}.svg`}
             alt="rank image"
             style={{
               width: '6.5rem',
@@ -264,6 +264,30 @@ const TeamCard = ({ team }: any) => {
               {Team?.rank_points}
             </Typography>
           </div>
+
+          <Button sx={{
+            bgcolor: '#14751c',
+            color: 'white',
+            fontSize: '1.7rem',
+            textTransform: 'capitalize',
+            borderRadius: '0.5rem',
+            '&:hover': {
+              backgroundColor: '#0d4b1c',
+            },
+          }} onClick={() => {
+            dispatch<any>(activateTeam({
+              current_team: Team.team_name
+            }))
+          }}>
+            <Typography
+              variant="h5"
+              sx={{
+                color: 'white',
+              }}
+            >
+              Activate
+            </Typography>
+          </Button>
         </div>
 
         <div>

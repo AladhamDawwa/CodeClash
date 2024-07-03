@@ -10,7 +10,7 @@ export class GameHistoryController {
   static async get_games_by_username(req: Request, res: Response) {
     const games: (UvUGameHistory)[] = []
     const username = req.params.username
-    const uvu_games = await UvUGamesHistory.get(req.params.username)
+    const uvu_games = await UvUGamesHistory.get(username)
     games.push(...uvu_games)
     res.json(games)
   }

@@ -6,13 +6,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import socket from '../../socket';
 import { useDispatch } from 'react-redux';
 import { foundMatch } from '../../store/reducers/userReducer';
+import { GameType } from '../../utils/game_settings';
 
 const MatchLoading = () => {
   const auth = useSelector((state: RootState) => state.auth);
+  const userState = useSelector((state: RootState) => state.user.data);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = auth;
+  const { gameSettings, text } = location.state;
 
   useEffect(() => {
     socket.io.opts.extraHeaders = {
@@ -27,19 +30,27 @@ const MatchLoading = () => {
 
     socket.emit(
       'match_maker_server:find_match',
+      gameSettings.mode === GameType.OneVsOne ?
       JSON.stringify({
-        game_type: 0,
-        game_mode: 0,
-      }),
-    );
+        game_type: gameSettings.mode,
+        game_mode: gameSettings.type,
+      })
+      :
+      JSON.stringify({
+        game_type: gameSettings.mode,
+        game_mode: gameSettings.type,
+        team_name: userState.current_team,
+      })
+    );    
 
     socket.on('match_maker_client:found_match', (game: any) => {
+      console.log(game);
+      
       dispatch(foundMatch(game));
-      navigate('/gameSession', { state: { game } });
-      // dispatch
+      navigate('/gameSession', { state: { game, gameSettings} });
     });
   });
 
-  return <LoadingMatchCard gameSettings={location.state.gameSettings} />;
+  return <LoadingMatchCard text={ text }/>;
 };
 export default MatchLoading;

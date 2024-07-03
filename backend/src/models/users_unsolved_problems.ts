@@ -1,9 +1,8 @@
-import { Problem, Problems } from "./problem";
+import { Problems } from "./problem";
 import dotenv from "dotenv";
 import { db } from "../firebase";
 import { User, Users } from "./users";
 import { firestore } from "firebase-admin";
-import { Filter } from "firebase-admin/firestore";
 import * as firestore_admin from 'firebase-admin'
 dotenv.config();
 export type UserUnsolvedProblems = {
@@ -57,7 +56,7 @@ export class UsersUnsolvedProblems {
     for (const problem of problems) {
       this.append_problem_in_object(user_unsolved_problems, problem.id, problem.rating!)
     }
-    const ref = await users_unsolved_problems_collection.add(user_unsolved_problems)
+    await users_unsolved_problems_collection.add(user_unsolved_problems)
   }
 
   static append_problem_in_object(user_unsolved_problems: UserUnsolvedProblems, problem_id: (string | undefined), problem_rate: string) {

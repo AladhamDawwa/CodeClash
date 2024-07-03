@@ -1,4 +1,3 @@
-import { User } from "../../../models/users";
 import { GameMode } from "../../../utils/definitions/games_types";
 import { IUsersMatchMakerEvaluator } from "./i_users_match_maker_evaluator";
 import dotenv from 'dotenv'
@@ -10,9 +9,8 @@ export class EloUsersMatchMakerEvaluator implements IUsersMatchMakerEvaluator {
   constructor(game_mode: GameMode) {
     this.game_mode = game_mode
   }
-  is_good_match(user_a: User, user_b: User): boolean {
-    const user_a_mmr = (this.game_mode == GameMode.Ranked ? user_a.mmr : user_a.normal_mmr)
-    const user_b_mmr = (this.game_mode == GameMode.Ranked ? user_b.mmr : user_b.normal_mmr)
+
+  is_good_match(user_a_mmr: number, user_b_mmr: number): boolean {
     console.log(user_a_mmr, user_b_mmr)
     const user_a_expected_outcome = this.calculate_expected_outcome(
       user_a_mmr!, user_b_mmr!

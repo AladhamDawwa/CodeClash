@@ -1,11 +1,11 @@
 import { GameMode, GameType } from "../../../utils/definitions/games_types";
 
-export type UvUGameState = {
+export type TvTGameState = {
   id?: string | number;
   game_type?: GameType;
   game_mode?: GameMode;
-  username_a?: string;
-  username_b?: string;
+  team_a?: string;
+  team_b?: string;
   problem_id?: string;
   duration?: number;
   start_time?: Date;
@@ -13,9 +13,9 @@ export type UvUGameState = {
   submissions?: string[];
 };
 
-export interface IGameUvUStore {
-  create(game_state: UvUGameState): Promise<string | number>
+export interface IGameTvTStore {
+  create(game_state: TvTGameState): Promise<string | number>
   delete(game_id: string | number): Promise<void>
-  update(game_state: UvUGameState, game_id: string | number): Promise<void>
-  get(game_id: string | number): Promise<UvUGameState | null>
+  update(game_state: TvTGameState, game_id: string | number): Promise<void>
+  get(game_id: string | number): Promise<TvTGameState | null>
 }

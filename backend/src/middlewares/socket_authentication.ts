@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { SocketType, IoType } from "../utils/definitions/io_socket_types";
+import { SocketType } from "../utils/definitions/io_socket_types";
 import dotenv from "dotenv";
 import { ExtendedError } from "socket.io/dist/namespace";
 import { ConnectedUsers } from "../sockets/connected_users";

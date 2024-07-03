@@ -1,4 +1,3 @@
-import { RankTier } from "../../../utils/definitions/rank_tier";
 import { User } from "../../../models/users";
 export interface IUvUMatchMakerQueue {
   is_empty(): boolean;

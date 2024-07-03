@@ -117,7 +117,7 @@ export class Users {
       username,
       password,
     );
-    const ref = await users_collection.add(
+    await users_collection.add(
       this.create_user_args(first_name, last_name, email, username, password),
     );
     UsersUnsolvedProblems.init(username)

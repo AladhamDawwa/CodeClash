@@ -6,7 +6,7 @@ import Skeleton from '@mui/material/Skeleton';
 // import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from '../../socket';
-export default function LoadingMatchCard({ gameSettings }: any) {
+export default function LoadingMatchCard({ text }: any) {
   const user = useSelector((state: RootState) => state.user.data);
   // const [isOppFetched, setIsOppFetched] = useState(false);
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function LoadingMatchCard({ gameSettings }: any) {
               fontWeight: '600',
             }}
           >
-            {gameSettings.mode} - {gameSettings.type}
+            {text.mode} - {text.type}
           </p>
           <p
             style={{
@@ -67,8 +67,7 @@ export default function LoadingMatchCard({ gameSettings }: any) {
           }}
         >
           {user?.image ? (
-            <img
-              src={user?.image}
+            <img src={user?.image}
               alt="user image"
               style={{ width: '12rem', height: '12rem', borderRadius: '100%' }}
             />
@@ -114,7 +113,6 @@ export default function LoadingMatchCard({ gameSettings }: any) {
             fontWeight: '700',
           }}
           onClick={() => {
-            socket.disconnect();
             navigate('/');
           }}
         >

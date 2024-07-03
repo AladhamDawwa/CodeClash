@@ -1,9 +1,8 @@
 import { Filter } from "firebase-admin/firestore";
 import { db } from "../firebase";
 import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
-import { UvUGameResult, UvUUserResult } from "../services/uvu_game_service";
+import { UvUGameResult, UserResult } from "../services/uvu_game_service";
 import { GameMode, GameType } from "../utils/definitions/games_types";
-import { RankTier } from "../utils/definitions/rank_tier";
 
 export type UvUGameHistory = {
   id?: string | number;
@@ -13,8 +12,8 @@ export type UvUGameHistory = {
   duration?: number;
   start_time?: Date;
   end_time?: Date;
-  user_a_result?: UvUUserResult,
-  user_b_result?: UvUUserResult
+  user_a_result?: UserResult,
+  user_b_result?: UserResult
 }
 
 const converter = {

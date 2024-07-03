@@ -1,15 +1,9 @@
-import { Server, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { MatchMakerRequest } from "../utils/definitions/match_maker";
-import { GameMode, GameType } from "../utils/definitions/games_types";
-import { MatchMakerService } from "../services/match_maker_service";
-import { SocketType, IoType } from "../utils/definitions/io_socket_types";
-import { ConnectedUsers } from "../sockets/connected_users";
-import gameUvUStore from "../game/store/uvu/game_uvu_fire_store";
 import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
-import { JudgeResult, JudgeZeroService, SubmissionStatus } from "../services/judge/judge_zero_service";
-import { UvUGameResult, UvUGameService, UvUUserResult } from "../services/uvu_game_service";
 import { Submission } from "../models/submissions";
+import { SubmissionStatus } from "../services/judge/judge_zero_service";
+import { UvUGameResult, UvUGameService, UserResult } from "../services/uvu_game_service";
+import { ConnectedUsers } from "../sockets/connected_users";
+import { IoType, SocketType } from "../utils/definitions/io_socket_types";
 
 export type UvUGameSubmissionRequest = {
   source_code: string,
@@ -66,7 +60,7 @@ export class UvUGameSocketController {
     this.send_game_result_to_user(game_result.user_b_result)
   }
 
-  static send_game_result_to_user(user_result: UvUUserResult) {
+  static send_game_result_to_user(user_result: UserResult) {
     const socket = ConnectedUsers.get_socket(user_result.username!)
     delete user_result.new_mmr
     socket && socket.emit("uvu_game_client:send_game_result", user_result)

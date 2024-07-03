@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router';
 import LeaderboardRoundedIcon from '@mui/icons-material/LeaderboardRounded';
 import FitnessCenterRoundedIcon from '@mui/icons-material/FitnessCenterRounded';
-export default function GameButton( {gameSettings, children} : any ) {
+export default function GameButton( {gameSettings, text, children} : any ) {
   const navigate = useNavigate();  
   return (
     <Button
@@ -26,16 +26,16 @@ export default function GameButton( {gameSettings, children} : any ) {
       disableRipple
       disableElevation
       onClick={() => {
-        navigate('/matchLoading', { state: { gameSettings } });
+        navigate('/matchLoading', { state: { gameSettings, text } });
       }}
     >
-      {(gameSettings && gameSettings.type === "Ranked") ?     
+      {(gameSettings && text.type === "Ranked") ?     
         <LeaderboardRoundedIcon sx={{
           fontSize: '3rem',
           mr: '1rem',
         }} />
       :
-      (gameSettings && gameSettings.type !== "Register") ?
+      (gameSettings && text.type !== "Register") ?
         <FitnessCenterRoundedIcon sx={{
           fontSize: '3rem',
           mr: '1rem',

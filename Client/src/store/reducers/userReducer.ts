@@ -54,6 +54,12 @@ const userSlice = createSlice({
         ...action.payload,
       };
     },
+    activateTeam: (state, action: PayloadAction<any>) => {
+      state.data = {
+        ...state.data,
+        ...action.payload,
+      };
+    }
   },
   extraReducers: builder => {
     builder
@@ -219,6 +225,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearUserData, clearUserState, foundMatch, updateGameResult } =
+export const { clearUserData, clearUserState, foundMatch, updateGameResult, activateTeam } =
   userSlice.actions;
 export default userSlice.reducer;

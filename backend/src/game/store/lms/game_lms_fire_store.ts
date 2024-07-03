@@ -1,5 +1,4 @@
 import { db } from '../../../firebase'
-import { GameType } from '../../../utils/definitions/games_types';
 import { IGameLMSStore, LMSGameState } from './i_game_lms_store';
 
 

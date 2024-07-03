@@ -1,5 +1,5 @@
 import { EloUvUGameCalculator } from "../game/evaluator/elo_uvu_game_calculator";
-import gameUvUStore, { GameUvUFireStore } from "../game/store/uvu/game_uvu_fire_store";
+import gameUvUStore from "../game/store/uvu/game_uvu_fire_store";
 import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
 import { Problems } from "../models/problem";
 import { Submission, Submissions } from "../models/submissions";

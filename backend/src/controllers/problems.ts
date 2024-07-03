@@ -73,10 +73,6 @@ export class ProblemsController {
     res.status(200).json("finished writing the problems")
   }
 
-  static async delete_problems(req: Request, res: Response) {
-
-  }
-
   static async get_problem(req: Request, res: Response) {
     const problem_id = req.params.problem_id
     const problem = await Problems.get_problem(problem_id)

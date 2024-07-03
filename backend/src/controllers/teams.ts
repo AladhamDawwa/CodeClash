@@ -64,12 +64,6 @@ export class TeamsController {
     res.json(team);
   }
 
-  // static async get_by_team_name(req: Request, res: Response) {
-  //   const team_name = req.params.team_name
-  //   const team = await Teams.get_by_team_name(team_name)
-  //   res.json(team)
-  // }
-
   static async get_teams(req: Request, res: Response) {
     const teams = await Teams.get_teams_by_username(req.body.username);
     res.json(teams);

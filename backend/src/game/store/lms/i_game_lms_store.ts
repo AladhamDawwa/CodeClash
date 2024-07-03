@@ -1,4 +1,3 @@
-import { User } from "../../../models/users";
 import { UserResult } from "../../../services/uvu_game_service";
 import { GameMode, GameType } from "../../../utils/definitions/games_types";
 

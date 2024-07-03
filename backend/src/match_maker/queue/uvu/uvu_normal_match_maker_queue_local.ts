@@ -52,7 +52,7 @@ export class UvUNormalMatchMakerQueueLocal implements IUvUMatchMakerQueue {
     }
     let node = this.head
     while (node != null) {
-      if (this.matchMakerEvaluator.is_good_match(node.user, user)) {
+      if (this.matchMakerEvaluator.is_good_match(node.user.mmr!, user.mmr!)) {
         const matched_user = node.user
         this.remove(matched_user)
         return matched_user

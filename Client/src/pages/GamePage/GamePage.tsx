@@ -314,8 +314,7 @@ const GamePage = () => {
         }
         </Stack>
       }
-      {gameFinished && <ResultCard 
-        status={GAME_STATUS[gameResult.status]}
+      {gameFinished && <ResultCard status={GAME_STATUS[gameResult.status]}
         rank={gameResult.delta}
         level={gameResult.new_tier}
       />}

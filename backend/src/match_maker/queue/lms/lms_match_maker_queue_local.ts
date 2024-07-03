@@ -25,7 +25,7 @@ export class LMSMatchMakerQueueLocal implements ILMSMatchMakerQueue {
       if (j >= this.users.length) {
         break
       }
-      if (this.matchMakerEvaluator.is_good_match(this.users[i], this.users[j])) {
+      if (this.matchMakerEvaluator.is_good_match(this.users[i].mmr!, this.users[j].mmr!)) {
         const group = this.users.slice(i, i + parseInt(LMS_MX_USERS!));
         this.remove(group)
         return group

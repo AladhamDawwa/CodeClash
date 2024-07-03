@@ -1,16 +1,23 @@
+import { ITvTMatchMakerQueue } from "../match_maker/queue/tvt/i_tvt_match_maker_queue";
+import { TvTMatchMakerQueueLocal } from "../match_maker/queue/tvt/tvt_match_maker_queue_local";
 import { IUvUMatchMakerQueue } from "../match_maker/queue/uvu/i_uvu_match_maker_queue";
 import { UvUNormalMatchMakerQueueLocal } from "../match_maker/queue/uvu/uvu_normal_match_maker_queue_local";
 import { UvURankedMatchMakerQueueLocal } from "../match_maker/queue/uvu/uvu_ranked_match_maker_queue_local";
-import { User, Users } from "../models/users";
+import { Teams } from "../models/teams";
+import { Users } from "../models/users";
 import { GameMode } from "../utils/definitions/games_types";
 import { LMSMatchMakerResponse, MatchMakerRequest, MatchMakerResponse } from "../utils/definitions/match_maker";
 import { ILMSMatchMakerQueue } from '../match_maker/queue/lms/i_lms_match_maker_queue'
 import { LMSMatchMakerQueueLocal } from '../match_maker/queue/lms/lms_match_maker_queue_local'
+import { TeamMatchMakerRequest, TeamMatchMakerResponse } from "../utils/definitions/match_maker";
 
 export class MatchMakerService {
   static uvu_ranked_match_maker_queue: IUvUMatchMakerQueue = new UvURankedMatchMakerQueueLocal();
   static uvu_normal_match_maker_queue: IUvUMatchMakerQueue = new UvUNormalMatchMakerQueueLocal();
   static lms_match_maker_queue: ILMSMatchMakerQueue = new LMSMatchMakerQueueLocal()
+  static tvt_ranked_match_maker_queue: ITvTMatchMakerQueue = new TvTMatchMakerQueueLocal(GameMode.Ranked);
+  static tvt_normal_match_maker_queue: ITvTMatchMakerQueue = new TvTMatchMakerQueueLocal(GameMode.Normal);
+
   static async find_uvu(match_maker_request: MatchMakerRequest): Promise<MatchMakerResponse> {
     const user = await Users.get_by_username(match_maker_request.username!);
     const target_match_maker_queue = (match_maker_request.game_mode == GameMode.Normal ? this.uvu_normal_match_maker_queue : this.uvu_ranked_match_maker_queue)
@@ -47,6 +54,25 @@ export class MatchMakerService {
       return match_maker_response
     }
   }
+
+  static async find_tvt(match_maker_request: TeamMatchMakerRequest) {
+    const team = await Teams.get_by_team_name(match_maker_request.team_name!);
+    const tvt_match_maker_queue =
+      (match_maker_request.game_mode == GameMode.Normal ? this.tvt_normal_match_maker_queue : this.tvt_ranked_match_maker_queue)
+    const matched_team = tvt_match_maker_queue.find_best(team);
+    if (matched_team) {
+      const match_maker_response: TeamMatchMakerResponse = {
+        status: "MatchFound",
+        team: matched_team
+      }
+      return match_maker_response;
+    }
+    tvt_match_maker_queue.push(team);
+    return {
+      status: "InQueue"
+    };
+  }
+
   static async handle_disconnection(username: string) {
     const user = await Users.get_by_username(username)
     this.uvu_ranked_match_maker_queue.remove(user)

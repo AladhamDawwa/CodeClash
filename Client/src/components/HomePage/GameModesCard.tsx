@@ -2,13 +2,12 @@ import Typography from '@mui/material/Typography';
 import GameButton from './GameButton';
 import './style.css';
 import { Card } from '@mui/material';
-type ModeType = {
-  type: string;
-};
-export default function GameModesCard({ type }: ModeType) {
+import { GameMode } from '../../utils/game_settings';
+
+export default function GameModesCard({ text, type }: any) {
 
   let modeImage : string = '';
-  switch (type) {
+  switch (text) {
     case '1 V 1':
       modeImage = '1vs1';
       break;
@@ -72,7 +71,7 @@ export default function GameModesCard({ type }: ModeType) {
             fontFamily: 'Roboto, sans-serif',
             fontWeight: 'bold',
             textTransform: 'uppercase',
-            fontSize: type !== "Last Man Standing" ? '5rem' : '3.5rem',
+            fontSize: text !== "Last Man Standing" ? '5rem' : '3.5rem',
             width: '100%',
             height: '100%',
             backdropFilter: 'blur(0.2rem) contrast(1.0) brightness(0.5) saturate(1.0)',
@@ -80,19 +79,25 @@ export default function GameModesCard({ type }: ModeType) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            {type}
+            {text}
           </Typography>
 
           <div style={{
             flexDirection: 'column',
           }}>
             <GameButton gameSettings={{
-              type: 'Ranked',
+              type: GameMode.Ranked,
               mode: type,
+            }} text={{
+              type: 'Ranked',
+              mode: text,
             }}>Ranked</GameButton>
             <GameButton gameSettings={{
-              type: 'Normal',
+              type: GameMode.Normal,
               mode: type,
+            }} text={{
+              type: 'Normal',
+              mode: text,
             }}>Normal</GameButton>
           </div>
         </Card>
