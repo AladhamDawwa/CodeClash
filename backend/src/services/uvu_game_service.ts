@@ -1,6 +1,6 @@
 import { EloUvUGameCalculator } from "../game/evaluator/elo_uvu_game_calculator";
-import gameUvUStore, { GameUvUFireStore } from "../game/store/game_uvu_fire_store";
-import { UvUGameState } from "../game/store/i_game_uvu_store";
+import gameUvUStore, { GameUvUFireStore } from "../game/store/uvu/game_uvu_fire_store";
+import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
 import { Problems } from "../models/problem";
 import { Submission, Submissions } from "../models/submissions";
 import { UserLevel, Users } from "../models/users";
@@ -25,11 +25,11 @@ export enum UvUUserGameStatus {
 }
 
 export type UvUGameResult = {
-  user_a_result: UvUUserResult,
-  user_b_result: UvUUserResult,
+  user_a_result: UserResult,
+  user_b_result: UserResult,
 }
 
-export type UvUUserResult = {
+export type UserResult = {
   status?: UvUUserGameStatus,
   username?: string,
   delta?: number,
@@ -124,7 +124,7 @@ export class UvUGameService {
     Users.clear_status(username_b, ["in_uvu_game", "uvu_game_id"])
   }
 
-  static async update_users_rank_and_mmr(user_result: UvUUserResult) {
+  static async update_users_rank_and_mmr(user_result: UserResult) {
     await Users.update({
       mmr: user_result.new_mmr,
       rank_points: user_result.new_points,
@@ -133,10 +133,10 @@ export class UvUGameService {
   }
 
   static async calculate_game_result(user_a_score_and_penalty: UserScoreAndPenalty, user_b_score_and_penalty: UserScoreAndPenalty, game: UvUGameState): Promise<UvUGameResult> {
-    const user_a_uvu_game_result: UvUUserResult = {
+    const user_a_uvu_game_result: UserResult = {
       username: user_a_score_and_penalty.username
     }
-    const user_b_uvu_game_result: UvUUserResult = {
+    const user_b_uvu_game_result: UserResult = {
       username: user_b_score_and_penalty.username
     }
 

@@ -1,11 +1,11 @@
 import { User } from "../../../models/users";
 import { GameMode } from "../../../utils/definitions/games_types";
-import { IUvUMatchMakerEvaluator } from "./uvu_match_maker_evaluator";
+import { IUsersMatchMakerEvaluator } from "./i_users_match_maker_evaluator";
 import dotenv from 'dotenv'
 dotenv.config()
 const { ELO_MINIMUM_EXPECTED_OUTCOME_DIFFERENCE } = process.env
 
-export class EloUvUMatchMakerEvaluator implements IUvUMatchMakerEvaluator {
+export class EloUsersMatchMakerEvaluator implements IUsersMatchMakerEvaluator {
   game_mode: GameMode
   constructor(game_mode: GameMode) {
     this.game_mode = game_mode

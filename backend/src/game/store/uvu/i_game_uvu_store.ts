@@ -1,5 +1,5 @@
-import { User } from "../../models/users";
-import { GameMode, GameType } from "../../utils/definitions/games_types";
+import { User } from "../../../models/users";
+import { GameMode, GameType } from "../../../utils/definitions/games_types";
 
 export type UvUGameState = {
   id?: string | number;

@@ -6,7 +6,7 @@ import { MatchMakerService } from "../services/match_maker_service";
 import { SocketType, IoType } from "../utils/definitions/io_socket_types";
 import { ConnectedUsers } from "../sockets/connected_users";
 import { GameCreationService } from "../services/game_creation_service";
-import { UvUGameState } from "../game/store/i_game_uvu_store";
+import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
 
 export class MatchMakerSocketController {
   public io: IoType;
@@ -23,6 +23,9 @@ export class MatchMakerSocketController {
     if (match_maker_request.game_type == GameType.OneVsOne) {
       this.find_uvu(match_maker_request);
     }
+    else if (match_maker_request.game_type == GameType.LastManStanding) {
+      this.find_lms(match_maker_request)
+    }
   }
 
   async find_uvu(match_maker_request: MatchMakerRequest) {
@@ -35,6 +38,18 @@ export class MatchMakerSocketController {
       )
       this.send_uvu_game_to_users(uvu_game_state)
     }
+  }
+
+  async find_lms(match_maker_request: MatchMakerRequest) {
+    match_maker_request.username = this.socket.data.username
+    const match_maker_response = await MatchMakerService.find_lms(match_maker_request)
+    console.log(match_maker_response)
+    // if (match_maker_response.status == "MatchFound") {
+    //   const lms_game_state = await GameCreationService.create_lms(
+
+    //   )
+    //   this.send_lms_game_to_users(lms_game_state)
+    // }
   }
 
   send_uvu_game_to_users(uvu_game_state: UvUGameState) {

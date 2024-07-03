@@ -11,3 +11,8 @@ export type MatchMakerResponse = {
   status?: string,
   user?: User
 }
+
+export type LMSMatchMakerResponse = {
+  status?: string,
+  users?: User[]
+}

@@ -1,5 +1,5 @@
-import { db } from '../../firebase'
-import { GameType } from '../../utils/definitions/games_types';
+import { db } from '../../../firebase'
+import { GameType } from '../../../utils/definitions/games_types';
 import { IGameUvUStore, UvUGameState } from './i_game_uvu_store';
 
 
