@@ -25,6 +25,7 @@ import Teams from './pages/Teams/Teams';
 import Test from './components/testComponent/Test';
 import CreateProblem from './pages/CreateProblem/CreateProblem';
 import { SnackbarProvider } from 'notistack';
+import { NavigationProvider, useNavigation } from './NavigationContext';
 interface PrivateRouteProps {
   children: JSX.Element;
 }
@@ -37,7 +38,21 @@ function PrivateRoute({ children }: PrivateRouteProps) {
   return isAuthenticated ? children : <Navigate to="/signIn" replace />;
 }
 
-function App() {
+interface ProtectedRouteProps {
+  children: JSX.Element;
+  condition: boolean;
+  redirectTo: string;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  condition,
+  redirectTo,
+}) => {
+  return condition ? children : <Navigate to={redirectTo} />;
+};
+
+const App: React.FC = () => {
   const authState = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
@@ -101,7 +116,12 @@ function App() {
         path="/gameSession"
         element={
           <PrivateRoute>
-            <GamePage />
+            <ProtectedRoute
+              condition={useNavigation().canAccessGameSession}
+              redirectTo="/home"
+            >
+              <GamePage />
+            </ProtectedRoute>
           </PrivateRoute>
         }
       />
@@ -127,7 +147,12 @@ function App() {
         path="/matchLoading"
         element={
           <PrivateRoute>
-            <MatchLoading />
+            <ProtectedRoute
+              condition={useNavigation().canAccessMatchLoading}
+              redirectTo="/home"
+            >
+              <MatchLoading />
+            </ProtectedRoute>
           </PrivateRoute>
         }
       />
@@ -154,9 +179,9 @@ function App() {
       <Route path="*" element={<_404 />} />
     </Routes>
   );
-}
+};
 
-function AppWrapper() {
+const AppWrapper: React.FC = () => {
   return (
     <SnackbarProvider
       maxSnack={3}
@@ -167,10 +192,12 @@ function AppWrapper() {
       }}
     >
       <BrowserRouter>
-        <App />
+        <NavigationProvider>
+          <App />
+        </NavigationProvider>
       </BrowserRouter>
     </SnackbarProvider>
   );
-}
+};
 
 export default AppWrapper;
