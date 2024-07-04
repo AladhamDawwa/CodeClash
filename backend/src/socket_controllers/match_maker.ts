@@ -8,6 +8,7 @@ import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
 import { Teams } from "../models/teams";
 import { TvTGameState } from "../game/store/tvt/i_game_tvt_store";
 import { LMSGameState } from "../game/store/lms/i_game_lms_store";
+import { ConnectedTeams } from "../sockets/connnected_teams";
 
 export class MatchMakerSocketController {
   public io: IoType;
@@ -22,9 +23,10 @@ export class MatchMakerSocketController {
   async find_match(data: string) {
     const match_maker_request: MatchMakerRequest = JSON.parse(data);
     if (match_maker_request.game_type == GameType.OneVsOne) {
+      ConnectedUsers.insert_user(this.socket.data.username, this.socket);
       this.find_uvu(match_maker_request);
     } else if (match_maker_request.game_type == GameType.TeamVsTeam) {
-      this.find_tvt(match_maker_request);
+      this.tvt_setup(data);
     } else if (match_maker_request.game_type == GameType.LastManStanding) {
       this.find_lms(match_maker_request)
     }
@@ -54,6 +56,26 @@ export class MatchMakerSocketController {
     }
   }
 
+  async tvt_setup(data: string) {
+    const team_match_maker_request: TeamMatchMakerRequest = JSON.parse(data);
+    const team = await Teams.get_by_team_name(team_match_maker_request.team_name);
+    if (!team) {
+      this.socket.emit("match_maker_client:team_not_found", "Team not found");
+      return;
+    }
+    if (team.members.length < 2) {
+      this.socket.emit("match_maker_client:team_not_found", "Team must have at least 3 members");
+      return;
+    }
+    const team_completed = ConnectedTeams.insert_user(
+      this.socket.data.username, team_match_maker_request.team_name, this.socket
+    );
+    if (team_completed) {
+      this.socket.emit("match_maker_client:team_completed", team);
+      this.find_tvt(team_match_maker_request);
+    }
+  }
+
   async find_tvt(match_maker_request: TeamMatchMakerRequest) {
     const match_maker_response = await MatchMakerService.find_tvt(match_maker_request)
     if (match_maker_response.status == "MatchFound") {
@@ -77,15 +99,9 @@ export class MatchMakerSocketController {
   }
 
   async send_tvt_game_to_users(team_name: string, tvt_game_state: TvTGameState) {
-    const team = await Teams.get_by_team_name(team_name);
-    team?.members.forEach((username) => {
-      this.send_tvt_game_to_user(username, tvt_game_state)
-    });
-  }
-
-  send_tvt_game_to_user(username: string, tvt_game_state: TvTGameState) {
-    const socket = ConnectedUsers.get_socket(username)
-    socket && socket.emit("match_maker_client:found_match", tvt_game_state)
+    ConnectedTeams.get_team_sockets(team_name).forEach((socket) => {
+      socket.emit("match_maker_client:found_match", tvt_game_state)
+    })
   }
 
   send_uvu_game_to_user(username: string, uvu_game_state: UvUGameState) {
