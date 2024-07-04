@@ -84,30 +84,6 @@ export class EloTvTGameCalculator implements ITvTGameCalculator {
 
   }
 
-  private get_user_level(problem_rate: string, user: User) {
-    switch (problem_rate) {
-      case 'a':
-        return user.user_level_a
-      case 'b':
-        return user.user_level_b
-      case 'c':
-        return user.user_level_c
-      case 'd':
-        return user.user_level_d
-      case 'e':
-        return user.user_level_e
-      case 'f':
-        return user.user_level_f
-      case 'g':
-        return user.user_level_g
-      case 'h':
-        return user.user_level_h
-      case 'i':
-        return user.user_level_i
-      case 'j':
-        return user.user_level_j
-    }
-  }
 
   private calculate_delta(old_tier_and_pts: { tier: RankTier, points: number }, new_tier_and_pts: { tier: RankTier, points: number }) {
     if (old_tier_and_pts.tier == new_tier_and_pts.tier) {
@@ -132,7 +108,6 @@ export class EloTvTGameCalculator implements ITvTGameCalculator {
     user_uvu_game_result.new_level.xp += gained_xp
     user_uvu_game_result.new_level.level = this.get_level(user_uvu_game_result.new_level.xp)
     user_uvu_game_result.new_level.xp_for_next_level = this.get_xp_for_next_level(user_uvu_game_result.new_level.level)
-    user_uvu_game_result.new_level.rating = user_level.rating
   }
 
   private get_xp_for_next_level(level: number) {
