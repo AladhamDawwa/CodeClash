@@ -58,10 +58,10 @@ const MatchLoading = () => {
     );
 
     socket.on('match_maker_client:found_match', (game: any) => {
-      // console.log(game);
-      dispatch(foundMatch(game));
-      allowGameSessionAccess();
-      navigate('/gameSession', { state: { game, gameSettings } });
+      console.log(game);
+      // dispatch(foundMatch(game));
+      // allowGameSessionAccess();
+      // navigate('/gameSession', { state: { game, gameSettings } });
     });
   }, [
     dispatch,

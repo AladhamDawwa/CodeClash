@@ -76,14 +76,14 @@ export class MatchMakerSocketController {
   }
 
   async find_tvt(match_maker_request: TeamMatchMakerRequest) {
-    // const match_maker_response = await MatchMakerService.find_tvt(match_maker_request)
-    // if (match_maker_response.status == "MatchFound") {
-    //   const tvt_game_state = await GameCreationService.create_tvt(
-    //     match_maker_request.team_name!, match_maker_response.team!.team_name, match_maker_request.game_mode!
-    //   )
-    //   this.send_tvt_game_to_users(match_maker_response.team!.team_name, tvt_game_state)
-    //   this.send_tvt_game_to_users(match_maker_request.team_name!, tvt_game_state)
-    // }
+    const match_maker_response = await MatchMakerService.find_tvt(match_maker_request)
+    if (match_maker_response.status == "MatchFound") {
+      const tvt_game_state = await GameCreationService.create_tvt(
+        match_maker_request.team_name!, match_maker_response.team!.team_name, match_maker_request.game_mode!
+      )
+      this.send_tvt_game_to_users(match_maker_response.team!.team_name, tvt_game_state)
+      this.send_tvt_game_to_users(match_maker_request.team_name!, tvt_game_state)
+    }
   }
 
   send_uvu_game_to_users(uvu_game_state: UvUGameState) {
@@ -92,15 +92,9 @@ export class MatchMakerSocketController {
   }
 
   async send_tvt_game_to_users(team_name: string, tvt_game_state: TvTGameState) {
-    const team = await Teams.get_by_team_name(team_name);
-    team?.members.forEach((username) => {
-      this.send_tvt_game_to_user(username, tvt_game_state)
-    });
-  }
-
-  send_tvt_game_to_user(username: string, tvt_game_state: TvTGameState) {
-    const socket = ConnectedUsers.get_socket(username)
-    socket && socket.emit("match_maker_client:found_match", tvt_game_state)
+    ConnectedTeams.get_team_sockets(team_name).forEach((socket) => {
+      socket.emit("match_maker_client:found_match", tvt_game_state)
+    })
   }
 
   send_uvu_game_to_user(username: string, uvu_game_state: UvUGameState) {
