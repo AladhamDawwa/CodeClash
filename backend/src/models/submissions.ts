@@ -6,7 +6,8 @@ export type Submission = JudgeResult & {
   game_id?: string | number,
   source_code?: string,
   language_id?: number,
-  username?: string
+  username?: string,
+  round?: number
 }
 
 const converter = {
@@ -32,7 +33,8 @@ const converter = {
       score: data.score,
       source_code: data.source_code,
       language_id: data.language_id,
-      username: data.username
+      username: data.username,
+      round: data.round
     };
   },
 };
@@ -47,13 +49,14 @@ export class Submissions {
     return submissions;
   }
 
-  static async create(judge_result: JudgeResult, game_id: string | number, source_code: string, language_id: number, username: string): Promise<Submission> {
+  static async create(judge_result: JudgeResult, game_id: string | number, source_code: string, language_id: number, username: string, round: number = 1): Promise<Submission> {
     const submission: Submission = {
       ...judge_result,
       game_id: game_id,
       source_code: source_code,
       language_id: language_id,
-      username: username
+      username: username,
+      round: round
     }
     const ref = await submissions_collection.add(submission)
     submission.id = ref.id
@@ -63,6 +66,33 @@ export class Submissions {
   static async get_submissions_by_game_id(game_id: string | number): Promise<Submission[]> {
     const snapshot = await submissions_collection
       .where("game_id", "==", game_id)
+      .select(
+        "score",
+        "submission_time",
+        "username",
+        "status"
+      ).
+      orderBy("submission_time")
+      .get();
+
+    const submissions: Submission[] = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        username: data["username"],
+        score: data["score"],
+        submission_time: data["submission_time"],
+        status: data["status"],
+      };
+    });
+
+    return submissions;
+  }
+
+  static async get_submissions_by_game_id_and_round(game_id: string | number, round: number): Promise<Submission[]> {
+    const snapshot = await submissions_collection
+      .where("game_id", "==", game_id)
+      .where("round", "==", round)
       .select(
         "score",
         "submission_time",

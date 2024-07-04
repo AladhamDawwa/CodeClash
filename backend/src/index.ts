@@ -11,6 +11,7 @@ import { UsersController } from './controllers/users'
 import { authenticate_socket } from './middlewares/socket_authentication'
 import { MatchMakerSocketController } from './socket_controllers/match_maker'
 import { UvUGameSocketController } from './socket_controllers/uvu_game'
+import { LMSGameSocketController } from './socket_controllers/lms_game'
 
 
 dotenv.config()
@@ -42,6 +43,7 @@ io.use(authenticate_socket)
 io.on('connection', (socket) => {
   new MatchMakerSocketController(io, socket).register_events()
   new UvUGameSocketController(io, socket).register_events()
+  new LMSGameSocketController(io, socket).register_events()
 })
 
 

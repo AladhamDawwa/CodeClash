@@ -6,14 +6,16 @@ import { GameMode, GameType } from "../utils/definitions/games_types";
 import { ProblemPickerService } from "./problem_picker_service";
 import { addMinutes, addSeconds } from 'date-fns';
 import dotenv from 'dotenv'
-import { UvUGameService } from "./uvu_game_service";
+import { UserResult, UvUGameService } from "./uvu_game_service";
 import { IGameLMSStore, LMSGameState } from "../game/store/lms/i_game_lms_store";
-import { GameLMSFireStore } from "../game/store/lms/game_lms_fire_store";
+import game_lms_fire_store, { GameLMSFireStore } from "../game/store/lms/game_lms_fire_store";
 import { IGameTvTStore, TvTGameState } from "../game/store/tvt/i_game_tvt_store";
 import { Teams } from "../models/teams";
 import { GameTvTFireStore } from "../game/store/tvt/game_tvt_fire_store";
 import { TvTGameService } from "./tvt_game_service";
 import { UsersUnsolvedProblems } from "../models/users_unsolved_problems";
+import { LMSGameService } from "./lms_game_service";
+import { Problem, Problems } from "../models/problem";
 dotenv.config();
 
 const { GAME_START_DELAY } = process.env;
@@ -59,7 +61,7 @@ export class GameCreationService {
   static async create_lms(users: User[], game_mode: GameMode): Promise<LMSGameState> {
     const problem = await ProblemPickerService.pick_problem(users)
     const game_duration = await ProblemLevels.get_game_duration(problem!.rating!)
-    const lms_game_state = this.create_lms_game_state(
+    const lms_game_state = await this.create_lms_game_state(
       users,
       game_mode,
       problem!.id!,
@@ -68,7 +70,7 @@ export class GameCreationService {
     const game_id = await this.game_lms_store.create(lms_game_state)
     lms_game_state.id = game_id
     // this.remove_problems_from_unsolved_problems(users, problem?.id!, problem?.rating!)
-    // a set time out
+    setTimeout(() => { LMSGameService.end_round(lms_game_state) }, lms_game_state.end_time!.getTime()! - Date.now())
     this.update_users_statuses(game_id as string, users, GameType.LastManStanding, game_mode)
     return lms_game_state
   }
@@ -79,11 +81,42 @@ export class GameCreationService {
     }
   }
 
-  static create_lms_game_state(users: User[], game_mode: GameMode, problem_id: string, game_duration: number): LMSGameState {
+  static async create_new_lms_round(lms_game_state: LMSGameState) {
+    const users = await Users.get_by_usernames(lms_game_state.usernames)
+    const problem = await ProblemPickerService.pick_problem(users)
+    const game_duration = await ProblemLevels.get_game_duration(problem?.rating!)
+    this.update_lms_game_state(problem!, game_duration, lms_game_state)
+    this.game_lms_store.update(lms_game_state, lms_game_state.id!)
+    setTimeout(() => { LMSGameService.end_round(lms_game_state, lms_game_state.round) }, lms_game_state.end_time!.getTime()! - Date.now())
+  }
+
+  static update_lms_game_state(problem: Problem, game_duration: number, lms_game_state: LMSGameState) {
+    lms_game_state.duration = game_duration
+    lms_game_state.problem_id = problem.id
     let start_time = new Date()
     start_time = addSeconds(start_time, parseInt(GAME_START_DELAY!))
     const end_time = addMinutes(start_time, game_duration)
+    lms_game_state.start_time = start_time
+    lms_game_state.end_time = end_time
+    lms_game_state.round += 1
+  }
 
+  static async create_lms_game_state(users: User[], game_mode: GameMode, problem_id: string, game_duration: number): Promise<LMSGameState> {
+    let start_time = new Date()
+    start_time = addSeconds(start_time, parseInt(GAME_START_DELAY!))
+    const end_time = addMinutes(start_time, game_duration)
+    const current_users_results = new Map<string, UserResult>()
+    for (const user of users) {
+      current_users_results.set(user.username!, {
+        username: user.username,
+        delta: 0,
+        new_mmr: user.mmr,
+        new_tier: user.rank_tier,
+        new_points: user.rank_points,
+        new_level: Users.get_user_level(user, await Problems.get_problem_rate(problem_id)),
+        xp_delta: 0
+      })
+    }
     const game: LMSGameState = {
       usernames: users.map(user => user.username!),
       game_mode: game_mode,
@@ -93,7 +126,7 @@ export class GameCreationService {
       start_time: start_time,
       end_time: end_time,
       round: 1,
-      current_users_results: []
+      current_users_results: current_users_results
     }
 
     return game

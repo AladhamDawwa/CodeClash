@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import { UsersUnsolvedProblems } from "./users_unsolved_problems";
 import { firestore } from "firebase-admin";
 import { GameMode, GameType } from "../utils/definitions/games_types";
+import { UserResult } from "../services/uvu_game_service";
 dotenv.config();
 
 const { SALT_ROUNDS, PEPPER, LEVEL_K } = process.env;
@@ -135,6 +136,14 @@ export class Users {
     return user;
   }
 
+  static async get_by_usernames(usernames: string[]) {
+    const snapshot = await users_collection
+      .where("username", "in", usernames)
+      .get();
+    const users = snapshot.docs.map((doc) => doc.data());
+    return users
+  }
+
   static async clear_status(username: string, keys_to_remove: string[]) {
     const snapshot = await users_collection
       .where("username", "==", username)
@@ -212,6 +221,74 @@ export class Users {
     const user_doc = snapshot.docs[0];
     await users_collection.doc(user_doc.id).update(new_user);
     return { ...user_doc, ...new_user };
+  }
+
+  static get_user_level(user: User, problem_rate: string) {
+    switch (problem_rate) {
+      case 'a':
+        return user.user_level_a
+      case 'b':
+        return user.user_level_b
+      case 'c':
+        return user.user_level_c
+      case 'd':
+        return user.user_level_d
+      case 'e':
+        return user.user_level_e
+      case 'f':
+        return user.user_level_f
+      case 'g':
+        return user.user_level_g
+      case 'h':
+        return user.user_level_h
+      case 'i':
+        return user.user_level_i
+      case 'j':
+        return user.user_level_j
+    }
+  }
+
+  static async update_user_level_and_xp(user_level: UserLevel, username: string) {
+    switch (user_level.rating) {
+      case 'a':
+        await Users.update({ user_level_a: user_level }, username)
+        break
+      case 'b':
+        await Users.update({ user_level_b: user_level }, username)
+        break
+      case 'c':
+        await Users.update({ user_level_c: user_level }, username)
+        break
+      case 'd':
+        await Users.update({ user_level_d: user_level }, username)
+        break
+      case 'e':
+        await Users.update({ user_level_e: user_level }, username)
+        break
+      case 'f':
+        await Users.update({ user_level_f: user_level }, username)
+        break
+      case 'g':
+        await Users.update({ user_level_g: user_level }, username)
+        break
+      case 'h':
+        await Users.update({ user_level_h: user_level }, username)
+        break
+      case 'i':
+        await Users.update({ user_level_i: user_level }, username)
+        break
+      case 'j':
+        await Users.update({ user_level_j: user_level }, username)
+        break
+    }
+  }
+
+  static async update_users_rank_and_mmr(user_result: UserResult, username: string) {
+    await Users.update({
+      mmr: user_result.new_mmr,
+      rank_points: user_result.new_points,
+      rank_tier: user_result.new_tier
+    }, username)
   }
 
   private static create_user_args(
