@@ -4,9 +4,8 @@ import { MatchMakerService } from "../services/match_maker_service";
 import { SocketType, IoType } from "../utils/definitions/io_socket_types";
 import { ConnectedUsers } from "../sockets/connected_users";
 import { GameCreationService } from "../services/game_creation_service";
-import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
+import { GameState } from "../game/store/uvu/i_game_uvu_store";
 import { Teams } from "../models/teams";
-import { TvTGameState } from "../game/store/tvt/i_game_tvt_store";
 import { LMSGameState } from "../game/store/lms/i_game_lms_store";
 import { ConnectedTeams } from "../sockets/connnected_teams";
 
@@ -62,10 +61,10 @@ export class MatchMakerSocketController {
       this.socket.emit("match_maker_client:team_not_found", "Team not found");
       return;
     }
-    if (team.members.length < 2) {
-      this.socket.emit("match_maker_client:team_not_found", "Team must have at least 3 members");
-      return;
-    }
+    // if (team.members.length < 3) {
+    //   this.socket.emit("match_maker_client:team_not_found", "Team must have at least 3 members");
+    //   return;
+    // }
     const team_completed = ConnectedTeams.insert_user(
       this.socket.data.username, team_match_maker_request.team_name, this.socket
     );
@@ -86,7 +85,7 @@ export class MatchMakerSocketController {
     }
   }
 
-  send_uvu_game_to_users(uvu_game_state: UvUGameState) {
+  send_uvu_game_to_users(uvu_game_state: GameState) {
     this.send_uvu_game_to_user(uvu_game_state.username_a!, uvu_game_state)
     this.send_uvu_game_to_user(uvu_game_state.username_b!, uvu_game_state)
   }
@@ -97,13 +96,13 @@ export class MatchMakerSocketController {
     }
   }
 
-  async send_tvt_game_to_users(team_name: string, tvt_game_state: TvTGameState) {
+  async send_tvt_game_to_users(team_name: string, tvt_game_state: GameState) {
     ConnectedTeams.get_team_sockets(team_name).forEach((socket) => {
       socket.emit("match_maker_client:found_match", tvt_game_state)
     })
   }
 
-  send_uvu_game_to_user(username: string, uvu_game_state: UvUGameState) {
+  send_uvu_game_to_user(username: string, uvu_game_state: GameState) {
     const socket = ConnectedUsers.get_socket(username)
     socket && socket.emit("match_maker_client:found_match", uvu_game_state)
   }

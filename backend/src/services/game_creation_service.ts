@@ -1,5 +1,5 @@
 import { GameUvUFireStore } from "../game/store/uvu/game_uvu_fire_store";
-import { IGameUvUStore, UvUGameState } from "../game/store/uvu/i_game_uvu_store";
+import { IGameUvUStore, GameState } from "../game/store/uvu/i_game_uvu_store";
 import { ProblemLevels } from "../models/problem_levels";
 import { User, Users } from "../models/users";
 import { GameMode, GameType } from "../utils/definitions/games_types";
@@ -8,14 +8,16 @@ import { addMinutes, addSeconds } from 'date-fns';
 import dotenv from 'dotenv'
 import { UserResult, UvUGameService } from "./uvu_game_service";
 import { IGameLMSStore, LMSGameState } from "../game/store/lms/i_game_lms_store";
-import game_lms_fire_store, { GameLMSFireStore } from "../game/store/lms/game_lms_fire_store";
-import { IGameTvTStore, TvTGameState } from "../game/store/tvt/i_game_tvt_store";
+// import game_lms_fire_store, { GameLMSFireStore } from "../game/store/lms/game_lms_fire_store";
+// import { IGameTvTStore, TvTGameState } from "../game/store/tvt/i_game_tvt_store";
+import { GameLMSFireStore } from "../game/store/lms/game_lms_fire_store";
+import { IGameTvTStore } from "../game/store/tvt/i_game_tvt_store";
 import { Teams } from "../models/teams";
 import { GameTvTFireStore } from "../game/store/tvt/game_tvt_fire_store";
-import { TvTGameService } from "./tvt_game_service";
 import { UsersUnsolvedProblems } from "../models/users_unsolved_problems";
 import { LMSGameService } from "./lms_game_service";
 import { Problem, Problems } from "../models/problem";
+import { TvTGameService } from "./tvt_game_service";
 dotenv.config();
 
 const { GAME_START_DELAY } = process.env;
@@ -25,7 +27,7 @@ export class GameCreationService {
   static game_lms_store: IGameLMSStore = new GameLMSFireStore()
   static game_tvt_store: IGameTvTStore = new GameTvTFireStore();
 
-  static async create_uvu(username_a: string, username_b: string, game_mode: GameMode): Promise<UvUGameState> {
+  static async create_uvu(username_a: string, username_b: string, game_mode: GameMode): Promise<GameState> {
     const user_a = await Users.get_by_username(username_a)
     const user_b = await Users.get_by_username(username_b)
     const problem = await ProblemPickerService.pick_problem([user_a, user_b])
@@ -71,6 +73,8 @@ export class GameCreationService {
     lms_game_state.id = game_id
     // this.remove_problems_from_unsolved_problems(users, problem?.id!, problem?.rating!)
     setTimeout(() => { LMSGameService.end_round(lms_game_state) }, lms_game_state.end_time!.getTime()! - Date.now())
+    this.remove_problems_from_unsolved_problems(users, problem!.id!, problem!.rating!)
+    // a set time out
     this.update_users_statuses(game_id as string, users, GameType.LastManStanding, game_mode)
     return lms_game_state
   }
@@ -84,7 +88,7 @@ export class GameCreationService {
   static async create_new_lms_round(lms_game_state: LMSGameState) {
     const users = await Users.get_by_usernames(lms_game_state.usernames)
     const problem = await ProblemPickerService.pick_problem(users)
-    const game_duration = await ProblemLevels.get_game_duration(problem?.rating!)
+    const game_duration = await ProblemLevels.get_game_duration(problem!.rating!)
     this.update_lms_game_state(problem!, game_duration, lms_game_state)
     this.game_lms_store.update(lms_game_state, lms_game_state.id!)
     setTimeout(() => { LMSGameService.end_round(lms_game_state, lms_game_state.round) }, lms_game_state.end_time!.getTime()! - Date.now())
@@ -132,7 +136,7 @@ export class GameCreationService {
     return game
   }
 
-  // static create_uvu_game_state(username_a: string, username_b: string, game_mode: GameMode, problem_id: string, game_duration: number): UvUGameState {
+  // static create_uvu_game_state(username_a: string, username_b: string, game_mode: GameMode, problem_id: string, game_duration: number): GameState {
   //   let start_time = new Date()
   //   start_time = addSeconds(start_time, parseInt(GAME_START_DELAY!))
   //   let end_time = addMinutes(start_time, game_duration)
@@ -143,7 +147,7 @@ export class GameCreationService {
   //   return uvu_game_state
   // }
 
-  static async create_tvt(team_name_a: string, team_name_b: string, game_mode: GameMode): Promise<TvTGameState> {
+  static async create_tvt(team_name_a: string, team_name_b: string, game_mode: GameMode): Promise<GameState> {
     const team_a = await Teams.get_by_team_name(team_name_a)
     const team_b = await Teams.get_by_team_name(team_name_b)
     let game_members_names: string[] = [];
@@ -171,19 +175,19 @@ export class GameCreationService {
     //   UsersUnsolvedProblems.remove_problem(username, problem?.id!, problem?.rating!)
     // })
 
-    // setTimeout(() => { TvTGameService.end_game(tvt_game_state) }, tvt_game_state.end_time!.getTime()! - Date.now())
+    setTimeout(() => { TvTGameService.end_game(tvt_game_state) }, tvt_game_state.end_time!.getTime()! - Date.now())
 
     this.update_users_statuses(game_id as string, game_members, GameType.TeamVsTeam, game_mode)
 
     return tvt_game_state;
   }
 
-  static create_uvu_game_state(username_a: string, username_b: string, game_mode: GameMode, problem_id: string, game_duration: number): UvUGameState {
+  static create_uvu_game_state(username_a: string, username_b: string, game_mode: GameMode, problem_id: string, game_duration: number): GameState {
     let start_time = new Date()
     start_time = addSeconds(start_time, parseInt(GAME_START_DELAY!))
     const end_time = addMinutes(start_time, game_duration)
 
-    const game: UvUGameState = {
+    const game: GameState = {
       username_a: username_a,
       username_b: username_b,
       game_mode: game_mode,
@@ -198,14 +202,14 @@ export class GameCreationService {
     return game
   }
 
-  static create_tvt_game_state(team_name_a: string, team_name_b: string, game_mode: GameMode, problem_id: string, game_duration: number): TvTGameState {
+  static create_tvt_game_state(team_name_a: string, team_name_b: string, game_mode: GameMode, problem_id: string, game_duration: number): GameState {
     let start_time = new Date()
     start_time = addSeconds(start_time, parseInt(GAME_START_DELAY!))
     const end_time = addMinutes(start_time, game_duration)
 
-    const game: TvTGameState = {
-      team_a: team_name_a,
-      team_b: team_name_b,
+    const game: GameState = {
+      username_a: team_name_a,
+      username_b: team_name_b,
       game_mode: game_mode,
       game_type: GameType.TeamVsTeam,
       problem_id: problem_id,

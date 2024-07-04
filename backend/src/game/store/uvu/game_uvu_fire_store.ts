@@ -1,11 +1,11 @@
 import { db } from '../../../firebase'
-import { IGameUvUStore, UvUGameState } from './i_game_uvu_store';
+import { IGameUvUStore, GameState } from './i_game_uvu_store';
 
 
 const converter = {
-  toFirestore: (data: UvUGameState) => {
-    const { id, ...uvuGameStateData } = data;
-    return uvuGameStateData;
+  toFirestore: (data: GameState) => {
+    const { id, ...GameStateData } = data;
+    return GameStateData;
   },
   fromFirestore: (snap: FirebaseFirestore.QueryDocumentSnapshot) => {
     const data = snap.data();
@@ -27,19 +27,19 @@ const converter = {
 const uvu_games_collection = db.uvu_games.withConverter(converter);
 
 export class GameUvUFireStore implements IGameUvUStore {
-  async create(game_state: UvUGameState): Promise<string> {
+  async create(game_state: GameState): Promise<string> {
     const ref = await uvu_games_collection.add(game_state)
     return ref.id
   }
   async delete(game_id: string) {
-    const ref = await uvu_games_collection.doc(game_id)
+    const ref = uvu_games_collection.doc(game_id)
     await ref.delete()
   }
-  async update(new_game_state: UvUGameState, game_id: string) {
+  async update(new_game_state: GameState, game_id: string) {
     const ref = uvu_games_collection.doc(game_id)
     await ref.update(new_game_state)
   }
-  async get(game_id: string): Promise<UvUGameState | null> {
+  async get(game_id: string): Promise<GameState | null> {
     const ref = await uvu_games_collection.doc(game_id)
     const doc = await ref.get()
     if (!doc.exists) {

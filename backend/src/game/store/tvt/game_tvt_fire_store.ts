@@ -1,8 +1,9 @@
 import { db } from '../../../firebase'
-import { IGameTvTStore, TvTGameState } from './i_game_tvt_store';
+import { GameState } from '../uvu/i_game_uvu_store';
+import { IGameTvTStore } from './i_game_tvt_store';
 
 const converter = {
-  toFirestore: (data: TvTGameState) => {
+  toFirestore: (data: GameState) => {
     const { id, ...tvtGameStateData } = data;
     return tvtGameStateData;
   },
@@ -12,8 +13,8 @@ const converter = {
       id: snap.id,
       game_type: data.game_type,
       game_mode: data.game_mode,
-      team_a: data.team_a,
-      team_b: data.team_b,
+      username_a: data.username_a,
+      username_b: data.username_b,
       problem_id: data.problem_id,
       duration: data.duration,
       start_time: data.start_time.toDate(),
@@ -26,7 +27,7 @@ const converter = {
 const tvt_games_collection = db.tvt_games.withConverter(converter);
 
 export class GameTvTFireStore implements IGameTvTStore {
-  async create(game_state: TvTGameState): Promise<string> {
+  async create(game_state: GameState): Promise<string> {
     const ref = await tvt_games_collection.add(game_state)
     return ref.id
   }
@@ -36,12 +37,12 @@ export class GameTvTFireStore implements IGameTvTStore {
     await ref.delete()
   }
 
-  async update(new_game_state: TvTGameState, game_id: string) {
+  async update(new_game_state: GameState, game_id: string) {
     const ref = tvt_games_collection.doc(game_id)
     await ref.update(new_game_state)
   }
 
-  async get(game_id: string): Promise<TvTGameState | null> {
+  async get(game_id: string): Promise<GameState | null> {
     const ref = await tvt_games_collection.doc(game_id)
     const doc = await ref.get()
     if (!doc.exists) {
