@@ -252,7 +252,13 @@ export default function MiniDrawer() {
                 />
               </ListItemIcon>
               <ListItemText
-                primary={open ? `Teams : ${user?.current_team || ''}` : 'Teams'}
+                primary={
+                  open
+                    ? user?.current_team
+                      ? `Teams : ${user.current_team}`
+                      : 'Teams'
+                    : 'Teams'
+                }
                 primaryTypographyProps={{
                   fontSize: '1.5rem',
                   letterSpacing: 1,
