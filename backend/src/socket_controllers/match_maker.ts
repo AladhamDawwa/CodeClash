@@ -7,6 +7,7 @@ import { GameCreationService } from "../services/game_creation_service";
 import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
 import { Teams } from "../models/teams";
 import { TvTGameState } from "../game/store/tvt/i_game_tvt_store";
+import { ConnectedTeams } from "../sockets/connnected_teams";
 
 export class MatchMakerSocketController {
   public io: IoType;
@@ -21,9 +22,10 @@ export class MatchMakerSocketController {
   async find_match(data: string) {
     const match_maker_request: MatchMakerRequest = JSON.parse(data);
     if (match_maker_request.game_type == GameType.OneVsOne) {
+      ConnectedUsers.insert_user(this.socket.data.username, this.socket);
       this.find_uvu(match_maker_request);
     } else if (match_maker_request.game_type == GameType.TeamVsTeam) {
-      this.find_tvt(match_maker_request);
+      this.tvt_setup(data);
     } else if (match_maker_request.game_type == GameType.LastManStanding) {
       this.find_lms(match_maker_request)
     }
@@ -53,15 +55,35 @@ export class MatchMakerSocketController {
     // }
   }
 
-  async find_tvt(match_maker_request: TeamMatchMakerRequest) {
-    const match_maker_response = await MatchMakerService.find_tvt(match_maker_request)
-    if (match_maker_response.status == "MatchFound") {
-      const tvt_game_state = await GameCreationService.create_tvt(
-        match_maker_request.team_name!, match_maker_response.team!.team_name, match_maker_request.game_mode!
-      )
-      this.send_tvt_game_to_users(match_maker_response.team!.team_name, tvt_game_state)
-      this.send_tvt_game_to_users(match_maker_request.team_name!, tvt_game_state)
+  async tvt_setup(data: string) {
+    const team_match_maker_request: TeamMatchMakerRequest = JSON.parse(data);
+    const team = await Teams.get_by_team_name(team_match_maker_request.team_name);
+    if (!team) {
+      this.socket.emit("match_maker_client:team_not_found", "Team not found");
+      return;
     }
+    if (team.members.length < 2) {
+      this.socket.emit("match_maker_client:team_not_found", "Team must have at least 3 members");
+      return;
+    }
+    const team_completed = ConnectedTeams.insert_user(
+      this.socket.data.username, team_match_maker_request.team_name, this.socket
+    );
+    if (team_completed) {
+      this.socket.emit("match_maker_client:team_completed", team);
+      this.find_tvt(team_match_maker_request);
+    }
+  }
+
+  async find_tvt(match_maker_request: TeamMatchMakerRequest) {
+    // const match_maker_response = await MatchMakerService.find_tvt(match_maker_request)
+    // if (match_maker_response.status == "MatchFound") {
+    //   const tvt_game_state = await GameCreationService.create_tvt(
+    //     match_maker_request.team_name!, match_maker_response.team!.team_name, match_maker_request.game_mode!
+    //   )
+    //   this.send_tvt_game_to_users(match_maker_response.team!.team_name, tvt_game_state)
+    //   this.send_tvt_game_to_users(match_maker_request.team_name!, tvt_game_state)
+    // }
   }
 
   send_uvu_game_to_users(uvu_game_state: UvUGameState) {

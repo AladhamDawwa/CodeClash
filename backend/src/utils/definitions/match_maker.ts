@@ -19,9 +19,9 @@ export type LMSMatchMakerResponse = {
 }
 
 export type TeamMatchMakerRequest = {
-  game_type?: GameType,
-  game_mode?: GameMode,
-  team_name?: string
+  game_type: GameType,
+  game_mode: GameMode,
+  team_name: string
 }
 
 export type TeamMatchMakerResponse = {

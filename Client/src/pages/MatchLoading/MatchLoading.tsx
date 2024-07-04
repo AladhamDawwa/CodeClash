@@ -32,7 +32,7 @@ const MatchLoading = () => {
       window.removeEventListener('popstate', handlePopState);
 
       socket.off('match_maker_client:found_match');
-      socket.disconnect();
+      // socket.disconnect();
     };
   }, []);
 

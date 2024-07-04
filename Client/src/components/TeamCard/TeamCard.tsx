@@ -295,7 +295,7 @@ const TeamCard = ({ team }: any) => {
             }}
             disabled={current_team === Team?.team_name}
             onClick={() => {
-              if (Team.members.length < 3) {
+              if (Team.members.length < 2) {
                 enqueueSnackbar('Not enough members', { variant: 'error' });
                 return;
               } else {
