@@ -78,50 +78,17 @@ export class UvUGameService {
       await Users.update({ normal_mmr: game_result.user_a_result.new_normal_mmr }, game_result.user_a_result.username!)
       await Users.update({ normal_mmr: game_result.user_b_result.new_normal_mmr }, game_result.user_b_result.username!)
     }
-    this.update_user_level_and_xp(game_result.user_a_result.new_level!, game_result.user_a_result.username!)
-    this.update_user_level_and_xp(game_result.user_b_result.new_level!, game_result.user_b_result.username!)
+    Users.update_user_level_and_xp(game_result.user_a_result.new_level!, game_result.user_a_result.username!)
+    Users.update_user_level_and_xp(game_result.user_b_result.new_level!, game_result.user_b_result.username!)
     UvUGameSocketController.send_game_result_to_users(game_result)
     this.clear_users_statuses(game.username_a!, game.username_b!)
     UvUGamesHistory.create(game, game_result)
   }
 
-  static update_user_level_and_xp(user_level: UserLevel, username: string) {
-    switch (user_level.rating) {
-      case 'a':
-        Users.update({ user_level_a: user_level }, username)
-        break
-      case 'b':
-        Users.update({ user_level_b: user_level }, username)
-        break
-      case 'c':
-        Users.update({ user_level_c: user_level }, username)
-        break
-      case 'd':
-        Users.update({ user_level_d: user_level }, username)
-        break
-      case 'e':
-        Users.update({ user_level_e: user_level }, username)
-        break
-      case 'f':
-        Users.update({ user_level_f: user_level }, username)
-        break
-      case 'g':
-        Users.update({ user_level_g: user_level }, username)
-        break
-      case 'h':
-        Users.update({ user_level_h: user_level }, username)
-        break
-      case 'i':
-        Users.update({ user_level_i: user_level }, username)
-        break
-      case 'j':
-        Users.update({ user_level_j: user_level }, username)
-        break
-    }
-  }
+
   static clear_users_statuses(username_a: string, username_b: string) {
-    Users.clear_status(username_a, ["in_uvu_game", "uvu_game_id"])
-    Users.clear_status(username_b, ["in_uvu_game", "uvu_game_id"])
+    Users.clear_status(username_a, ["in_game", "game_id", "game_type", "game_mode"])
+    Users.clear_status(username_b, ["in_game", "game_id", "game_type", "game_mode"])
   }
 
   static async update_users_rank_and_mmr(user_result: UserResult) {

@@ -1,14 +1,20 @@
 import { db } from '../../../firebase'
+import { UserResult } from '../../../services/uvu_game_service';
 import { IGameLMSStore, LMSGameState } from './i_game_lms_store';
 
 
 const converter = {
   toFirestore: (data: LMSGameState) => {
-    const { id, ...lmsGameStateData } = data;
-    return lmsGameStateData;
+    const { id, current_users_results, ...lmsGameStateData } = data;
+    const current_users_results_obj = Object.fromEntries(current_users_results!)
+    return {
+      ...lmsGameStateData,
+      current_users_results: current_users_results_obj
+    };
   },
   fromFirestore: (snap: FirebaseFirestore.QueryDocumentSnapshot) => {
     const data = snap.data();
+    const current_users_results_map = new Map<string, UserResult>(Object.entries(data.current_users_results));
     return {
       id: snap.id,
       game_type: data.game_type,
@@ -19,7 +25,7 @@ const converter = {
       start_time: data.start_time.toDate(),
       end_time: data.end_time.toDate(),
       round: data.round,
-      current_users_results: data.current_users_results
+      current_users_results: current_users_results_map
     };
   },
 };
@@ -37,7 +43,10 @@ export class GameLMSFireStore implements IGameLMSStore {
   }
   async update(new_game_state: LMSGameState, game_id: string) {
     const ref = lms_games_collection.doc(game_id)
-    await ref.update(new_game_state)
+    const current_users_results_map = new_game_state.current_users_results;
+    delete new_game_state.current_users_results
+    await ref.update({ ...new_game_state, current_users_results: Object.fromEntries(current_users_results_map!) })
+    new_game_state.current_users_results = current_users_results_map
   }
   async get(game_id: string): Promise<LMSGameState | null> {
     const ref = await lms_games_collection.doc(game_id)

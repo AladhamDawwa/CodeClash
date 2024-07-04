@@ -11,7 +11,7 @@ export type LMSGameState = {
   start_time?: Date;
   end_time?: Date;
   round: number;
-  current_users_results: UserResult[]
+  current_users_results?: Map<string, UserResult>
 };
 
 export interface IGameLMSStore {

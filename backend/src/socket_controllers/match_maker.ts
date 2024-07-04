@@ -7,6 +7,7 @@ import { GameCreationService } from "../services/game_creation_service";
 import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
 import { Teams } from "../models/teams";
 import { TvTGameState } from "../game/store/tvt/i_game_tvt_store";
+import { LMSGameState } from "../game/store/lms/i_game_lms_store";
 import { ConnectedTeams } from "../sockets/connnected_teams";
 
 export class MatchMakerSocketController {
@@ -46,13 +47,13 @@ export class MatchMakerSocketController {
   async find_lms(match_maker_request: MatchMakerRequest) {
     match_maker_request.username = this.socket.data.username
     const match_maker_response = await MatchMakerService.find_lms(match_maker_request)
-    console.log(match_maker_response)
-    // if (match_maker_response.status == "MatchFound") {
-    //   const lms_game_state = await GameCreationService.create_lms(
-
-    //   )
-    //   this.send_lms_game_to_users(lms_game_state)
-    // }
+    if (match_maker_response.status == "MatchFound") {
+      const lms_game_state = await GameCreationService.create_lms(
+        match_maker_response.users!,
+        match_maker_request.game_mode!
+      )
+      this.send_lms_game_to_users(lms_game_state)
+    }
   }
 
   async tvt_setup(data: string) {
@@ -91,6 +92,12 @@ export class MatchMakerSocketController {
     this.send_uvu_game_to_user(uvu_game_state.username_b!, uvu_game_state)
   }
 
+  send_lms_game_to_users(lms_game_state: LMSGameState) {
+    for (const username of lms_game_state.usernames) {
+      this.send_lms_game_to_user(username, lms_game_state)
+    }
+  }
+
   async send_tvt_game_to_users(team_name: string, tvt_game_state: TvTGameState) {
     ConnectedTeams.get_team_sockets(team_name).forEach((socket) => {
       socket.emit("match_maker_client:found_match", tvt_game_state)
@@ -101,6 +108,12 @@ export class MatchMakerSocketController {
     const socket = ConnectedUsers.get_socket(username)
     socket && socket.emit("match_maker_client:found_match", uvu_game_state)
   }
+
+  send_lms_game_to_user(username: string, lms_game_state: LMSGameState) {
+    const socket = ConnectedUsers.get_socket(username)
+    socket && socket.emit("match_maker_client:found_match", lms_game_state)
+  }
+
 
   register_events() {
     this.socket.on("match_maker_server:find_match", this.find_match);
