@@ -15,7 +15,10 @@ const CodeEditor = ({ languageId, gameID }: any) => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    setLanguage(languages.find((lang) => lang.id == Number.parseInt(languageId))?.code || 'C++');
+    setLanguage(
+      languages.find(lang => lang.id == Number.parseInt(languageId))?.code ||
+        'C++',
+    );
     setCode(
       `${language === 'python' ? '#' : '//'} Write your ${language} code here`,
     );
@@ -34,24 +37,31 @@ const CodeEditor = ({ languageId, gameID }: any) => {
 
   const handleSubmission = () => {
     const encoded = encode(code);
-    socket.emit('uvu_game_server:submit_problem', 
-      JSON.stringify({ source_code: encoded, game_id: gameID, language_id: languageId }), 
+    socket.emit(
+      'game_server:submit_problem',
+      JSON.stringify({
+        source_code: encoded,
+        game_id: gameID,
+        language_id: languageId,
+      }),
       (response: any) => {
         console.log('response', response);
         const message = SubmissionStatus[response.status];
         if (response.status == 3) {
           enqueueSnackbar(message, { variant: 'success' });
-        } else if(response.status == 5) {
-          enqueueSnackbar(message, { variant: "warning" });
+        } else if (response.status == 5) {
+          enqueueSnackbar(message, { variant: 'warning' });
         } else {
           enqueueSnackbar(message, { variant: 'error' });
         }
-    });
+      },
+    );
   };
 
   return (
     <>
-      <Button variant="contained"
+      <Button
+        variant="contained"
         sx={{
           position: 'absolute',
           top: '1.5rem',

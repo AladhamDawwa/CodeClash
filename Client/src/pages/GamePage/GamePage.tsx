@@ -80,11 +80,11 @@ const GamePage = () => {
   }, []);
 
   useEffect(() => {
-    socket.on('uvu_game_client:submission_notification', (data: any) => {
+    socket.on('game_client:submission_notification', (data: any) => {
       enqueueSnackbar(data, { variant: 'info' });
     });
 
-    socket.on('uvu_game_client:send_game_result', (data: any) => {
+    socket.on('game_client:send_game_result', (data: any) => {
       socket.disconnect();
       dispatch<any>(
         updateGameResult({
@@ -145,7 +145,7 @@ const GamePage = () => {
               boxShadow: 2,
             }}
           >
-            <Timer />
+            {/* <Timer mode={userData.gameInfo!.game_mode} /> */}
           </Box>
 
           {problem && (
@@ -323,24 +323,6 @@ const GamePage = () => {
                             {lang.name}
                           </MenuItem>
                         ))}
-                        {/* <MenuItem sx={{ fontSize: '1.5rem' }} value={'javascript'}>
-                        JavaScript
-                      </MenuItem>
-                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'typescript'}>
-                        TypeScript
-                      </MenuItem>
-                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'python'}>
-                        Python
-                      </MenuItem>
-                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'java'}>
-                        Java
-                      </MenuItem>
-                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'csharp'}>
-                        C#
-                      </MenuItem>
-                      <MenuItem sx={{ fontSize: '1.5rem' }} value={'cpp'}>
-                        C++
-                      </MenuItem> */}
                       </Select>
                     </FormControl>
                   </Stack>

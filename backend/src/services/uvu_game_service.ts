@@ -1,11 +1,11 @@
 import { EloUvUGameCalculator } from "../game/evaluator/elo_uvu_game_calculator";
 import gameUvUStore from "../game/store/uvu/game_uvu_fire_store";
-import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
+import { GameState } from "../game/store/uvu/i_game_uvu_store";
 import { Problems } from "../models/problem";
 import { Submission, Submissions } from "../models/submissions";
 import { UserLevel, Users } from "../models/users";
 import { UvUGamesHistory } from "../models/uvu_game_history";
-import { UvUGameSocketController, UvUGameSubmissionRequest } from "../socket_controllers/uvu_game";
+import { UvUGameSocketController, GameSubmissionRequest } from "../socket_controllers/uvu_game";
 import { GameMode } from "../utils/definitions/games_types";
 import { RankTier } from "../utils/definitions/rank_tier";
 import { JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
@@ -42,12 +42,12 @@ export type UserResult = {
 }
 
 export class UvUGameService {
-  static async get_game(game_id: string): Promise<UvUGameState | null> {
+  static async get_game(game_id: string): Promise<GameState | null> {
     const game = await gameUvUStore.get(game_id)
     return game
   }
 
-  static async submit_problem(game: UvUGameState, username: string, uvu_game_submission_request: UvUGameSubmissionRequest) {
+  static async submit_problem(game: GameState, username: string, uvu_game_submission_request: GameSubmissionRequest) {
     const judge_result = await JudgeZeroService.submit_problem_sync(
       game.problem_id!,
       uvu_game_submission_request.source_code,
@@ -59,7 +59,7 @@ export class UvUGameService {
     return submission
   }
 
-  static async end_game(game: UvUGameState) {
+  static async end_game(game: GameState) {
     const game_exists = await gameUvUStore.game_exists(game.id as string)
     if (!game_exists) {
       return
@@ -99,7 +99,7 @@ export class UvUGameService {
     }, user_result.username!)
   }
 
-  static async calculate_game_result(user_a_score_and_penalty: UserScoreAndPenalty, user_b_score_and_penalty: UserScoreAndPenalty, game: UvUGameState): Promise<UvUGameResult> {
+  static async calculate_game_result(user_a_score_and_penalty: UserScoreAndPenalty, user_b_score_and_penalty: UserScoreAndPenalty, game: GameState): Promise<UvUGameResult> {
     const user_a_uvu_game_result: UserResult = {
       username: user_a_score_and_penalty.username
     }
@@ -172,7 +172,7 @@ export class UvUGameService {
     }
     return index_of_max_score
   }
-  static is_submision_time_valid(uvu_game_submission_request: UvUGameSubmissionRequest, game: UvUGameState): boolean {
+  static is_submision_time_valid(uvu_game_submission_request: GameSubmissionRequest, game: GameState): boolean {
     const submission_time = uvu_game_submission_request.submission_time
     const start_time = game.start_time!
     const end_time = game.end_time!

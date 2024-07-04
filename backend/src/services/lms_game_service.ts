@@ -1,21 +1,13 @@
-import { EloUvUGameCalculator } from "../game/evaluator/elo_uvu_game_calculator";
+import { differenceInSeconds } from 'date-fns';
+import { LMSGameCalculator } from "../game/evaluator/elo_lms_game_calculator";
+import { ILMSGameCalculator } from "../game/evaluator/i_lms_game_calculator";
 import lmsGameStore from "../game/store/lms/game_lms_fire_store";
 import { LMSGameState } from "../game/store/lms/i_game_lms_store";
-import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
-import { Problems } from "../models/problem";
 import { Submission, Submissions } from "../models/submissions";
-import { UserLevel, Users } from "../models/users";
-import { UvUGamesHistory } from "../models/uvu_game_history";
+import { Users } from "../models/users";
 import { LMSGameSocketController, LMSGameSubmissionRequest } from "../socket_controllers/lms_game";
-import { GameMode } from "../utils/definitions/games_types";
-import { RankTier } from "../utils/definitions/rank_tier";
-import { JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
-import { differenceInSeconds } from 'date-fns';
-import { UserResult } from "./uvu_game_service";
-import { ILMSGameCalculator } from "../game/evaluator/i_lms_game_calculator";
-import { LMSGameCalculator } from "../game/evaluator/elo_lms_game_calculator";
 import { GameCreationService } from "./game_creation_service";
-import { before } from "node:test";
+import { JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
 
 export type UserScoreAndPenalty = {
   score: number,

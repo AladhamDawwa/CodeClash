@@ -15,6 +15,7 @@ export type Team = {
   rank_tier: RankTier;
   registration_date: Timestamp;
   mmr: number;
+  normal_mmr?: number;
   // team_image_id?: string;
 };
 
