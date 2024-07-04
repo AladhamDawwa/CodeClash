@@ -252,7 +252,7 @@ export default function MiniDrawer() {
                 />
               </ListItemIcon>
               <ListItemText
-                primary={'Teams'}
+                primary={open ? `Teams : ${user?.current_team || ''}` : 'Teams'}
                 primaryTypographyProps={{
                   fontSize: '1.5rem',
                   letterSpacing: 1,
@@ -262,7 +262,9 @@ export default function MiniDrawer() {
           </ListItem>
 
           {/* Game History */}
+          {/* {open && (
 
+          )} */}
           <ListItem
             key={'Inbox'}
             disablePadding

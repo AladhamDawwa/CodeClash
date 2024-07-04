@@ -26,6 +26,7 @@ const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
 const TeamCard = ({ team }: any) => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const auth = useSelector((state: RootState) => state.auth);
+  const { current_team } = useSelector((state: RootState) => state.user.data);
   const dispatch = useDispatch();
   const [showEditCard, setShowEditCard] = useState(false);
   const [Team, setTeam] = useState(team);
@@ -38,6 +39,13 @@ const TeamCard = ({ team }: any) => {
   };
 
   const handleDeleteTeam = () => {
+    if (current_team === Team.team_name) {
+      dispatch<any>(
+        activateTeam({
+          current_team: '',
+        }),
+      );
+    }
     axios
       .delete(`${apiUrl}/teams/delete`, {
         headers: {
@@ -84,6 +92,9 @@ const TeamCard = ({ team }: any) => {
           enqueueSnackbar('User invited', { variant: 'success' });
           setTeam(responseData.payload);
           handleCloseDialog();
+        } else {
+          enqueueSnackbar('No username matched', { variant: 'error' });
+          return;
         }
       })
       .catch((error: any) => {
@@ -105,8 +116,8 @@ const TeamCard = ({ team }: any) => {
     <div
       style={{
         background: 'rgba(255, 255, 255, 0.1)',
-        width: '40rem',
-        height: '30rem',
+        width: 'fit-content',
+        height: 'fit-content',
         gap: '1rem',
         borderRadius: '1rem',
         boxShadow: '0 0 2rem rgba(0, 0, 0, 0.6)',
@@ -236,7 +247,8 @@ const TeamCard = ({ team }: any) => {
             padding: '2rem',
           }}
         >
-          <img src={`assets/${ranks[Team?.rank_tier]}.svg`}
+          <img
+            src={`assets/${ranks[Team?.rank_tier]}.svg`}
             alt="rank image"
             style={{
               width: '6.5rem',
@@ -265,20 +277,39 @@ const TeamCard = ({ team }: any) => {
             </Typography>
           </div>
 
-          <Button sx={{
-            bgcolor: '#14751c',
-            color: 'white',
-            fontSize: '1.7rem',
-            textTransform: 'capitalize',
-            borderRadius: '0.5rem',
-            '&:hover': {
-              backgroundColor: '#0d4b1c',
-            },
-          }} onClick={() => {
-            dispatch<any>(activateTeam({
-              current_team: Team.team_name
-            }))
-          }}>
+          <Button
+            sx={{
+              bgcolor: '#14751c',
+              color: 'white',
+              fontSize: '1.7rem',
+              textTransform: 'capitalize',
+              borderRadius: '0.5rem',
+              '&:hover': {
+                backgroundColor: '#0d4b1c',
+              },
+              '&:disabled': {
+                backgroundColor: '#555',
+                color: '#999',
+                cursor: 'not-allowed',
+              },
+            }}
+            disabled={current_team === Team?.team_name}
+            onClick={() => {
+              if (Team.members.length < 3) {
+                enqueueSnackbar('Not enough members', { variant: 'error' });
+                return;
+              } else {
+                dispatch<any>(
+                  activateTeam({
+                    current_team: Team.team_name,
+                  }),
+                );
+                enqueueSnackbar(`${Team.team_name} is set to current team`, {
+                  variant: 'success',
+                });
+              }
+            }}
+          >
             <Typography
               variant="h5"
               sx={{
@@ -353,6 +384,13 @@ const TeamCard = ({ team }: any) => {
                     },
                   }}
                   onClick={() => {
+                    if (current_team === Team.team_name) {
+                      dispatch<any>(
+                        activateTeam({
+                          current_team: '',
+                        }),
+                      );
+                    }
                     axios
                       .post(
                         `${apiUrl}/teams/remove_user`,
