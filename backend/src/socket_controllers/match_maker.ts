@@ -23,7 +23,6 @@ export class MatchMakerSocketController {
   async find_match(data: string) {
     const match_maker_request: MatchMakerRequest = JSON.parse(data);
     if (match_maker_request.game_type == GameType.OneVsOne) {
-      ConnectedUsers.insert_user(this.socket.data.username, this.socket);
       this.find_uvu(match_maker_request);
     } else if (match_maker_request.game_type == GameType.TeamVsTeam) {
       this.tvt_setup(data);

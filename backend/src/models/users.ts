@@ -18,7 +18,6 @@ export type UserStatus = {
   game_mode: GameMode
 }
 export type UserLevel = {
-  rating: string,
   level: number,
   xp: number,
   xp_for_next_level: number
@@ -28,11 +27,9 @@ export type User = {
   doc_id?: string;
   description?: string;
   email?: string;
-  exp?: number;
   first_name?: string;
   image?: string;
   last_name?: string;
-  level?: number;
   password?: string;
   rank_points?: number;
   rank_tier?: RankTier;
@@ -42,16 +39,7 @@ export type User = {
   normal_mmr?: number
   profile_image_id?: string;
   status?: UserStatus,
-  user_level_a?: UserLevel;
-  user_level_b?: UserLevel;
-  user_level_c?: UserLevel;
-  user_level_d?: UserLevel;
-  user_level_e?: UserLevel;
-  user_level_f?: UserLevel;
-  user_level_g?: UserLevel;
-  user_level_h?: UserLevel;
-  user_level_i?: UserLevel;
-  user_level_j?: UserLevel;
+  user_level?: UserLevel
 
 };
 
@@ -77,18 +65,9 @@ const converter = {
       registeration_date: data.registeration_date,
       username: data.username,
       mmr: data.mmr,
-      normal_mmr: data.mmr,
+      normal_mmr: data.normal_mmr,
       profile_image_id: data.profile_image_id,
-      user_level_a: data.user_level_a,
-      user_level_b: data.user_level_b,
-      user_level_c: data.user_level_c,
-      user_level_d: data.user_level_d,
-      user_level_e: data.user_level_e,
-      user_level_f: data.user_level_f,
-      user_level_g: data.user_level_g,
-      user_level_h: data.user_level_h,
-      user_level_i: data.user_level_i,
-      user_level_j: data.user_level_j,
+      user_level: data.user_level
     };
   },
 };
@@ -157,6 +136,19 @@ export class Users {
     await docRef.update(toBeRemovedData)
   }
 
+  // static async admin_clear_fields(usernames: string[], keys_to_remove: string[]) {
+  //   const snapshot = await users_collection
+  //     .where("username", "in", usernames)
+  //     .get();
+  //   const docRef = snapshot.docs[0].ref
+  //   const toBeRemovedData: { [key: string]: any } = {}
+  //   keys_to_remove.forEach(key => {
+  //     toBeRemovedData[`${key}`] = firestore.FieldValue.delete()
+  //   })
+
+  //   await docRef.update(toBeRemovedData)
+  // }
+
   static async get_rank(username: string): Promise<RankTier> {
     const snapshot = await users_collection
       .where("username", "==", username)
@@ -223,64 +215,10 @@ export class Users {
     return { ...user_doc, ...new_user };
   }
 
-  static get_user_level(user: User, problem_rate: string) {
-    switch (problem_rate) {
-      case 'a':
-        return user.user_level_a
-      case 'b':
-        return user.user_level_b
-      case 'c':
-        return user.user_level_c
-      case 'd':
-        return user.user_level_d
-      case 'e':
-        return user.user_level_e
-      case 'f':
-        return user.user_level_f
-      case 'g':
-        return user.user_level_g
-      case 'h':
-        return user.user_level_h
-      case 'i':
-        return user.user_level_i
-      case 'j':
-        return user.user_level_j
-    }
-  }
+
 
   static async update_user_level_and_xp(user_level: UserLevel, username: string) {
-    switch (user_level.rating) {
-      case 'a':
-        await Users.update({ user_level_a: user_level }, username)
-        break
-      case 'b':
-        await Users.update({ user_level_b: user_level }, username)
-        break
-      case 'c':
-        await Users.update({ user_level_c: user_level }, username)
-        break
-      case 'd':
-        await Users.update({ user_level_d: user_level }, username)
-        break
-      case 'e':
-        await Users.update({ user_level_e: user_level }, username)
-        break
-      case 'f':
-        await Users.update({ user_level_f: user_level }, username)
-        break
-      case 'g':
-        await Users.update({ user_level_g: user_level }, username)
-        break
-      case 'h':
-        await Users.update({ user_level_h: user_level }, username)
-        break
-      case 'i':
-        await Users.update({ user_level_i: user_level }, username)
-        break
-      case 'j':
-        await Users.update({ user_level_j: user_level }, username)
-        break
-    }
+    await Users.update({ user_level: user_level }, username)
   }
 
   static async update_users_rank_and_mmr(user_result: UserResult, username: string) {
@@ -300,10 +238,8 @@ export class Users {
   ): User {
     return {
       email: email,
-      exp: 0,
       first_name: first_name,
       last_name: last_name,
-      level: 0,
       password: password,
       rank_points: 0,
       rank_tier: RankTier.Bronze,
@@ -312,16 +248,7 @@ export class Users {
       mmr: 800,
       normal_mmr: 800,
       description: "Hey There ! I am using codeclash",
-      user_level_a: { level: 0, xp: 0, rating: "a", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_b: { level: 0, xp: 0, rating: "b", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_c: { level: 0, xp: 0, rating: "c", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_d: { level: 0, xp: 0, rating: "d", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_e: { level: 0, xp: 0, rating: "e", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_f: { level: 0, xp: 0, rating: "f", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_g: { level: 0, xp: 0, rating: "g", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_h: { level: 0, xp: 0, rating: "h", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_i: { level: 0, xp: 0, rating: "i", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
-      user_level_j: { level: 0, xp: 0, rating: "j", xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) }
+      user_level: { level: 0, xp: 0, xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K!)), 2) },
     };
   }
 }

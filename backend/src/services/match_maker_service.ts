@@ -77,5 +77,6 @@ export class MatchMakerService {
     const user = await Users.get_by_username(username)
     this.uvu_ranked_match_maker_queue.remove(user)
     this.uvu_normal_match_maker_queue.remove(user)
+    this.lms_match_maker_queue.remove([user])
   }
 }

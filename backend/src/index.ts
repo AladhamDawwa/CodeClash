@@ -12,6 +12,8 @@ import { authenticate_socket } from './middlewares/socket_authentication'
 import { MatchMakerSocketController } from './socket_controllers/match_maker'
 import { UvUGameSocketController } from './socket_controllers/uvu_game'
 import { LMSGameSocketController } from './socket_controllers/lms_game'
+import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
+import { Users } from './models/users'
 
 
 dotenv.config()
@@ -50,4 +52,3 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
-

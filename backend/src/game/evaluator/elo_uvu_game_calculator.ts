@@ -7,7 +7,7 @@ import { IUvUGameCalculator } from "./I_uvu_game_calculator";
 import dotenv from 'dotenv'
 dotenv.config()
 
-const { GROWTH_RATE, LEVEL_K, INITIAL_XP } = process.env
+const { GROWTH_RATE, LEVEL_K, INITIAL_XP, XP_PROBLEM_RATE_FACTOR } = process.env
 const K = 32
 export class EloUvUGameCalculator implements IUvUGameCalculator {
   async calculate(
@@ -63,19 +63,21 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
       user_a_uvu_game_result.new_normal_mmr = new_user_a_normal_mmr
       user_b_uvu_game_result.new_normal_mmr = new_user_b_normal_mmr
     }
-    const user_a_level = this.get_user_level(problem_rate, user_a)
-    const user_b_level = this.get_user_level(problem_rate, user_b)
+    const user_a_level = user_a.user_level
+    const user_b_level = user_b.user_level
     this.calculate_new_level_and_xp(
       user_a_score_and_penalty,
       user_a_uvu_game_result,
       user_a_level!,
-      game_duration
+      game_duration,
+      problem_rate
     )
     this.calculate_new_level_and_xp(
       user_b_score_and_penalty,
       user_b_uvu_game_result,
       user_b_level!,
-      game_duration
+      game_duration,
+      problem_rate
     )
     return {
       user_a_result: user_a_uvu_game_result,
@@ -84,30 +86,6 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
 
   }
 
-  private get_user_level(problem_rate: string, user: User) {
-    switch (problem_rate) {
-      case 'a':
-        return user.user_level_a
-      case 'b':
-        return user.user_level_b
-      case 'c':
-        return user.user_level_c
-      case 'd':
-        return user.user_level_d
-      case 'e':
-        return user.user_level_e
-      case 'f':
-        return user.user_level_f
-      case 'g':
-        return user.user_level_g
-      case 'h':
-        return user.user_level_h
-      case 'i':
-        return user.user_level_i
-      case 'j':
-        return user.user_level_j
-    }
-  }
 
   private calculate_delta(old_tier_and_pts: { tier: RankTier, points: number }, new_tier_and_pts: { tier: RankTier, points: number }) {
     if (old_tier_and_pts.tier == new_tier_and_pts.tier) {
@@ -120,23 +98,26 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
       return (old_tier_and_pts.points + (100 - new_tier_and_pts.points)) * -1
     }
   }
-
+  private get_problem_rate_factor(problem_rate: string) {
+    return parseFloat(XP_PROBLEM_RATE_FACTOR!) * (9 - ('j'.charCodeAt(0) - problem_rate.charCodeAt(0)))
+  }
   private calculate_new_level_and_xp(
     user_score_and_penalty: UserScoreAndPenalty,
     user_uvu_game_result: UserResult,
     user_level: UserLevel,
-    game_duration: number) {
-    const gained_xp = (user_score_and_penalty.score / 100) * this.get_base_xp(user_level.level) * (1 - this.penalty_factor(user_score_and_penalty, game_duration))
+    game_duration: number,
+    problem_rate: string) {
+    const gained_xp = Math.round((user_score_and_penalty.score / 100) * this.get_base_xp(user_level.level, problem_rate) * (1 - this.penalty_factor(user_score_and_penalty, game_duration)))
     user_uvu_game_result.new_level = user_level
     user_uvu_game_result.xp_delta = gained_xp
     user_uvu_game_result.new_level.xp += gained_xp
     user_uvu_game_result.new_level.level = this.get_level(user_uvu_game_result.new_level.xp)
     user_uvu_game_result.new_level.xp_for_next_level = this.get_xp_for_next_level(user_uvu_game_result.new_level.level)
-    user_uvu_game_result.new_level.rating = user_level.rating
   }
 
   private get_xp_for_next_level(level: number) {
-    return Math.pow(level + 1 / parseFloat(LEVEL_K!), 2)
+    const xp_for_next_level = Math.pow((level + 1) / parseFloat(LEVEL_K!), 2)
+    return xp_for_next_level
   }
   private get_level(xp: number) {
     return Math.floor(parseFloat(LEVEL_K!) * Math.sqrt(xp))
@@ -146,8 +127,10 @@ export class EloUvUGameCalculator implements IUvUGameCalculator {
     return (user_score_and_penalty.penalty / (10 * user_score_and_penalty.number_of_incorrect_submissions! + game_duration))
   }
 
-  private get_base_xp(level: number) {
-    return parseFloat(INITIAL_XP!) * Math.pow(parseFloat(GROWTH_RATE!), level)
+  private get_base_xp(level: number, problem_rate: string) {
+    let base_xp = parseFloat(INITIAL_XP!) * Math.pow(parseFloat(GROWTH_RATE!), level)
+    base_xp -= this.get_problem_rate_factor(problem_rate)
+    return base_xp
   }
 
   private async calculate_tier_and_points(mmr: number): Promise<{ tier: RankTier, points: number }> {

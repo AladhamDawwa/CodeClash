@@ -113,7 +113,7 @@ export class GameCreationService {
         new_mmr: user.mmr,
         new_tier: user.rank_tier,
         new_points: user.rank_points,
-        new_level: Users.get_user_level(user, await Problems.get_problem_rate(problem_id)),
+        new_level: user.user_level,
         xp_delta: 0
       })
     }

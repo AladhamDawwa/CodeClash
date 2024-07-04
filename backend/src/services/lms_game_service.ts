@@ -38,7 +38,7 @@ export class LMSGameService {
       lms_game_submission_request.language_id,
     )
     const submission = await Submissions.create(
-      judge_result, game.id!, lms_game_submission_request.source_code, lms_game_submission_request.language_id, username
+      judge_result, game.id!, lms_game_submission_request.source_code, lms_game_submission_request.language_id, username, game.round
     )
     this.should_finish_round(game)
     return submission
@@ -55,12 +55,15 @@ export class LMSGameService {
       users_score_and_penalty.set(username, this.calculate_score_and_penalty(game.start_time!, game_submissions, username))
     }
     let should_finish = true
+    let cnt_of_acc = 0
     for (const [_, user_score_and_penalty] of users_score_and_penalty) {
       if (user_score_and_penalty.score !== 100) {
         should_finish = false
+      } else {
+        cnt_of_acc++
       }
     }
-    if (should_finish) {
+    if (should_finish || (cnt_of_acc == 1 && game.usernames.length == 2)) {
       this.end_round(game, game.round)
     }
 
