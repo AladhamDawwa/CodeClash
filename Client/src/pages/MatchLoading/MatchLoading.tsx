@@ -1,13 +1,12 @@
-import { useSelector } from 'react-redux';
-import LoadingMatchCard from '../../components/LoadingMatchCard/LoadingMatchCard';
 import { useEffect } from 'react';
-import { RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import socket from '../../socket';
-import { useDispatch } from 'react-redux';
-import { foundMatch } from '../../store/reducers/userReducer';
-import { GameType } from '../../utils/game_settings';
 import { useNavigation } from '../../NavigationContext';
+import LoadingMatchCard from '../../components/LoadingMatchCard/LoadingMatchCard';
+import socket from '../../socket';
+import { foundMatch } from '../../store/reducers/userReducer';
+import { RootState } from '../../store/store';
+import { GameType } from '../../utils/game_settings';
 
 const MatchLoading = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -59,8 +58,7 @@ const MatchLoading = () => {
     );
 
     socket.on('match_maker_client:found_match', (game: any) => {
-      console.log(game);
-
+      // console.log(game);
       dispatch(foundMatch(game));
       allowGameSessionAccess();
       navigate('/gameSession', { state: { game, gameSettings } });
