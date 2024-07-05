@@ -16,7 +16,7 @@ function CircularProgressWithLabel(
   return (
     <>
       <CircularProgress
-        size={60}
+        size={50}
         variant="determinate"
         {...props}
         sx={{
@@ -36,7 +36,7 @@ function CircularProgressWithLabel(
         }}
       >
         <Typography
-          variant="h4"
+          variant="h5"
           component="div"
           color="white"
         >{`${Math.round(props.value)}%`}</Typography>
@@ -56,7 +56,7 @@ const RankFlag = () => {
       <div
         style={{
           backgroundColor: color,
-          width: '7rem',
+          width: '6rem',
           height: '24rem',
           display: 'flex',
           flexDirection: 'column',
@@ -117,8 +117,7 @@ const RankFlag = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
-                height: '7rem',
-                width: '7rem',
+                height: '5rem',
               }}
               onMouseEnter={() => setHover(true)}
               onMouseOut={() => setHover(false)}
