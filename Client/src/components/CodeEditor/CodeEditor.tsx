@@ -8,11 +8,16 @@ import socket from '../../socket';
 import languages from '../../pages/GamePage/languages.json';
 import { useSnackbar } from 'notistack';
 import SubmissionStatus from '../../utils/submission_status';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 const CodeEditor = ({ languageId, gameID }: any) => {
   const [language, setLanguage] = useState<string>('cpp');
   const [code, setCode] = useState(`// Write your ${language} code here`);
   const monaco = useMonaco();
   const { enqueueSnackbar } = useSnackbar();
+
+  const userState = useSelector((state: RootState) => state.user);
+  const { data: userData } = userState;
 
   useEffect(() => {
     setLanguage(
@@ -37,8 +42,13 @@ const CodeEditor = ({ languageId, gameID }: any) => {
 
   const handleSubmission = () => {
     const encoded = encode(code);
+    const url =
+      userData.gameInfo?.game_type == 0
+        ? 'uvu_game_server:submit_problem'
+        : 'tvt_game_server:submit_problem';
+    // console.log('url', url);
     socket.emit(
-      'game_server:submit_problem',
+      url,
       JSON.stringify({
         source_code: encoded,
         game_id: gameID,

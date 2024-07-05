@@ -23,8 +23,6 @@ export class TvTGameSocketController {
     if (game == null) return
 
     const submission_time_valid = TvTGameService.is_submission_time_valid(tvt_game_submission_request, game)
-    console.log(submission_time_valid);
-    console.log(game);
 
     if (!submission_time_valid) return
 
@@ -47,7 +45,7 @@ export class TvTGameSocketController {
   static send_game_result_to_team(team_result: TvTTeamResult) {
     delete team_result.new_mmr
     ConnectedTeams.get_team_sockets(team_result.team_name!).forEach(socket => {
-      socket.emit("game_client:send_game_result", team_result)
+      socket.emit("tvt_game_client:send_game_result", team_result)
     })
   }
 
@@ -62,12 +60,12 @@ export class TvTGameSocketController {
 
   send_submission_notification(team_name: string) {
     ConnectedTeams.get_team_sockets(team_name).forEach(socket => {
-      socket.emit("game_client:submission_notification", "Opponent submitted")
+      socket.emit("tvt_game_client:submission_notification", "Opponent submitted")
     })
   }
 
   register_events() {
-    this.socket.on("game_server:submit_problem", this.submit_problem);
+    this.socket.on("tvt_game_server:submit_problem", this.submit_problem);
     this.socket.on("disconnect", () => {
       ConnectedTeams.remove_team(this.socket.id);
     });

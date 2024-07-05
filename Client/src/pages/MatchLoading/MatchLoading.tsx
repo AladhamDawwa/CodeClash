@@ -80,17 +80,7 @@ const MatchLoading = () => {
       allowGameSessionAccess();
       navigate('/gameSession', { state: { game, gameSettings } });
     });
-  }, [
-    dispatch,
-    gameSettings.mode,
-    gameSettings.type,
-    user.token,
-    userState.current_team,
-    allowGameSessionAccess,
-    navigate,
-    gameSettings,
-    requestReady,
-  ]);
+  }, []);
 
   return (
     <LoadingMatchCard

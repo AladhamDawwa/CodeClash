@@ -80,11 +80,15 @@ const GamePage = () => {
   }, []);
 
   useEffect(() => {
-    socket.on('game_client:submission_notification', (data: any) => {
+    if (!userData.gameInfo) return;
+    const url =
+      userData.gameInfo?.game_type == 0 ? 'uvu_game_client' : 'tvt_game_client';
+    console.log('url', url);
+    socket.on(`${url}:submission_notification`, (data: any) => {
       enqueueSnackbar(data, { variant: 'info' });
     });
 
-    socket.on('game_client:send_game_result', (data: any) => {
+    socket.on(`${url}:send_game_result`, (data: any) => {
       socket.disconnect();
       dispatch<any>(
         updateGameResult({
@@ -95,7 +99,7 @@ const GamePage = () => {
       setGameFinished(true);
       setGameResult(data);
     });
-  }, [dispatch, gameId, enqueueSnackbar]);
+  }, [userData.gameInfo?.game_mode]);
 
   return (
     <>

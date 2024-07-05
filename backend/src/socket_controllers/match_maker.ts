@@ -112,7 +112,6 @@ export class MatchMakerSocketController {
     socket && socket.emit("match_maker_client:found_match", lms_game_state)
   }
 
-
   register_events() {
     this.socket.on("match_maker_server:find_match", this.find_match);
     this.socket.on("disconnect", () => {

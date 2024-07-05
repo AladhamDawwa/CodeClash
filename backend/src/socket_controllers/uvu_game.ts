@@ -62,7 +62,7 @@ export class UvUGameSocketController {
   static send_game_result_to_user(user_result: UserResult) {
     const socket = ConnectedUsers.get_socket(user_result.username!)
     delete user_result.new_mmr
-    socket && socket.emit("game_client:send_game_result", user_result)
+    socket && socket.emit("uvu_game_client:send_game_result", user_result)
   }
 
   send_submision_notification_to_opponent(game: GameState) {
@@ -75,11 +75,11 @@ export class UvUGameSocketController {
 
   send_submission_notification(username: string) {
     const socket = ConnectedUsers.get_socket(username)
-    socket && socket.emit("game_client:submission_notification", "Opponent submitted")
+    socket && socket.emit("uvu_game_client:submission_notification", "Opponent submitted")
   }
 
   register_events() {
-    this.socket.on("game_server:submit_problem", this.submit_problem);
+    this.socket.on("uvu_game_server:submit_problem", this.submit_problem);
     this.socket.on("disconnect", () => {
       ConnectedUsers.remove_user(this.socket.data.username);
     });
