@@ -21,6 +21,7 @@ export class UvURankedMatchMakerQueueLocal implements IUvUMatchMakerQueue {
   private tail: Node | null;
   private size: number;
   private nodeMap: Map<User, Node>
+  private UsernameToUser: Map<string, User> = new Map();
   private matchMakerEvaluator: IUsersMatchMakerEvaluator = new EloUsersMatchMakerEvaluator(GameMode.Ranked)
 
   constructor() {
@@ -44,6 +45,7 @@ export class UvURankedMatchMakerQueueLocal implements IUvUMatchMakerQueue {
       this.tail = newNode
     }
     this.nodeMap.set(user, newNode)
+    this.UsernameToUser.set(user.username!, user)
     this.size++
   }
   find_best(user: User): User | null {
@@ -72,7 +74,8 @@ export class UvURankedMatchMakerQueueLocal implements IUvUMatchMakerQueue {
     return users
   }
   remove(user: User) {
-    const nodeToRemove = this.nodeMap.get(user)
+    const userToRemove = this.UsernameToUser.get(user.username!);
+    const nodeToRemove = this.nodeMap.get(userToRemove!);
     if (!nodeToRemove) {
       return
     }

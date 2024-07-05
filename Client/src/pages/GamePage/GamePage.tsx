@@ -23,7 +23,7 @@ import { getProblemInfo } from '../../store/actions/userInfo';
 import { RootState } from '../../store/store';
 import ProblemDescription from './ProblemDescription';
 import ProblemSubmissions from './ProblemSubmissions';
-import languages from './languages.json';
+import languages from '../../utils/languages.json';
 import './styles.css';
 import ResultCard from '../../components/ResultCard';
 import GAME_STATUS from '../../utils/game_status';

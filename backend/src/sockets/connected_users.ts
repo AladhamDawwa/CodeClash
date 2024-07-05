@@ -1,10 +1,7 @@
 import { Socket } from "socket.io";
 
 export class ConnectedUsers {
-  private static connected_users: Map<string, Socket> = new Map<
-    string,
-    Socket
-  >();
+  private static connected_users: Map<string, Socket> = new Map<string, Socket>();
   static insert_user(username: string, socket: Socket) {
     this.connected_users.set(username, socket);
   }

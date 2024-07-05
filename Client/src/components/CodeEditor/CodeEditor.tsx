@@ -5,7 +5,7 @@ import './style.css';
 import { Button } from '@mui/material';
 import { encode } from 'js-base64';
 import socket from '../../socket';
-import languages from '../../pages/GamePage/languages.json';
+import languages from '../../utils/languages.json';
 import { useSnackbar } from 'notistack';
 import SubmissionStatus from '../../utils/submission_status';
 import { useSelector } from 'react-redux';
@@ -46,7 +46,6 @@ const CodeEditor = ({ languageId, gameID }: any) => {
       userData.gameInfo?.game_type == 0
         ? 'uvu_game_server:submit_problem'
         : 'tvt_game_server:submit_problem';
-    // console.log('url', url);
     socket.emit(
       url,
       JSON.stringify({

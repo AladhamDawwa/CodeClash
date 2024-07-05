@@ -119,6 +119,7 @@ export default function LoadingMatchCard({ text, team }: any) {
             fontWeight: '700',
           }}
           onClick={() => {
+            socket.disconnect();
             navigate('/');
           }}
         >
