@@ -54,6 +54,7 @@ export class UvUGamesHistory {
           Filter.where("user_b_result.username", "==", username),
         ),
       )
+      .orderBy("start_time", "desc")
       .get();
     const uvu_game_history_records = snapshot.docs.map((doc) => doc.data());
     return uvu_game_history_records
