@@ -337,7 +337,7 @@ const ProfilePage = () => {
                 </div>
                 <div className="rank-align">
                   <p className="rank-p">Points to rank up</p>
-                  <p className="rank-txt">{PointsToRank}</p>
+                  <p className="rank-txt">{100 - user?.rank_points}</p>
                 </div>
                 <div className="rank-align">
                   <p className="rank-p">Next Rank</p>
@@ -371,7 +371,7 @@ const ProfilePage = () => {
               <div className="rank-grid-container">
                 <div className="rank-align">
                   <p className="rank-p">Current Points</p>
-                  <p className="rank-txt">{user?.exp}</p>
+                  <p className="rank-txt">{user?.user_level?.xp}</p>
                 </div>
                 <div className="rank-align">
                   <p className="rank-p">Current Level</p>
@@ -387,12 +387,14 @@ const ProfilePage = () => {
                       alt="level image"
                       className="profile-level-img"
                     />
-                    <p className="level-p">{user?.level}</p>
+                    <p className="level-p">{user?.user_level?.level}</p>
                   </div>
                 </div>
                 <div className="rank-align">
                   <p className="rank-p">Points to level up</p>
-                  <p className="rank-txt">{PointsToLevelUp}</p>
+                  <p className="rank-txt">
+                    {user?.user_level?.xp_for_next_level}
+                  </p>
                 </div>
                 <div className="rank-align">
                   <p className="rank-p">Next Level</p>
@@ -408,7 +410,7 @@ const ProfilePage = () => {
                       alt="level image"
                       className="profile-level-img"
                     />
-                    <p className="level-p">{user?.level + 1}</p>
+                    <p className="level-p">{user?.user_level?.level + 1}</p>
                   </div>
                 </div>
               </div>
