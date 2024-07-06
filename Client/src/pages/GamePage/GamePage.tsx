@@ -11,33 +11,30 @@ import {
   SelectChangeEvent,
   Stack,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import CodeEditor from '../../components/CodeEditor/CodeEditor';
-import Timer from '../../components/Timer/Timer';
+import ResultCard from '../../components/ResultCard';
 import '../../index.css';
 import socket from '../../socket';
 import { getProblemInfo } from '../../store/actions/userInfo';
+import { foundMatch, updateGameResult } from '../../store/reducers/userReducer';
 import { RootState } from '../../store/store';
+import GAME_STATUS from '../../utils/game_status';
+import languages from '../../utils/languages.json';
 import ProblemDescription from './ProblemDescription';
 import ProblemSubmissions from './ProblemSubmissions';
-import languages from '../../utils/languages.json';
 import './styles.css';
-import ResultCard from '../../components/ResultCard';
-import GAME_STATUS from '../../utils/game_status';
-import { updateGameResult } from '../../store/reducers/userReducer';
-import { SnackbarProvider, useSnackbar } from 'notistack';
 
 const GamePage = () => {
   const authState = useSelector((state: RootState) => state.auth);
-  const userState = useSelector((state: RootState) => state.user);
+  const userData = useSelector((state: RootState) => state.user.data);
   const [language, setLanguage] = useState(54);
   const [problemOption, setProblemOption] = useState('description');
 
-  const { data: userData } = userState;
-  // TODO Change gameID
   const jwtToken = authState.user?.token;
   const gameId = userData.gameInfo?.id;
   const problemId = userData.gameInfo?.problem_id;
@@ -54,26 +51,24 @@ const GamePage = () => {
   const [gameResult, setGameResult] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
 
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+  //     event.preventDefault();
+  //     event.returnValue = '';
+  //   };
+
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
+  //   window.history.pushState(null, '', window.location.pathname);
+  //   window.addEventListener('popstate', () => {
+  //     window.history.pushState(null, '', window.location.pathname);
+  //   });
+
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = '';
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.history.pushState(null, '', window.location.pathname);
-    window.addEventListener('popstate', () => {
-      window.history.pushState(null, '', window.location.pathname);
-    });
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log('problemId', problemId);
-
     dispatch<any>(getProblemInfo({ problemId, jwtToken })).then((res: any) => {
       setProblem(res.payload);
     });
@@ -82,23 +77,44 @@ const GamePage = () => {
   useEffect(() => {
     if (!userData.gameInfo) return;
     const url =
-      userData.gameInfo?.game_type == 0 ? 'uvu_game_client' : 'tvt_game_client';
+      userData.gameInfo?.game_type == 0
+        ? 'uvu_game_client'
+        : userData.gameInfo?.game_type == 1
+          ? 'tvt_game_client'
+          : 'lms_game_client';
     console.log('url', url);
     socket.on(`${url}:submission_notification`, (data: any) => {
       enqueueSnackbar(data, { variant: 'info' });
     });
 
+    socket.on(`${url}:new_round`, (data: any) => {
+      dispatch(foundMatch(data));
+      location.reload();
+      // navigate('/gameSession');
+    });
+
     socket.on(`${url}:send_game_result`, (data: any) => {
       socket.disconnect();
-      dispatch<any>(
-        updateGameResult({
-          rank_tier: data.new_tier,
-          rank_points: data.new_points,
-        }),
-      );
+      const updatedResult =
+        userData.gameInfo?.game_mode == 0
+          ? {
+              rank_tier: data.new_tier,
+              rank_points: data.new_points,
+              user_level: data.new_level,
+            }
+          : {
+              user_level: data.new_level,
+            };
+      dispatch<any>(updateGameResult(updatedResult));
       setGameFinished(true);
       setGameResult(data);
     });
+
+    return () => {
+      socket.off(`${url}:submission_notification`);
+      socket.off(`${url}:new_round`);
+      socket.off(`${url}:send_game_result`);
+    };
   }, [userData.gameInfo?.game_mode]);
 
   return (
@@ -340,27 +356,13 @@ const GamePage = () => {
       {gameFinished && (
         <ResultCard
           status={GAME_STATUS[gameResult.status]}
-          rank={gameResult.delta}
-          level={gameResult.new_tier}
+          rank={gameResult.new_tier}
+          rankPoints={gameResult.delta}
+          level={gameResult.new_level.level}
         />
       )}
     </>
   );
 };
 
-const IntegrationNotifyStack = () => {
-  return (
-    <SnackbarProvider
-      maxSnack={3}
-      style={{
-        color: 'white',
-        fontSize: '1.8rem',
-        borderRadius: '1rem',
-      }}
-    >
-      <GamePage />
-    </SnackbarProvider>
-  );
-};
-
-export default IntegrationNotifyStack;
+export default GamePage;

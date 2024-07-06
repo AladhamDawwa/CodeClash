@@ -14,8 +14,8 @@ export class ProblemPickerService {
 
   static async pick_problem_by_code(users: User[], problem_level_code: string): Promise<Problem | null> {
     const users_unsolved_problems = await UsersUnsolvedProblems.get_problems_array_by_code(users, problem_level_code)
-    // console.log(users_unsolved_problems)
     const problem_ids_countmap: { [key: string]: number } = {};
+
     let chosen_problem_id: string = ""
     for (const problem_id of users_unsolved_problems) {
       problem_ids_countmap[problem_id] = (problem_ids_countmap[problem_id] || 0) + 1;

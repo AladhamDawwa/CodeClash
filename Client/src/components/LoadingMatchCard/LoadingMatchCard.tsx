@@ -21,13 +21,16 @@ export default function LoadingMatchCard({ text, team }: any) {
     >
       <Paper
         sx={{
-          backgroundColor: '#0F0C29',
+          background: '#0F0C29',
+          boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
+          borderRadius: '2rem',
           width: '90rem',
           height: '60rem',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: '10rem',
+          opacity: '0.9',
         }}
       >
         <div

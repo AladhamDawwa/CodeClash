@@ -1,8 +1,7 @@
 import { ITvTMatchMakerQueue } from "../match_maker/queue/tvt/i_tvt_match_maker_queue";
 import { TvTMatchMakerQueueLocal } from "../match_maker/queue/tvt/tvt_match_maker_queue_local";
 import { IUvUMatchMakerQueue } from "../match_maker/queue/uvu/i_uvu_match_maker_queue";
-import { UvUNormalMatchMakerQueueLocal } from "../match_maker/queue/uvu/uvu_normal_match_maker_queue_local";
-import { UvURankedMatchMakerQueueLocal } from "../match_maker/queue/uvu/uvu_ranked_match_maker_queue_local";
+import { UvUMatchMakerQueueLocal } from "../match_maker/queue/uvu/uvu_match_maker_queue_local";
 import { Teams } from "../models/teams";
 import { Users } from "../models/users";
 import { GameMode } from "../utils/definitions/games_types";
@@ -12,8 +11,8 @@ import { LMSMatchMakerQueueLocal } from '../match_maker/queue/lms/lms_match_make
 import { TeamMatchMakerRequest, TeamMatchMakerResponse } from "../utils/definitions/match_maker";
 
 export class MatchMakerService {
-  static uvu_ranked_match_maker_queue: IUvUMatchMakerQueue = new UvURankedMatchMakerQueueLocal();
-  static uvu_normal_match_maker_queue: IUvUMatchMakerQueue = new UvUNormalMatchMakerQueueLocal();
+  static uvu_ranked_match_maker_queue: IUvUMatchMakerQueue = new UvUMatchMakerQueueLocal(GameMode.Ranked);
+  static uvu_normal_match_maker_queue: IUvUMatchMakerQueue = new UvUMatchMakerQueueLocal(GameMode.Normal);
   static lms_match_maker_queue: ILMSMatchMakerQueue = new LMSMatchMakerQueueLocal()
   static tvt_ranked_match_maker_queue: ITvTMatchMakerQueue = new TvTMatchMakerQueueLocal(GameMode.Ranked);
   static tvt_normal_match_maker_queue: ITvTMatchMakerQueue = new TvTMatchMakerQueueLocal(GameMode.Normal);

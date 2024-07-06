@@ -13,6 +13,7 @@ import { MatchMakerSocketController } from './socket_controllers/match_maker'
 import { UvUGameSocketController } from './socket_controllers/uvu_game'
 import { LMSGameSocketController } from './socket_controllers/lms_game'
 import { TvTGameSocketController } from './socket_controllers/tvt_game'
+import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
 
 dotenv.config()
 
@@ -21,6 +22,12 @@ const port = process.env.PORT || 8080
 const app = express()
 app.use(cors())
 app.use(express.json({ limit: '50mb' }))
+
+const pathfinderUI = require('pathfinder-ui')
+app.use('/pathfinder', function (req, res, next) {
+  pathfinderUI(app)
+  next()
+}, pathfinderUI.router)
 
 // routes
 UsersController.routes(app)
@@ -47,6 +54,10 @@ io.on('connection', (socket) => {
   new TvTGameSocketController(io, socket).register_events()
 })
 
+UsersUnsolvedProblems.init('Aladham2001');
+UsersUnsolvedProblems.init('mmr_800_1');
+UsersUnsolvedProblems.init('mmr_850_1');
+UsersUnsolvedProblems.init('hossam22');
 
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)

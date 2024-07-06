@@ -1,5 +1,6 @@
 import {
   Box,
+  Card,
   CircularProgress,
   CircularProgressProps,
   Typography,
@@ -7,8 +8,8 @@ import {
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import ranks from '../../utils/ranks';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { useState } from 'react';
+import LevelStar from '../LevelStar/LevelStar';
 
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number },
@@ -123,24 +124,7 @@ const RankFlag = () => {
               onMouseOut={() => setHover(false)}
             >
               {!hover ? (
-                <>
-                  <StarRoundedIcon
-                    style={{
-                      color: '#FFD700',
-                      width: '7rem',
-                      height: '7rem',
-                    }}
-                  ></StarRoundedIcon>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      position: 'absolute',
-                      color: 'black',
-                    }}
-                  >
-                    {user?.user_level.level}
-                  </Typography>
-                </>
+                <LevelStar level={user?.user_level.level} />
               ) : (
                 <CircularProgressWithLabel
                   value={

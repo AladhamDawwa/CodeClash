@@ -45,26 +45,30 @@ const CodeEditor = ({ languageId, gameID }: any) => {
     const url =
       userData.gameInfo?.game_type == 0
         ? 'uvu_game_server:submit_problem'
-        : 'tvt_game_server:submit_problem';
-    socket.emit(
-      url,
-      JSON.stringify({
-        source_code: encoded,
-        game_id: gameID,
-        language_id: languageId,
-      }),
-      (response: any) => {
-        console.log('response', response);
-        const message = SubmissionStatus[response.status];
-        if (response.status == 3) {
-          enqueueSnackbar(message, { variant: 'success' });
-        } else if (response.status == 5) {
-          enqueueSnackbar(message, { variant: 'warning' });
-        } else {
-          enqueueSnackbar(message, { variant: 'error' });
-        }
-      },
-    );
+        : userData.gameInfo?.game_type == 1
+          ? 'tvt_game_server:submit_problem'
+          : 'lms_game_server:submit_problem';
+    const submissionData: any = {
+      source_code: encoded,
+      game_id: gameID,
+      language_id: languageId,
+    };
+    submissionData.round = userData.gameInfo?.round;
+    socket.emit(url, JSON.stringify(submissionData), (response: any) => {
+      console.log('response', response);
+      const message = SubmissionStatus[response.status];
+      if (response.status == 3) {
+        enqueueSnackbar(message, { variant: 'success' });
+      } else if (response.status == 5) {
+        enqueueSnackbar(message, { variant: 'warning' });
+      } else {
+        enqueueSnackbar(message, { variant: 'error' });
+      }
+    });
+
+    return () => {
+      socket.off(url);
+    };
   };
 
   return (

@@ -204,7 +204,6 @@ export class UsersUnsolvedProblems {
       .select(`rating_${problem_level_code}`)
       .get();
     const data = snapshot.docs.map(doc => doc.data());
-
     const problem_ids: string[] = []
     for (const user_unsolved_problems of data) {
       problem_ids.push(...user_unsolved_problems[`rating_${problem_level_code}`])

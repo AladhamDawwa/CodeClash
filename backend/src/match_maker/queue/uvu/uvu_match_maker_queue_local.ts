@@ -2,7 +2,7 @@ import { User } from "../../../models/users";
 import { GameMode } from "../../../utils/definitions/games_types";
 import { EloUsersMatchMakerEvaluator } from "../../evaluator/users/elo_users_match_maker_evaluator";
 import { IUsersMatchMakerEvaluator } from "../../evaluator/users/i_users_match_maker_evaluator";
-import { IUvUMatchMakerQueue } from "../uvu/i_uvu_match_maker_queue";
+import { IUvUMatchMakerQueue } from "./i_uvu_match_maker_queue";
 
 class Node {
   user: User;
@@ -16,19 +16,20 @@ class Node {
   }
 }
 
-export class UvURankedMatchMakerQueueLocal implements IUvUMatchMakerQueue {
+export class UvUMatchMakerQueueLocal implements IUvUMatchMakerQueue {
   private head: Node | null;
   private tail: Node | null;
   private size: number;
   private nodeMap: Map<User, Node>
   private UsernameToUser: Map<string, User> = new Map();
-  private matchMakerEvaluator: IUsersMatchMakerEvaluator = new EloUsersMatchMakerEvaluator(GameMode.Ranked)
+  private matchMakerEvaluator: IUsersMatchMakerEvaluator;
 
-  constructor() {
+  constructor(type: GameMode) {
     this.head = null
     this.tail = null
     this.size = 0
     this.nodeMap = new Map()
+    this.matchMakerEvaluator = new EloUsersMatchMakerEvaluator(type);
   }
 
   is_empty(): boolean {

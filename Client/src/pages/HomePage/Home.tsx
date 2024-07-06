@@ -28,15 +28,17 @@ const Home = () => {
             display: 'flex',
             flexDirection: 'column',
             gap: '20rem',
-        }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            minHeight: '500px',
-            gap: '4rem',
           }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              minHeight: '500px',
+              gap: '4rem',
+            }}
           >
             <div
               style={{
@@ -54,17 +56,22 @@ const Home = () => {
                 MODES
               </div>
             </div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              gap: '2rem',
-              width: '100%',
-              flexWrap: "wrap"
-            }}>
-              <GameModesCard text="1 V 1" type={GameType.OneVsOne}/>
-              <GameModesCard text="3 V 3" type={GameType.TeamVsTeam}/>
-              <GameModesCard text="Last Man Standing" type={GameType.LastManStanding}/>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                gap: '2rem',
+                width: '100%',
+                flexWrap: 'wrap',
+              }}
+            >
+              <GameModesCard text="1 V 1" type={GameType.OneVsOne} />
+              <GameModesCard text="3 V 3" type={GameType.TeamVsTeam} />
+              <GameModesCard
+                text="Last Man Standing"
+                type={GameType.LastManStanding}
+              />
             </div>
           </div>
           {/* <div style={{
@@ -89,7 +96,7 @@ const Home = () => {
                 </div>
             </div>
           </div> */}
-          <div className="left-right">
+          {/* <div className="left-right">
             <div className="left">
               <Paper
                 sx={{
@@ -256,7 +263,7 @@ const Home = () => {
                 <Box height="1rem" />
               </Paper>
             </div>
-          </div>
+          </div> */}
         </div>
       </Container>
     </>

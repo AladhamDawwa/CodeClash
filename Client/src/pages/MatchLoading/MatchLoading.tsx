@@ -27,22 +27,22 @@ const MatchLoading = () => {
 
   const [requestReady, setRequestReady] = useState(false);
 
-  useEffect(() => {
-    window.history.pushState(null, '', window.location.pathname);
+  // useEffect(() => {
+  //   window.history.pushState(null, '', window.location.pathname);
 
-    const handlePopState = (event: PopStateEvent) => {
-      window.history.pushState(null, '', window.location.pathname);
-    };
+  //   const handlePopState = (event: PopStateEvent) => {
+  //     window.history.pushState(null, '', window.location.pathname);
+  //   };
 
-    window.addEventListener('popstate', handlePopState);
+  //   window.addEventListener('popstate', handlePopState);
 
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
+  //   return () => {
+  //     window.removeEventListener('popstate', handlePopState);
 
-      socket.off('match_maker_client:found_match');
-      // socket.disconnect();
-    };
-  }, []);
+  //     socket.off('match_maker_client:found_match');
+  //     // socket.disconnect();
+  //   };
+  // }, []);
 
   useEffect(() => {
     socket.io.opts.extraHeaders = {
@@ -53,7 +53,7 @@ const MatchLoading = () => {
 
     let matchRequest: MatchRequest;
 
-    if (gameSettings.mode === GameType.OneVsOne) {
+    if (gameSettings.mode !== GameType.TeamVsTeam) {
       matchRequest = {
         game_type: gameSettings.mode,
         game_mode: gameSettings.type,
@@ -75,10 +75,9 @@ const MatchLoading = () => {
     socket.emit('match_maker_server:find_match', JSON.stringify(matchRequest));
 
     socket.on('match_maker_client:found_match', (game: any) => {
-      console.log(game);
       dispatch(foundMatch(game));
       allowGameSessionAccess();
-      navigate('/gameSession', { state: { game, gameSettings } });
+      navigate('/gameSession');
     });
   }, []);
 

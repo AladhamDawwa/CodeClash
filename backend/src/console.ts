@@ -6,7 +6,7 @@ import cors from 'cors'
 import { UsersController } from './controllers/users'
 import { MatchMakerSocketController } from './socket_controllers/match_maker'
 import { Users, User } from './models/users'
-import { MatchMakerQueueLocal } from './match_maker/queue/uvu/uvu_ranked_match_maker_queue_local'
+import { MatchMakerQueueLocal } from './match_maker/queue/uvu/uvu_match_maker_queue_local'
 import { EloMatchMakerEvaluator } from './match_maker/evaluator/uvu/elo_uvu_match_maker_evaluator'
 dotenv.config()
 
