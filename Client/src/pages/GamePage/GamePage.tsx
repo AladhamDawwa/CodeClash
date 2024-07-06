@@ -54,22 +54,22 @@ const GamePage = () => {
   const [updatedResult, setUpdatedResult] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-  //     event.preventDefault();
-  //     event.returnValue = '';
-  //   };
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
 
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
-  //   window.history.pushState(null, '', window.location.pathname);
-  //   window.addEventListener('popstate', () => {
-  //     window.history.pushState(null, '', window.location.pathname);
-  //   });
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.history.pushState(null, '', window.location.pathname);
+    window.addEventListener('popstate', () => {
+      window.history.pushState(null, '', window.location.pathname);
+    });
 
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     dispatch<any>(getProblemInfo({ problemId, jwtToken })).then((res: any) => {
@@ -98,6 +98,8 @@ const GamePage = () => {
     });
 
     socket.on(`${url}:new_round`, (data: any) => {
+      console.log('new round', data);
+
       dispatch(foundMatch(data));
       // location.reload();
       // navigate('/gameSession');
@@ -106,15 +108,20 @@ const GamePage = () => {
     socket.on(`${url}:send_game_result`, (data: any) => {
       socket.disconnect();
       const updatedResult =
-        userData.gameInfo?.game_mode == 0
+        userData.gameInfo?.game_type == 1
           ? {
               rank_tier: data.new_tier,
               rank_points: data.new_points,
-              user_level: data.new_level,
             }
-          : {
-              user_level: data.new_level,
-            };
+          : userData.gameInfo?.game_mode == 0
+            ? {
+                rank_tier: data.new_tier,
+                rank_points: data.new_points,
+                user_level: data.new_level,
+              }
+            : {
+                user_level: data.new_level,
+              };
       setUpdatedResult(updatedResult);
       setGameFinished(true);
       setGameResult(data);
@@ -378,7 +385,7 @@ const GamePage = () => {
           status={GAME_STATUS[gameResult.status]}
           rank={gameResult.new_tier}
           rankPoints={gameResult.delta}
-          level={gameResult.new_level.level}
+          level={gameResult.new_level?.level}
           updatedResult={updatedResult}
         />
       )}

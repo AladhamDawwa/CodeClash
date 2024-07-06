@@ -215,28 +215,30 @@ export default function ResultCard({
                       </Stack>
                     </>
                   )}
-                  <Stack
-                    direction="row"
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                    sx={{
-                      position: 'relative',
-                    }}
-                  >
-                    <LevelStar level={user.data?.user_level.level} />
-                    {level != user.data?.user_level.level && (
-                      <>
-                        <KeyboardDoubleArrowRightIcon
-                          sx={{
-                            width: '3rem',
-                            height: '3rem',
-                            color: `  ${status === 'winner' ? '#2CBB5D' : status === 'loser' ? '#E33C37' : '#918f8f'}`,
-                          }}
-                        />
-                        <LevelStar level={level} />
-                      </>
-                    )}
-                  </Stack>
+                  {level !== undefined && (
+                    <Stack
+                      direction="row"
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                      sx={{
+                        position: 'relative',
+                      }}
+                    >
+                      <LevelStar level={user.data?.user_level.level} />
+                      {level != user.data?.user_level.level && (
+                        <>
+                          <KeyboardDoubleArrowRightIcon
+                            sx={{
+                              width: '3rem',
+                              height: '3rem',
+                              color: `  ${status === 'winner' ? '#2CBB5D' : status === 'loser' ? '#E33C37' : '#918f8f'}`,
+                            }}
+                          />
+                          <LevelStar level={level} />
+                        </>
+                      )}
+                    </Stack>
+                  )}
                 </Paper>
               </Grow>
               <Button

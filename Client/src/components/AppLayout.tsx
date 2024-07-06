@@ -101,15 +101,20 @@ export default function MiniDrawer() {
     socket.on(`${url}:send_game_result`, (data: any) => {
       socket.disconnect();
       const updatedResult =
-        user.gameInfo?.game_mode == 0
+        user.gameInfo?.game_type == 1
           ? {
               rank_tier: data.new_tier,
               rank_points: data.new_points,
-              user_level: data.new_level,
             }
-          : {
-              user_level: data.new_level,
-            };
+          : user.gameInfo?.game_mode == 0
+            ? {
+                rank_tier: data.new_tier,
+                rank_points: data.new_points,
+                user_level: data.new_level,
+              }
+            : {
+                user_level: data.new_level,
+              };
       dispatch<any>(updateGameResult(updatedResult));
     });
   }, [user?.gameInfo]);
