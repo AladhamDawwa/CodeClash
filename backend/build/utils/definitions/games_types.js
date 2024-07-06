@@ -9,6 +9,6 @@ var GameType;
 })(GameType || (exports.GameType = GameType = {}));
 var GameMode;
 (function (GameMode) {
-    GameMode[GameMode["Normal"] = 0] = "Normal";
-    GameMode[GameMode["Ranked"] = 1] = "Ranked";
+    GameMode[GameMode["Ranked"] = 0] = "Ranked";
+    GameMode[GameMode["Normal"] = 1] = "Normal";
 })(GameMode || (exports.GameMode = GameMode = {}));

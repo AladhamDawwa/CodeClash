@@ -12,6 +12,7 @@ exports.firestore = (0, firestore_1.getFirestore)();
 exports.db = {
     users: exports.firestore.collection("users"),
     uvu_games: exports.firestore.collection("uvu_games"),
+    tvt_games: exports.firestore.collection("tvt_games"),
     problems: exports.firestore.collection("problems"),
     testcases: exports.firestore.collection("testcases"),
     users_unsolved_problems: exports.firestore.collection("users_unsolved_problems"),
@@ -19,5 +20,8 @@ exports.db = {
     problem_levels: exports.firestore.collection("problem_levels"),
     submissions: exports.firestore.collection("submissions"),
     teams: exports.firestore.collection("teams"),
-    uvu_games_history: exports.firestore.collection("uvu_games_history")
+    uvu_games_history: exports.firestore.collection("uvu_games_history"),
+    lms_games: exports.firestore.collection("lms_games"),
+    notifications: exports.firestore.collection("notifications"),
+    users_notifications: exports.firestore.collection("users_notifications"),
 };

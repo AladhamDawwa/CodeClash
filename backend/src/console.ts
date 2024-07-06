@@ -6,8 +6,8 @@ import cors from 'cors'
 import { UsersController } from './controllers/users'
 import { MatchMakerSocketController } from './socket_controllers/match_maker'
 import { Users, User } from './models/users'
-import { MatchMakerQueueLocal } from './match_maker/queue/uvu/uvu_match_maker_queue_local'
-import { EloMatchMakerEvaluator } from './match_maker/evaluator/uvu/elo_uvu_match_maker_evaluator'
+import { UvUMatchMakerQueueLocal } from './match_maker/queue/uvu/uvu_match_maker_queue_local'
+import { EloUsersMatchMakerEvaluator } from './match_maker/evaluator/users/elo_users_match_maker_evaluator'
 dotenv.config()
 
 const repl = require('repl')
@@ -17,5 +17,5 @@ const replServer = repl.start({
 })
 
 replServer.context.Users = Users
-replServer.context.MatchMakerQueueLocal = MatchMakerQueueLocal
-replServer.context.EloMatchMakerEvaluator = EloMatchMakerEvaluator
+replServer.context.MatchMakerQueueLocal = UvUMatchMakerQueueLocal
+replServer.context.EloMatchMakerEvaluator = EloUsersMatchMakerEvaluator

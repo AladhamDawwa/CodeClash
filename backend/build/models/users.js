@@ -32,7 +32,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const users_unsolved_problems_1 = require("./users_unsolved_problems");
 const firebase_admin_1 = require("firebase-admin");
 dotenv_1.default.config();
-const { SALT_ROUNDS, PEPPER } = process.env;
+const { SALT_ROUNDS, PEPPER, LEVEL_K } = process.env;
 const converter = {
     toFirestore: (data) => {
         const { doc_id } = data, userData = __rest(data, ["doc_id"]);
@@ -55,7 +55,9 @@ const converter = {
             registeration_date: data.registeration_date,
             username: data.username,
             mmr: data.mmr,
-            profile_image_id: data.profile_image_id
+            normal_mmr: data.normal_mmr,
+            profile_image_id: data.profile_image_id,
+            user_level: data.user_level
         };
     },
 };
@@ -73,7 +75,7 @@ class Users {
             const salt_rounds = SALT_ROUNDS;
             password = bcrypt_1.default.hashSync(password + PEPPER, parseInt(salt_rounds));
             const user_creation_args = this.create_user_args(first_name, last_name, email, username, password);
-            const ref = yield users_collection.add(this.create_user_args(first_name, last_name, email, username, password));
+            yield users_collection.add(this.create_user_args(first_name, last_name, email, username, password));
             users_unsolved_problems_1.UsersUnsolvedProblems.init(username);
             delete user_creation_args.password;
             return user_creation_args;
@@ -90,6 +92,15 @@ class Users {
             return user;
         });
     }
+    static get_by_usernames(usernames) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const snapshot = yield users_collection
+                .where("username", "in", usernames)
+                .get();
+            const users = snapshot.docs.map((doc) => doc.data());
+            return users;
+        });
+    }
     static clear_status(username, keys_to_remove) {
         return __awaiter(this, void 0, void 0, function* () {
             const snapshot = yield users_collection
@@ -103,6 +114,17 @@ class Users {
             yield docRef.update(toBeRemovedData);
         });
     }
+    // static async admin_clear_fields(usernames: string[], keys_to_remove: string[]) {
+    //   const snapshot = await users_collection
+    //     .where("username", "in", usernames)
+    //     .get();
+    //   const docRef = snapshot.docs[0].ref
+    //   const toBeRemovedData: { [key: string]: any } = {}
+    //   keys_to_remove.forEach(key => {
+    //     toBeRemovedData[`${key}`] = firestore.FieldValue.delete()
+    //   })
+    //   await docRef.update(toBeRemovedData)
+    // }
     static get_rank(username) {
         return __awaiter(this, void 0, void 0, function* () {
             const snapshot = yield users_collection
@@ -161,20 +183,34 @@ class Users {
             return Object.assign(Object.assign({}, user_doc), new_user);
         });
     }
+    static update_user_level_and_xp(user_level, username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield Users.update({ user_level: user_level }, username);
+        });
+    }
+    static update_users_rank_and_mmr(user_result, username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield Users.update({
+                mmr: user_result.new_mmr,
+                rank_points: user_result.new_points,
+                rank_tier: user_result.new_tier
+            }, username);
+        });
+    }
     static create_user_args(first_name, last_name, email, username, password) {
         return {
             email: email,
-            exp: 0,
             first_name: first_name,
             last_name: last_name,
-            level: 0,
             password: password,
             rank_points: 0,
             rank_tier: rank_tier_1.RankTier.Bronze,
             registeration_date: firestore_1.Timestamp.now(),
             username: username,
             mmr: 800,
-            description: "Hey There ! I am using codeclash"
+            normal_mmr: 800,
+            description: "Hey There ! I am using codeclash",
+            user_level: { level: 0, xp: 0, xp_for_next_level: Math.pow((1 / parseFloat(LEVEL_K)), 2) },
         };
     }
 }

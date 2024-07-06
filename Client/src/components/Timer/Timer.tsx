@@ -38,6 +38,8 @@ const Timer = () => {
   const [opponent, setOpponent] = useState<any>(null);
 
   useEffect(() => {
+    if (!userData) return;
+    if (userData.gameInfo.game_type != 0) return;
     const opponentName =
       userData.username === userData.gameInfo.username_a
         ? userData.gameInfo.username_b
@@ -75,34 +77,36 @@ const Timer = () => {
         },
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-        }}
-      >
-        {userData && (
-          <Avatar
-            alt="user 1"
-            src={`assets/${ranks[userData.rank_tier]}.svg`}
-          />
-        )}
-        {userData?.image ? (
-          <Avatar alt="user 1" src={`${userData.image}`} />
-        ) : (
-          <Avatar alt="user 1" src="assets/avatar.png" />
-        )}
-        <p
+      {userData.gameInfo.game_type == 0 && (
+        <div
           style={{
-            color: '#fff',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
           }}
         >
-          {userData.username}
-        </p>
-      </div>
+          {userData && (
+            <Avatar
+              alt="user 1"
+              src={`assets/${ranks[userData.rank_tier]}.svg`}
+            />
+          )}
+          {userData?.image ? (
+            <Avatar alt="user 1" src={`${userData.image}`} />
+          ) : (
+            <Avatar alt="user 1" src="assets/avatar.png" />
+          )}
+          <p
+            style={{
+              color: '#fff',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+            }}
+          >
+            {userData.username}
+          </p>
+        </div>
+      )}
       <Box
         fontSize={20}
         sx={{
@@ -119,36 +123,38 @@ const Timer = () => {
       >
         <Box fontSize={22}>{`${hours} : ${minutes} : ${seconds}`}</Box>
       </Box>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-        }}
-      >
-        <p
+      {userData.gameInfo.game_type == 0 && (
+        <div
           style={{
-            color: '#fff',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
           }}
         >
-          {userData.username === userData.gameInfo.username_a
-            ? userData.gameInfo.username_b
-            : userData.gameInfo.username_a}
-        </p>
-        {opponent?.image ? (
-          <Avatar alt="user 2" src={`${opponent.image}`} />
-        ) : (
-          <Avatar alt="user 2" src="assets/avatar.png" />
-        )}
-        {opponent && (
-          <Avatar
-            alt="user 1"
-            src={`assets/${ranks[opponent.rank_tier]}.svg`}
-          />
-        )}
-      </div>
+          <p
+            style={{
+              color: '#fff',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+            }}
+          >
+            {userData.username === userData.gameInfo.username_a
+              ? userData.gameInfo.username_b
+              : userData.gameInfo.username_a}
+          </p>
+          {opponent?.image ? (
+            <Avatar alt="user 2" src={`${opponent.image}`} />
+          ) : (
+            <Avatar alt="user 2" src="assets/avatar.png" />
+          )}
+          {opponent && (
+            <Avatar
+              alt="user 1"
+              src={`assets/${ranks[opponent.rank_tier]}.svg`}
+            />
+          )}
+        </div>
+      )}
     </Box>
   );
 };

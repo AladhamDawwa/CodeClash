@@ -28,6 +28,7 @@ import languages from '../../utils/languages.json';
 import ProblemDescription from './ProblemDescription';
 import ProblemSubmissions from './ProblemSubmissions';
 import './styles.css';
+import Timer from '../../components/Timer';
 
 const GamePage = () => {
   const authState = useSelector((state: RootState) => state.auth);
@@ -177,7 +178,7 @@ const GamePage = () => {
               boxShadow: 2,
             }}
           >
-            {/* <Timer mode={userData.gameInfo!.game_mode} /> */}
+            {/* <Timer /> */}
           </Box>
 
           {problem && (
