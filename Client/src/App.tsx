@@ -26,6 +26,7 @@ import Test from './components/testComponent/Test';
 import CreateProblem from './pages/CreateProblem/CreateProblem';
 import { SnackbarProvider } from 'notistack';
 import { NavigationProvider, useNavigation } from './NavigationContext';
+import NotiPage from './pages/NotiPage/NotiPage';
 interface PrivateRouteProps {
   children: JSX.Element;
 }
@@ -111,6 +112,7 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
+        <Route path="/notifications" element={<NotiPage />} />
       </Route>
       <Route
         path="/gameSession"

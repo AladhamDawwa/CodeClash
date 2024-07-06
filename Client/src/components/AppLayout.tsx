@@ -1,9 +1,11 @@
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Avatar,
+  Badge,
   Divider,
   List,
   ListItem,
@@ -61,6 +63,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const [open, setOpen] = React.useState(false);
+  const hasNotification = true;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -340,6 +343,56 @@ export default function MiniDrawer() {
               </ListItemIcon>
               <ListItemText
                 primary={'Create Problem'}
+                primaryTypographyProps={{
+                  letterSpacing: 1,
+                  fontSize: '1.5rem',
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+
+          {/* notification */}
+
+          <ListItem
+            key={'Notification'}
+            disablePadding
+            sx={{
+              display: 'block',
+              '&:hover': {
+                backgroundColor: '#1a1a1a',
+              },
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                px: 1.5,
+              }}
+              onClick={() => {
+                handleDrawerClose();
+                navigate('/notifications');
+              }}
+            >
+              <ListItemIcon>
+                <Badge
+                  badgeContent={hasNotification ? '' : null}
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      bgcolor: 'red',
+                      height: '20px',
+                    },
+                  }}
+                >
+                  <NotificationsIcon
+                    sx={{
+                      color: 'white',
+                      fontSize: '4rem',
+                    }}
+                  />
+                </Badge>
+              </ListItemIcon>
+              <ListItemText
+                primary={'Notifications'}
                 primaryTypographyProps={{
                   letterSpacing: 1,
                   fontSize: '1.5rem',
