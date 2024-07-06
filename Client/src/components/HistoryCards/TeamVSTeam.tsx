@@ -1,33 +1,32 @@
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import MemoryOutlinedIcon from '@mui/icons-material/MemoryOutlined';
-import Avatar from '@mui/material/Avatar';
-import Collapse from '@mui/material/Collapse';
-import List from '@mui/material/List';
-import Paper from '@mui/material/Paper';
+import React, { useState } from 'react';
 import Stack from '@mui/material/Stack';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getGameSubmissions } from '../../store/actions/userInfo';
+import Paper from '@mui/material/Paper';
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import MemoryOutlinedIcon from '@mui/icons-material/MemoryOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import language from '../../utils/languages.json';
+import Avatar from '@mui/material/Avatar';
 import SubmissionStatus from '../../utils/submission_status';
-
+import language from '../../utils/languages.json';
+import GroupsIcon from '@mui/icons-material/Groups';
 type MatchInfo = {
   problemName: string;
   oppImage: string;
   status: string;
   amount: number;
+  submissions: Submission[];
   startDate: any;
-  gameHistory: any;
 };
 
 interface Submission {
@@ -69,25 +68,14 @@ function formatDate(dateString: string): string {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
-export default function MatchCard({
+export default function TeamVSTeam({
   oppImage,
   status,
   amount,
+  submissions = [],
   startDate,
-  problemName,
-  gameHistory,
 }: MatchInfo) {
   const [open, setOpen] = useState(false);
-  const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
-  const { loading, data } = useSelector((state: RootState) => state.user);
-  const authState = useSelector((state: RootState) => state.auth);
-
-  const username = data?.username;
-  const gameSubmissions = data?.gameSubmissions;
-  // console.log('gameSubmissions', gameSubmissions);
-
-  const jwtToken = authState.user?.token;
-  const dispatch = useDispatch();
 
   let textColor: string;
   switch (status) {
@@ -102,16 +90,8 @@ export default function MatchCard({
       break;
   }
 
-  const handleExpandClick = (gameId: string) => {
+  const handleExpandClick = () => {
     setOpen(!open);
-
-    if (expandedGameId === gameId) {
-      setExpandedGameId(null);
-    } else {
-      setExpandedGameId(gameId);
-
-      dispatch<any>(getGameSubmissions({ gameId, username, jwtToken }));
-    }
   };
 
   const user = useSelector((state: RootState) => state.user.data);
@@ -148,25 +128,32 @@ export default function MatchCard({
           </div>
           <div style={{ width: '15%' }}>
             <Stack direction="row" spacing={4} alignContent={'center'}>
-              {user?.image === undefined ? (
-                <Avatar sx={{ width: '5rem', height: '5rem' }} />
-              ) : (
-                <img src={user?.image} alt="user image" className="user-img" />
-              )}
               <p
                 style={{
                   color: 'white',
-                  fontFamily: 'Rock Salt',
-                  fontSize: '2rem',
+                  fontSize: '2.3rem',
+                  alignSelf: 'center',
+                  fontStyle: 'italic',
                 }}
               >
-                VS
+                Team 1
               </p>
-              <img
-                src={oppImage}
-                alt="opponent image"
-                style={{ width: '5rem', height: '5rem', borderRadius: '100%' }}
+              <GroupsIcon
+                sx={{
+                  color: 'white',
+                  fontSize: '3.5rem',
+                }}
               />
+              <p
+                style={{
+                  color: 'white',
+                  fontSize: '2.3rem',
+                  alignSelf: 'center',
+                  fontStyle: 'italic',
+                }}
+              >
+                Team 2
+              </p>
             </Stack>
           </div>
           <p
@@ -204,19 +191,19 @@ export default function MatchCard({
           {open ? (
             <ExpandLessIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
-              onClick={() => handleExpandClick(gameHistory.id)}
+              onClick={handleExpandClick}
             />
           ) : (
             <ExpandMoreIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
-              onClick={() => handleExpandClick(gameHistory.id)}
+              onClick={handleExpandClick}
             />
           )}
         </Stack>
       </List>
       <div>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          {gameSubmissions && gameSubmissions[gameHistory.id]?.length === 0 ? (
+          {submissions.length === 0 ? (
             <div
               style={{
                 padding: '2rem',
@@ -285,82 +272,67 @@ export default function MatchCard({
                 </TableHead>
 
                 <TableBody>
-                  {gameSubmissions &&
-                    gameSubmissions[gameHistory.id]?.map(
-                      (row: any, index: number) => (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            '& td': {
-                              border: 'none',
-                              color: 'white',
-                              fontSize: '2rem',
-                            },
-                            backgroundColor:
-                              index % 2 === 0 ? '#24243E' : '#1E1E36',
-                          }}
+                  {submissions.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        '& td': {
+                          border: 'none',
+                          color: 'white',
+                          fontSize: '2rem',
+                        },
+                        backgroundColor:
+                          index % 2 === 0 ? '#24243E' : '#1E1E36',
+                      }}
+                    >
+                      <TableCell align="left">
+                        <Stack
+                          direction="column"
+                          spacing={1}
+                          sx={{ fontSize: '1.3rem' }}
                         >
-                          <TableCell align="left">
-                            <Stack
-                              direction="column"
-                              spacing={1}
-                              sx={{ fontSize: '1.3rem' }}
-                            >
-                              <div
-                                style={{
-                                  color:
-                                    SubmissionStatus[row.status] ===
-                                    'Wrong Answer'
-                                      ? '#e33c37'
-                                      : SubmissionStatus[row.status] ===
-                                          'Accepted'
-                                        ? '#2cbb5d'
-                                        : '#E3BD37',
-                                  fontSize: '2rem',
-                                }}
-                              >
-                                {SubmissionStatus[row.status]}
-                              </div>
-                              <div style={{ color: '#999' }}>
-                                {formatDate(row.submission_time)}
-                              </div>
-                            </Stack>
-                          </TableCell>
-                          <TableCell
-                            align="left"
-                            sx={{ textTransform: 'capitalize' }}
+                          <div
+                            style={{
+                              color:
+                                SubmissionStatus[row.status] === 'Wrong Answer'
+                                  ? '#e33c37'
+                                  : SubmissionStatus[row.status] === 'Accepted'
+                                    ? '#2cbb5d'
+                                    : '#E3BD37',
+                              fontSize: '2rem',
+                            }}
                           >
-                            {
-                              language.find(lang => lang.id === row.language_id)
-                                ?.name
-                            }
-                          </TableCell>
-                          <TableCell>
-                            <Stack
-                              direction="row"
-                              spacing={1}
-                              alignItems="center"
-                            >
-                              <AccessTimeOutlinedIcon
-                                sx={{ fontSize: '2.5rem' }}
-                              />
-                              <div>{row.time * 1000} ms</div>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Stack
-                              direction="row"
-                              spacing={1}
-                              alignItems="center"
-                            >
-                              <MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />
-                              <div>{`${row.memory} KB`}</div>
-                            </Stack>
-                          </TableCell>
-                          <TableCell></TableCell>
-                        </TableRow>
-                      ),
-                    )}
+                            {SubmissionStatus[row.status]}
+                          </div>
+                          <div style={{ color: '#999' }}>
+                            {formatDate(row.submission_time)}
+                          </div>
+                        </Stack>
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        sx={{ textTransform: 'capitalize' }}
+                      >
+                        {
+                          language.find(lang => lang.id === row.language_id)
+                            ?.name
+                        }
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <AccessTimeOutlinedIcon sx={{ fontSize: '2.5rem' }} />
+                          <div>{row.time * 1000} ms</div>
+                        </Stack>
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />
+                          <div>{`${row.memory} KB`}</div>
+                        </Stack>
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
