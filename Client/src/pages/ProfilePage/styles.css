@@ -1,17 +1,19 @@
-.profile-top-bottom {
-  display: flex;
-  flex-direction: column;
-  gap: 7rem;
-  padding: 2rem;
-}
 .profile-left-right {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  /* align-items: center; */
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 5rem;
+  padding: 5rem 0;
 }
+
 .profile-user-info {
   width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  /* flex-direction: column; */
   gap: 5rem;
 }
 .profile-img {
