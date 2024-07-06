@@ -1,11 +1,11 @@
-import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
+import { GameState } from "../game/store/uvu/i_game_uvu_store";
 import { Submission } from "../models/submissions";
 import { SubmissionStatus } from "../services/judge/judge_zero_service";
 import { UvUGameResult, UvUGameService, UserResult } from "../services/uvu_game_service";
 import { ConnectedUsers } from "../sockets/connected_users";
 import { IoType, SocketType } from "../utils/definitions/io_socket_types";
 
-export type UvUGameSubmissionRequest = {
+export type GameSubmissionRequest = {
   source_code: string,
   game_id: string,
   language_id: number,
@@ -23,7 +23,7 @@ export class UvUGameSocketController {
   }
 
   async submit_problem(data: string, callback: (response: Submission) => void) {
-    const uvu_game_submission_request: UvUGameSubmissionRequest = JSON.parse(data)
+    const uvu_game_submission_request: GameSubmissionRequest = JSON.parse(data)
     uvu_game_submission_request.submission_time = new Date()
     const game = await UvUGameService.get_game(uvu_game_submission_request.game_id)
     if (game == null) {
@@ -47,13 +47,12 @@ export class UvUGameSocketController {
     }
   }
 
-  is_user_belongs_to_game(game: UvUGameState): boolean {
+  is_user_belongs_to_game(game: GameState): boolean {
     if (this.socket.data.username == game.username_a || this.socket.data.username == game.username_b) {
       return true
     }
     return false
   }
-
 
   static send_game_result_to_users(game_result: UvUGameResult) {
     this.send_game_result_to_user(game_result.user_a_result)
@@ -66,7 +65,7 @@ export class UvUGameSocketController {
     socket && socket.emit("uvu_game_client:send_game_result", user_result)
   }
 
-  send_submision_notification_to_opponent(game: UvUGameState) {
+  send_submision_notification_to_opponent(game: GameState) {
     if (game.username_a == this.socket.data.username) {
       this.send_submission_notification(game.username_b!)
     } else {

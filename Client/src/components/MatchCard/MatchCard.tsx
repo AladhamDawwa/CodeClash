@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
 import SubmissionStatus from '../../utils/submission_status';
-import language from '../../pages/GamePage/languages.json';
+import language from '../../utils/languages.json';
 
 type MatchInfo = {
   problemName: string;

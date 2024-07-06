@@ -8,7 +8,7 @@ import { ILMSGameCalculator } from "./i_lms_game_calculator";
 import dotenv from 'dotenv'
 dotenv.config()
 
-const { GROWTH_RATE, LEVEL_K, INITIAL_XP } = process.env
+const { GROWTH_RATE, LEVEL_K, INITIAL_XP, XP_PROBLEM_RATE_FACTOR } = process.env
 const K = 32
 
 export class LMSGameCalculator implements ILMSGameCalculator {
@@ -34,7 +34,8 @@ export class LMSGameCalculator implements ILMSGameCalculator {
         users_score_and_penalty.get(user_result[0])!,
         user_result[1],
         user_result[1].new_level!,
-        lms_game_state.duration!
+        lms_game_state.duration!,
+        problem_rate
       )
     }
   }
@@ -43,14 +44,14 @@ export class LMSGameCalculator implements ILMSGameCalculator {
     user_score_and_penalty: UserScoreAndPenalty,
     user_result: UserResult,
     user_level: UserLevel,
-    game_duration: number) {
-    const gained_xp = (user_score_and_penalty.score / 100) * this.get_base_xp(user_level.level) * (1 - this.penalty_factor(user_score_and_penalty, game_duration))
+    game_duration: number,
+    problem_rate: string) {
+    const gained_xp = Math.round((user_score_and_penalty.score / 100) * this.get_base_xp(user_level.level, problem_rate) * (1 - this.penalty_factor(user_score_and_penalty, game_duration)))
     user_result.new_level = user_level
     user_result.xp_delta! += gained_xp
     user_result.new_level.xp += gained_xp
     user_result.new_level.level = this.get_level(user_result.new_level.xp)
     user_result.new_level.xp_for_next_level = this.get_xp_for_next_level(user_result.new_level.level)
-    user_result.new_level.rating = user_level.rating
   }
 
   calculate_delta_of_users(users: User[], lms_game_state: LMSGameState) {
@@ -127,7 +128,7 @@ export class LMSGameCalculator implements ILMSGameCalculator {
   }
 
   private get_xp_for_next_level(level: number) {
-    return Math.pow(level + 1 / parseFloat(LEVEL_K!), 2)
+    return Math.pow((level + 1) / parseFloat(LEVEL_K!), 2)
   }
   private get_level(xp: number) {
     return Math.floor(parseFloat(LEVEL_K!) * Math.sqrt(xp))
@@ -137,8 +138,14 @@ export class LMSGameCalculator implements ILMSGameCalculator {
     return (user_score_and_penalty.penalty / (10 * user_score_and_penalty.number_of_incorrect_submissions! + game_duration))
   }
 
-  private get_base_xp(level: number) {
-    return parseFloat(INITIAL_XP!) * Math.pow(parseFloat(GROWTH_RATE!), level)
+  private get_base_xp(level: number, problem_rate: string) {
+    let bast_xp = parseFloat(INITIAL_XP!) * Math.pow(parseFloat(GROWTH_RATE!), level)
+    bast_xp -= this.get_problem_rate_factor(problem_rate)
+    return bast_xp
+  }
+
+  private get_problem_rate_factor(problem_rate: string) {
+    return parseFloat(XP_PROBLEM_RATE_FACTOR!) * (9 - ('j'.charCodeAt(0) - problem_rate.charCodeAt(0)))
   }
 
   calculate_users_rank_in_round(users_score_and_penalty: Map<string, UserScoreAndPenalty>): { username: string, rank: number }[] {

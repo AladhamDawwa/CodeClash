@@ -6,7 +6,7 @@ import Skeleton from '@mui/material/Skeleton';
 // import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from '../../socket';
-export default function LoadingMatchCard({ text }: any) {
+export default function LoadingMatchCard({ text, team }: any) {
   const user = useSelector((state: RootState) => state.user.data);
   // const [isOppFetched, setIsOppFetched] = useState(false);
   const navigate = useNavigate();
@@ -21,13 +21,16 @@ export default function LoadingMatchCard({ text }: any) {
     >
       <Paper
         sx={{
-          backgroundColor: '#0F0C29',
+          background: '#0F0C29',
+          boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
+          borderRadius: '2rem',
           width: '90rem',
           height: '60rem',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: '10rem',
+          opacity: '0.9',
         }}
       >
         <div
@@ -66,10 +69,16 @@ export default function LoadingMatchCard({ text }: any) {
             gap: '8rem',
           }}
         >
+          {/* {team ? ( */}
           {user?.image ? (
-            <img src={user?.image}
+            <img
+              src={user?.image}
               alt="user image"
-              style={{ width: '12rem', height: '12rem', borderRadius: '100%' }}
+              style={{
+                width: '12rem',
+                height: '12rem',
+                borderRadius: '100%',
+              }}
             />
           ) : (
             <Avatar
@@ -81,6 +90,9 @@ export default function LoadingMatchCard({ text }: any) {
               src="/broken-image.jpg"
             />
           )}
+          {/* : (
+            <></>
+          )} */}
           <p
             style={{
               color: 'white',
@@ -91,14 +103,11 @@ export default function LoadingMatchCard({ text }: any) {
           >
             VS
           </p>
-          {/* {isOppFetched ? (
-            <img src="" alt="" /> //handle the opponent image
-          ) : ( */}
-            <Skeleton
-              sx={{ bgcolor: 'grey', width: '12rem', height: '12rem' }}
-              variant="circular"
-              animation="pulse"
-            />
+          <Skeleton
+            sx={{ bgcolor: 'grey', width: '12rem', height: '12rem' }}
+            variant="circular"
+            animation="pulse"
+          />
           {/* )} */}
         </div>
         <Button
@@ -113,6 +122,7 @@ export default function LoadingMatchCard({ text }: any) {
             fontWeight: '700',
           }}
           onClick={() => {
+            socket.disconnect();
             navigate('/');
           }}
         >

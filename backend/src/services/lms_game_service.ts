@@ -1,21 +1,13 @@
-import { EloUvUGameCalculator } from "../game/evaluator/elo_uvu_game_calculator";
+import { differenceInSeconds } from 'date-fns';
+import { LMSGameCalculator } from "../game/evaluator/elo_lms_game_calculator";
+import { ILMSGameCalculator } from "../game/evaluator/i_lms_game_calculator";
 import lmsGameStore from "../game/store/lms/game_lms_fire_store";
 import { LMSGameState } from "../game/store/lms/i_game_lms_store";
-import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
-import { Problems } from "../models/problem";
 import { Submission, Submissions } from "../models/submissions";
-import { UserLevel, Users } from "../models/users";
-import { UvUGamesHistory } from "../models/uvu_game_history";
+import { Users } from "../models/users";
 import { LMSGameSocketController, LMSGameSubmissionRequest } from "../socket_controllers/lms_game";
-import { GameMode } from "../utils/definitions/games_types";
-import { RankTier } from "../utils/definitions/rank_tier";
-import { JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
-import { differenceInSeconds } from 'date-fns';
-import { UserResult } from "./uvu_game_service";
-import { ILMSGameCalculator } from "../game/evaluator/i_lms_game_calculator";
-import { LMSGameCalculator } from "../game/evaluator/elo_lms_game_calculator";
 import { GameCreationService } from "./game_creation_service";
-import { before } from "node:test";
+import { JudgeZeroService, SubmissionStatus } from "./judge/judge_zero_service";
 
 export type UserScoreAndPenalty = {
   score: number,
@@ -38,7 +30,7 @@ export class LMSGameService {
       lms_game_submission_request.language_id,
     )
     const submission = await Submissions.create(
-      judge_result, game.id!, lms_game_submission_request.source_code, lms_game_submission_request.language_id, username
+      judge_result, game.id!, lms_game_submission_request.source_code, lms_game_submission_request.language_id, username, game.round
     )
     this.should_finish_round(game)
     return submission
@@ -55,12 +47,15 @@ export class LMSGameService {
       users_score_and_penalty.set(username, this.calculate_score_and_penalty(game.start_time!, game_submissions, username))
     }
     let should_finish = true
+    let cnt_of_acc = 0
     for (const [_, user_score_and_penalty] of users_score_and_penalty) {
       if (user_score_and_penalty.score !== 100) {
         should_finish = false
+      } else {
+        cnt_of_acc++
       }
     }
-    if (should_finish) {
+    if (should_finish || (cnt_of_acc == 1 && game.usernames.length == 2)) {
       this.end_round(game, game.round)
     }
 

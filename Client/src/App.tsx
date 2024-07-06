@@ -118,12 +118,12 @@ const App: React.FC = () => {
         path="/gameSession"
         element={
           <PrivateRoute>
-            <ProtectedRoute
+            {/* <ProtectedRoute
               condition={useNavigation().canAccessGameSession}
               redirectTo="/home"
-            >
-              <GamePage />
-            </ProtectedRoute>
+            > */}
+            <GamePage />
+            {/* </ProtectedRoute> */}
           </PrivateRoute>
         }
       />

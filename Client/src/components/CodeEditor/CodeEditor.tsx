@@ -5,17 +5,25 @@ import './style.css';
 import { Button } from '@mui/material';
 import { encode } from 'js-base64';
 import socket from '../../socket';
-import languages from '../../pages/GamePage/languages.json';
+import languages from '../../utils/languages.json';
 import { useSnackbar } from 'notistack';
 import SubmissionStatus from '../../utils/submission_status';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 const CodeEditor = ({ languageId, gameID }: any) => {
   const [language, setLanguage] = useState<string>('cpp');
   const [code, setCode] = useState(`// Write your ${language} code here`);
   const monaco = useMonaco();
   const { enqueueSnackbar } = useSnackbar();
 
+  const userState = useSelector((state: RootState) => state.user);
+  const { data: userData } = userState;
+
   useEffect(() => {
-    setLanguage(languages.find((lang) => lang.id == Number.parseInt(languageId))?.code || 'C++');
+    setLanguage(
+      languages.find(lang => lang.id == Number.parseInt(languageId))?.code ||
+        'C++',
+    );
     setCode(
       `${language === 'python' ? '#' : '//'} Write your ${language} code here`,
     );
@@ -34,24 +42,39 @@ const CodeEditor = ({ languageId, gameID }: any) => {
 
   const handleSubmission = () => {
     const encoded = encode(code);
-    socket.emit('uvu_game_server:submit_problem', 
-      JSON.stringify({ source_code: encoded, game_id: gameID, language_id: languageId }), 
-      (response: any) => {
-        console.log('response', response);
-        const message = SubmissionStatus[response.status];
-        if (response.status == 3) {
-          enqueueSnackbar(message, { variant: 'success' });
-        } else if(response.status == 5) {
-          enqueueSnackbar(message, { variant: "warning" });
-        } else {
-          enqueueSnackbar(message, { variant: 'error' });
-        }
+    const url =
+      userData.gameInfo?.game_type == 0
+        ? 'uvu_game_server:submit_problem'
+        : userData.gameInfo?.game_type == 1
+          ? 'tvt_game_server:submit_problem'
+          : 'lms_game_server:submit_problem';
+    const submissionData: any = {
+      source_code: encoded,
+      game_id: gameID,
+      language_id: languageId,
+    };
+    submissionData.round = userData.gameInfo?.round;
+    socket.emit(url, JSON.stringify(submissionData), (response: any) => {
+      console.log('response', response);
+      const message = SubmissionStatus[response.status];
+      if (response.status == 3) {
+        enqueueSnackbar(message, { variant: 'success' });
+      } else if (response.status == 5) {
+        enqueueSnackbar(message, { variant: 'warning' });
+      } else {
+        enqueueSnackbar(message, { variant: 'error' });
+      }
     });
+
+    return () => {
+      socket.off(url);
+    };
   };
 
   return (
     <>
-      <Button variant="contained"
+      <Button
+        variant="contained"
         sx={{
           position: 'absolute',
           top: '1.5rem',

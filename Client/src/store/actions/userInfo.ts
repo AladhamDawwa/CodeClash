@@ -13,6 +13,13 @@ interface UserData {
   mmr: number;
   rank_points: number;
   rank_tier: number;
+  user_level: UserLevel
+}
+
+interface UserLevel {
+  level: number;
+  xp: number;
+  xp_for_next_level: number;
 }
 
 interface Problem {

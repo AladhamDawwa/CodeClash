@@ -3,10 +3,14 @@ import GameButton from './GameButton';
 import './style.css';
 import { Card } from '@mui/material';
 import { GameMode } from '../../utils/game_settings';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
 
 export default function GameModesCard({ text, type }: any) {
+  const user = useSelector((state: RootState) => state.user.data);
 
-  let modeImage : string = '';
+  let modeImage: string = '';
   switch (text) {
     case '1 V 1':
       modeImage = '1vs1';
@@ -20,7 +24,8 @@ export default function GameModesCard({ text, type }: any) {
   }
 
   return (
-      <div className="card">    
+    user && (
+      <div className="card">
         <Card
           sx={{
             zIndex: 1,
@@ -66,41 +71,92 @@ export default function GameModesCard({ text, type }: any) {
             },
           }}
         >
-          <Typography variant="h2" sx={{
-            color: 'white',
-            fontFamily: 'Roboto, sans-serif',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            fontSize: text !== "Last Man Standing" ? '5rem' : '3.5rem',
-            width: '100%',
-            height: '100%',
-            backdropFilter: 'blur(0.2rem) contrast(1.0) brightness(0.5) saturate(1.0)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+          <Typography
+            variant="h2"
+            sx={{
+              color: 'white',
+              fontFamily: 'Roboto, sans-serif',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              fontSize: text !== 'Last Man Standing' ? '5rem' : '3.5rem',
+              width: '100%',
+              height: '100%',
+              backdropFilter:
+                'blur(0.2rem) contrast(1.0) brightness(0.5) saturate(1.0)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             {text}
           </Typography>
-
-          <div style={{
-            flexDirection: 'column',
-          }}>
-            <GameButton gameSettings={{
-              type: GameMode.Ranked,
-              mode: type,
-            }} text={{
-              type: 'Ranked',
-              mode: text,
-            }}>Ranked</GameButton>
-            <GameButton gameSettings={{
-              type: GameMode.Normal,
-              mode: type,
-            }} text={{
-              type: 'Normal',
-              mode: text,
-            }}>Normal</GameButton>
+          <div
+            style={{
+              flexDirection: 'column',
+            }}
+          >
+            {text == '3 V 3' && !user.current_team ? (
+              <div>
+                <LockRoundedIcon
+                  sx={{
+                    fontSize: '7rem',
+                    color: 'white',
+                    backdropFilter: 'saturate(1.0)',
+                    marginBottom: '3rem',
+                  }}
+                />
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: 'white',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: 'bold',
+                    // textTransform: 'uppercase',
+                    fontSize: '2rem',
+                    background: '#a0a0a0',
+                    backdropFilter:
+                      'blur(0.2rem) contrast(1.0) brightness(0.5) saturate(1.0)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '2rem',
+                    transform: 'skewY(-20deg)',
+                  }}
+                >
+                  Activate a team to play this mode
+                </Typography>
+              </div>
+            ) : (
+              <>
+                <GameButton
+                  gameSettings={{
+                    type: GameMode.Ranked,
+                    mode: type,
+                  }}
+                  text={{
+                    type: 'Ranked',
+                    mode: text,
+                  }}
+                >
+                  Ranked
+                </GameButton>
+                <GameButton
+                  gameSettings={{
+                    type: GameMode.Normal,
+                    mode: type,
+                  }}
+                  text={{
+                    type: 'Normal',
+                    mode: text,
+                  }}
+                >
+                  Normal
+                </GameButton>
+              </>
+            )}
           </div>
         </Card>
       </div>
+    )
   );
 }

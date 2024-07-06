@@ -1,6 +1,6 @@
 import { Filter } from "firebase-admin/firestore";
 import { db } from "../firebase";
-import { UvUGameState } from "../game/store/uvu/i_game_uvu_store";
+import { GameState } from "../game/store/uvu/i_game_uvu_store";
 import { UvUGameResult, UserResult } from "../services/uvu_game_service";
 import { GameMode, GameType } from "../utils/definitions/games_types";
 
@@ -40,7 +40,7 @@ const converter = {
 const uvu_games_history_collection = db.uvu_games_history.withConverter(converter);
 
 export class UvUGamesHistory {
-  static async create(uvu_game_state: UvUGameState, uvu_game_result: UvUGameResult) {
+  static async create(uvu_game_state: GameState, uvu_game_result: UvUGameResult) {
     const uvu_game_history_record = this.create_uvu_game_history_record(uvu_game_state, uvu_game_result)
     const docRef = uvu_games_history_collection.doc(uvu_game_history_record.id as string)
     await docRef.set(uvu_game_history_record)
@@ -59,7 +59,7 @@ export class UvUGamesHistory {
     return uvu_game_history_records
   }
 
-  static create_uvu_game_history_record(uvu_game_state: UvUGameState, uvu_game_result: UvUGameResult): UvUGameHistory {
+  static create_uvu_game_history_record(uvu_game_state: GameState, uvu_game_result: UvUGameResult): UvUGameHistory {
     return {
       id: uvu_game_state.id,
       game_mode: uvu_game_state.game_mode,

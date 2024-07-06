@@ -3,35 +3,44 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Avatar from '@mui/material/Avatar';
-import Fireworks from '@fireworks-js/react'
+import Fireworks from '@fireworks-js/react';
 import './styles.css';
 import { useNavigate } from 'react-router-dom';
+import LevelStar from '../LevelStar/LevelStar';
+import ranks from '../../utils/ranks';
 
 interface ResultCardParams {
   status: string;
   rank: number;
   level: number;
+  rankPoints: number;
 }
 
-export default function ResultCard({ status, rank, level }: ResultCardParams) {
-  const ranks = ['bronze', 'silver', 'gold', 'diamond', 'master'];
+export default function ResultCard({
+  status,
+  rank,
+  rankPoints,
+  level,
+}: ResultCardParams) {
   const showCard = true;
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
   return (
     <>
-      <Box sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        zIndex: 2,
-        pointerEvents: 'none',
-        background: '#0f0c292d',
-        backdropFilter: 'blur(5px) contrast(0.8)',
-      }}/>
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 2,
+          pointerEvents: 'none',
+          background: '#0f0c292d',
+          backdropFilter: 'blur(5px) contrast(0.8)',
+        }}
+      />
       <div
         style={{
           position: 'fixed',
@@ -45,9 +54,8 @@ export default function ResultCard({ status, rank, level }: ResultCardParams) {
           zIndex: 300,
         }}
       >
-        { status === 'winner' 
-          &&
-          <Fireworks 
+        {status === 'winner' && (
+          <Fireworks
             style={{
               position: 'fixed',
               top: 0,
@@ -55,8 +63,9 @@ export default function ResultCard({ status, rank, level }: ResultCardParams) {
               width: '100vw',
               height: '100vh',
               zIndex: 1,
-            }}/>
-        }
+            }}
+          />
+        )}
         <Slide
           direction="up"
           in={showCard}
@@ -139,7 +148,7 @@ export default function ResultCard({ status, rank, level }: ResultCardParams) {
               <Grow in={showCard} timeout={1200}>
                 <Paper
                   sx={{
-                    width: '40rem',
+                    width: rank !== undefined ? '55rem' : '30rem',
                     height: '10rem',
                     bgcolor: '#1E1E36',
                     borderRadius: '1rem',
@@ -148,29 +157,63 @@ export default function ResultCard({ status, rank, level }: ResultCardParams) {
                     justifyItems: 'center',
                   }}
                 >
-                  <Stack direction="row" alignItems={'center'} spacing={1}>
-                    <img
-                      src="assets/Rank.svg"
-                      alt="rank image"
-                      style={{ width: '5rem', height: '5rem' }}
-                    />
-                    <p
-                      style={{
-                        fontSize: '2.5rem',
-                        color: `  ${rank > 0 ? '#2CBB5D' : rank < 0 ? '#E33C37' : '#918f8f'}`,
-                      }}
-                    >
-                      {`${rank > 0 ? '+' : rank < 0 ? '-' : ''}${Math.abs(rank)} `}
-                    </p>
-                  </Stack>
-                  <Stack direction="row" alignItems={'center'} spacing={1}>
-                    <img
-                      src={`assets/${ranks[user.data.rank_tier]}.svg`}
-                      alt="tier image"
-                      style={{ width: '5rem', height: '5rem' }}
-                    />
-                    { level != user.data.rank_tier && (
-                      <>                        
+                  {rank !== undefined && (
+                    <>
+                      <Stack direction="row" alignItems={'center'} spacing={1}>
+                        <img
+                          src="assets/Rank.svg"
+                          alt="rank image"
+                          style={{
+                            width: '5rem',
+                            height: '5rem',
+                            marginBottom: '1rem',
+                          }}
+                        />
+                        <p
+                          style={{
+                            fontSize: '2.5rem',
+                            color: `  ${rankPoints > 0 ? '#2CBB5D' : rankPoints < 0 ? '#E33C37' : '#918f8f'}`,
+                          }}
+                        >
+                          {`${rankPoints > 0 ? '+' : rankPoints < 0 ? '-' : ''}${Math.abs(rankPoints)} `}
+                        </p>
+                      </Stack>
+                      <Stack direction="row" alignItems={'center'} spacing={1}>
+                        <img
+                          src={`assets/${ranks[user.data.rank_tier]}.svg`}
+                          alt="tier image"
+                          style={{ width: '6rem', height: '6rem' }}
+                        />
+                        {rank != user.data.rank_tier && (
+                          <>
+                            <KeyboardDoubleArrowRightIcon
+                              sx={{
+                                width: '3rem',
+                                height: '3rem',
+                                color: `  ${status === 'winner' ? '#2CBB5D' : status === 'loser' ? '#E33C37' : '#918f8f'}`,
+                              }}
+                            />
+                            <img
+                              src={`assets/${ranks[user.data.rank_tier + 1]}.svg`}
+                              alt="tier image"
+                              style={{ width: '6rem', height: '6rem' }}
+                            />
+                          </>
+                        )}
+                      </Stack>
+                    </>
+                  )}
+                  <Stack
+                    direction="row"
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    sx={{
+                      position: 'relative',
+                    }}
+                  >
+                    <LevelStar level={user.data?.user_level.level} />
+                    {level != user.data?.user_level.level && (
+                      <>
                         <KeyboardDoubleArrowRightIcon
                           sx={{
                             width: '3rem',
@@ -178,18 +221,14 @@ export default function ResultCard({ status, rank, level }: ResultCardParams) {
                             color: `  ${status === 'winner' ? '#2CBB5D' : status === 'loser' ? '#E33C37' : '#918f8f'}`,
                           }}
                         />
-                        <img
-                          src={`assets/${ranks[user.data.rank_tier + 1]}.svg`}
-                          alt="tier image"
-                          style={{ width: '5rem', height: '5rem' }}
-                        />
+                        <LevelStar level={level} />
                       </>
                     )}
                   </Stack>
                 </Paper>
               </Grow>
               <Button
-                variant='contained'
+                variant="contained"
                 onClick={() => {
                   navigate('/home');
                 }}

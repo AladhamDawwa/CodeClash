@@ -1,7 +1,72 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Notification from './Notification';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import axios from 'axios';
+const apiUrl = import.meta.env.VITE_API_URL;
+
+type Notification = {
+  doc_id?: string;
+  from: string;
+  to: string;
+  message: string;
+  type: NotificationType;
+};
+
+enum NotificationType {
+  TeamInvitation,
+}
 
 const NotiPage = () => {
+  const auth = useSelector((state: RootState) => state.auth);
+  const [notifications, setNotifications] = React.useState<Notification[]>([]);
+
+  const acceptInvite = (id: any) => {
+    axios
+      .post(
+        `${apiUrl}/notifications/accept`,
+        {
+          notificationId: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.user.token}`,
+          },
+        },
+      )
+      .then(() => {
+        setNotifications(
+          notifications.filter(notification => notification.doc_id !== id),
+        );
+      });
+  };
+
+  const deleteNotification = (id: any) => {
+    axios
+      .delete(`${apiUrl}/notifications/${id}`, {
+        headers: {
+          Authorization: `Bearer ${auth.user.token}`,
+        },
+      })
+      .then(() => {
+        setNotifications(
+          notifications.filter(notification => notification.doc_id !== id),
+        );
+      });
+  };
+
+  useEffect(() => {
+    axios
+      .get(`${apiUrl}/notifications`, {
+        headers: {
+          Authorization: `Bearer ${auth.user.token}`,
+        },
+      })
+      .then(res => {
+        setNotifications(res.data);
+      });
+  }, []);
+
   return (
     <div
       style={{
@@ -10,6 +75,7 @@ const NotiPage = () => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         gap: '2rem',
+        padding: '3rem 30rem',
       }}
     >
       <p
@@ -22,26 +88,20 @@ const NotiPage = () => {
       >
         Notifications
       </p>
-      <Notification
-        title="noti #1"
-        content="Someone invited you to join their team!"
-        onAccept={() => {
-          console.log('Accepted');
-        }}
-        onReject={() => {
-          console.log('Rejected');
-        }}
-      />
-      <Notification
-        title="noti #2"
-        content="Another notification content"
-        onAccept={() => {
-          console.log('Accepted');
-        }}
-        onReject={() => {
-          console.log('Rejected');
-        }}
-      />
+
+      {notifications.map(notification => (
+        <Notification
+          key={notification.doc_id}
+          title="Team Invitation"
+          content={`${notification.from} invited you to join ${notification.message}`}
+          onAccept={() => {
+            acceptInvite(notification.doc_id!);
+          }}
+          onReject={() => {
+            deleteNotification(notification.doc_id!);
+          }}
+        />
+      ))}
     </div>
   );
 };
