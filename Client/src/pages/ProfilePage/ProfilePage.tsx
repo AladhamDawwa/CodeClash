@@ -368,7 +368,7 @@ const ProfilePage = () => {
             src={`/assets/${ranks[user?.rank_tier]}.svg`}
             alt="rank image"
             className="profile-rank-img"
-            style={{ opacity: '60%', width: '8rem', height: '8rem' }}
+            style={{ width: '8rem', height: '8rem' }}
           />
           <div
             style={{
@@ -407,7 +407,7 @@ const ProfilePage = () => {
             src={`/assets/${ranks[user?.rank_tier + 1]}.svg`}
             alt="rank image"
             className="profile-rank-img"
-            style={{ opacity: '60%', width: '8rem', height: '8rem' }}
+            style={{ opacity: '50%', width: '8rem', height: '8rem' }}
           />
         </div>
         <Typography variant="h2" sx={{ color: 'white', fontWeight: 'bold' }}>
