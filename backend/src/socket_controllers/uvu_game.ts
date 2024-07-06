@@ -47,6 +47,19 @@ export class UvUGameSocketController {
     }
   }
 
+  async get_game(game_id: string, callback: (response: { status: string, game: (GameState | null) }) => void) {
+    const game = await UvUGameService.get_game(game_id)
+    if (game == null) {
+      callback({ status: "Game has ended", game: null })
+      return
+    }
+    if (!this.is_user_belongs_to_game(game)) {
+      callback({ status: "You are not in this game", game: null })
+      return
+    }
+    callback({ status: "Game Found", game: game })
+  }
+
   is_user_belongs_to_game(game: GameState): boolean {
     if (this.socket.data.username == game.username_a || this.socket.data.username == game.username_b) {
       return true
@@ -80,6 +93,7 @@ export class UvUGameSocketController {
 
   register_events() {
     this.socket.on("uvu_game_server:submit_problem", this.submit_problem);
+    this.socket.on("uvu_game_server:get_game", this.get_game)
     this.socket.on("disconnect", () => {
       ConnectedUsers.remove_user(this.socket.data.username);
     });
@@ -87,5 +101,6 @@ export class UvUGameSocketController {
 
   private bind_methods() {
     this.submit_problem = this.submit_problem.bind(this);
+    this.get_game = this.get_game.bind(this)
   }
 }

@@ -58,6 +58,20 @@ export class LMSGameSocketController {
     }
   }
 
+  async get_game(game_id: string, callback: (response: { status: string, game: (LMSGameState | null) }) => void) {
+    const game = await LMSGameService.get_game(game_id)
+    if (game == null) {
+      callback({ status: "Game has ended", game: null })
+      return
+    }
+    if (!this.is_user_belongs_to_game(game)) {
+      callback({ status: "You are not in this game", game: null })
+      return
+    }
+    console.log(game)
+    callback({ status: "Game Found", game: game })
+  }
+
   is_user_belongs_to_game(game: LMSGameState): boolean {
     return game.usernames.includes(this.socket.data.username)
   }
@@ -89,6 +103,7 @@ export class LMSGameSocketController {
 
   register_events() {
     this.socket.on("lms_game_server:submit_problem", this.submit_problem);
+    this.socket.on("lms_game_server:get_game", this.get_game)
     this.socket.on("disconnect", () => {
       ConnectedUsers.remove_user(this.socket.data.username);
     });
@@ -96,5 +111,6 @@ export class LMSGameSocketController {
 
   private bind_methods() {
     this.submit_problem = this.submit_problem.bind(this);
+    this.get_game = this.get_game.bind(this)
   }
 }

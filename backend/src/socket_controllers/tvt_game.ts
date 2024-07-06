@@ -37,6 +37,15 @@ export class TvTGameSocketController {
     }
   }
 
+  async get_game(game_id: string, callback: (response: { status: string, game: (GameState | null) }) => void) {
+    const game = await TvTGameService.get_game(game_id)
+    if (game == null) {
+      callback({ status: "Game has ended", game: null })
+      return
+    }
+    callback({ status: "Game Found", game: game })
+  }
+
   static send_game_result_to_teams(game_result: TvTGameResult) {
     this.send_game_result_to_team(game_result.team_a_result)
     this.send_game_result_to_team(game_result.team_b_result)
@@ -66,6 +75,7 @@ export class TvTGameSocketController {
 
   register_events() {
     this.socket.on("tvt_game_server:submit_problem", this.submit_problem);
+    this.socket.on("tvt_game_server:get_game", this.get_game)
     this.socket.on("disconnect", () => {
       ConnectedTeams.remove_team(this.socket.id);
     });
@@ -73,5 +83,6 @@ export class TvTGameSocketController {
 
   private bind_methods() {
     this.submit_problem = this.submit_problem.bind(this);
+    this.get_game = this.get_game.bind(this)
   }
 }

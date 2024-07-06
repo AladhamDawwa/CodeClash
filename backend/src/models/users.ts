@@ -136,18 +136,29 @@ export class Users {
     await docRef.update(toBeRemovedData)
   }
 
-  // static async admin_clear_fields(usernames: string[], keys_to_remove: string[]) {
-  //   const snapshot = await users_collection
-  //     .where("username", "in", usernames)
-  //     .get();
-  //   const docRef = snapshot.docs[0].ref
-  //   const toBeRemovedData: { [key: string]: any } = {}
-  //   keys_to_remove.forEach(key => {
-  //     toBeRemovedData[`${key}`] = firestore.FieldValue.delete()
-  //   })
+  static async admin_clear_fields(usernames: (string | undefined)[], keys_to_remove: string[]) {
+    const snapshot = await users_collection
+      .where("username", "in", usernames)
+      .get();
+    const docRef = snapshot.docs[0].ref
+    const toBeRemovedData: { [key: string]: any } = {}
+    keys_to_remove.forEach(key => {
+      toBeRemovedData[`${key}`] = firestore.FieldValue.delete()
+    })
 
-  //   await docRef.update(toBeRemovedData)
-  // }
+    await docRef.update(toBeRemovedData)
+  }
+
+  static async admin_clear_status_for_all_users() {
+    const users = await this.index()
+    let usernames = users
+      .filter(user => user.username !== undefined)
+      .map(user => user.username);
+    for (const username of usernames) {
+      await this.admin_clear_fields([username], ["status"])
+    }
+    console.log("Finished clearing")
+  }
 
   static async get_rank(username: string): Promise<RankTier> {
     const snapshot = await users_collection

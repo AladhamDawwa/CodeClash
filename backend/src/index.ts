@@ -15,6 +15,7 @@ import { LMSGameSocketController } from './socket_controllers/lms_game'
 import { TvTGameSocketController } from './socket_controllers/tvt_game'
 import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
 import { NotificationsController } from './controllers/notifications'
+import { Users } from './models/users'
 
 dotenv.config()
 
@@ -60,7 +61,7 @@ UsersUnsolvedProblems.init('Aladham2001');
 UsersUnsolvedProblems.init('mmr_800_1');
 UsersUnsolvedProblems.init('mmr_850_1');
 UsersUnsolvedProblems.init('hossam22');
-
+// Users.admin_clear_status_for_all_users()
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
