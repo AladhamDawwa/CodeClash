@@ -95,7 +95,38 @@ export default function GameModesCard({ text, type }: any) {
               flexDirection: 'column',
             }}
           >
-            {text == '3 V 3' && !user.current_team ? (
+            {user?.gameInfo ? (
+              <div>
+                <LockRoundedIcon
+                  sx={{
+                    fontSize: '7rem',
+                    color: 'white',
+                    backdropFilter: 'saturate(1.0)',
+                    marginBottom: '3rem',
+                  }}
+                />
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: 'white',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: 'bold',
+                    // textTransform: 'uppercase',
+                    fontSize: '2rem',
+                    background: '#a0a0a0',
+                    backdropFilter:
+                      'blur(0.2rem) contrast(1.0) brightness(0.5) saturate(1.0)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '2rem',
+                    transform: 'skewY(-20deg)',
+                  }}
+                >
+                  You have an ongoing game
+                </Typography>
+              </div>
+            ) : text == '3 V 3' && !user.current_team ? (
               <div>
                 <LockRoundedIcon
                   sx={{
@@ -126,7 +157,7 @@ export default function GameModesCard({ text, type }: any) {
                   Activate a team to play this mode
                 </Typography>
               </div>
-            ) : (
+            ) : text === '1 V 1' ? (
               <>
                 <GameButton
                   gameSettings={{
@@ -151,6 +182,21 @@ export default function GameModesCard({ text, type }: any) {
                   }}
                 >
                   Normal
+                </GameButton>
+              </>
+            ) : (
+              <>
+                <GameButton
+                  gameSettings={{
+                    type: GameMode.Ranked,
+                    mode: type,
+                  }}
+                  text={{
+                    type: 'Ranked',
+                    mode: text,
+                  }}
+                >
+                  Play
                 </GameButton>
               </>
             )}

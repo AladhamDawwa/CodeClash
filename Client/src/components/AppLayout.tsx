@@ -484,76 +484,6 @@ export default function MiniDrawer() {
         }}
       >
         <Outlet />
-
-        {/* GameStatus */}
-        {user?.gameInfo && (
-          <div
-            style={{
-              position: 'fixed',
-              bottom: '1rem',
-              right: '1rem',
-              backgroundColor: '#0f0c29',
-              boxShadow: '0 0 3px white',
-              borderRadius: '1rem',
-              width: '22rem',
-              height: '5rem',
-              cursor: 'pointer',
-            }}
-            onClick={() => {
-              navigate('/gameSession');
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '0.5rem 1rem',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '1rem',
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '1.5rem',
-                      height: '1.5rem',
-                      borderRadius: '50%',
-                      backgroundColor: 'green',
-                      boxShadow: '0 0 3px white',
-                      transition: 'background-color 0.2s ease',
-                      animation: 'pulse 2s infinite',
-                      filter: 'brightness(1.5)',
-                    }}
-                  ></div>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    color: 'white',
-                    textAlign: 'center',
-                  }}
-                >
-                  <h3 style={{ margin: 0 }}>Game running in background</h3>
-                  <h1 style={{ margin: 0 }}>
-                    {GameTypeString[user.gameInfo?.game_type]}
-                  </h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
       <div
         style={{
@@ -564,6 +494,75 @@ export default function MiniDrawer() {
       >
         <RankFlag />
       </div>
+      {/* GameStatus */}
+      {user?.gameInfo && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '1rem',
+            right: '1rem',
+            backgroundColor: '#0f0c29',
+            boxShadow: '0 0 3px white',
+            borderRadius: '1rem',
+            width: '22rem',
+            height: '5rem',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            navigate('/gameSession');
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '0.5rem 1rem',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                gap: '1rem',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    width: '1.5rem',
+                    height: '1.5rem',
+                    borderRadius: '50%',
+                    backgroundColor: 'green',
+                    boxShadow: '0 0 3px white',
+                    transition: 'background-color 0.2s ease',
+                    animation: 'pulse 2s infinite',
+                    filter: 'brightness(1.5)',
+                  }}
+                ></div>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  color: 'white',
+                  textAlign: 'center',
+                }}
+              >
+                <h3 style={{ margin: 0 }}>Game running in background</h3>
+                <h1 style={{ margin: 0 }}>
+                  {GameTypeString[user.gameInfo?.game_type]}
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Box>
   );
 }
