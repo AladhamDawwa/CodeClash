@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { getUserTeams } from '../../store/actions/userInfo';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import LoadingState from '../../components/LoadingState';
 
 interface Team {
   slogan: string;
@@ -44,6 +45,7 @@ const Teams = () => {
   };
 
   const authState = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -59,97 +61,112 @@ const Teams = () => {
   }, [authState.user.token, dispatch]);
 
   return (
-    <div style={{
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '3rem',
-      padding: '3rem 6rem',
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <Typography
-          variant="h2"
-          sx={{
-            color: 'white',
-            fontWeight: '500',
-          }}
-        >
-          My Teams
-        </Typography>
-
-        <Button
-          variant="contained"
-          size="large"
-          sx={{
-            fontSize: '1.5rem',
-            textTransform: 'capitalize',
-            backgroundColor: '#3f51b5',
-            color: 'white',
-            borderRadius: '1rem',
+    <>
+      {user?.loading && <LoadingState />}
+      {!user?.loading && userTeams && (
+        <div
+          style={{
+            width: '100%',
             display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-
-            '&:hover': {
-              backgroundColor: '#303f9f',
-            },
+            flexDirection: 'column',
+            gap: '3rem',
+            padding: '3rem 6rem',
           }}
-          onClick={handleShowTeamCard}
-          disableRipple
-          disableElevation
         >
-          <GroupAddOutlinedIcon
-            sx={{
-              fontSize: '2.5rem',
-            }}
-          />
-          Create Team
-        </Button>
-      </div>
-      <div style={userTeams.length > 0 ? {
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(40rem, 1fr))',
-          padding: '3rem 0',
-          gap: '3rem',
-          placeItems: 'center',
-        } : {
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        {userTeams.length > 0 ? (
-          userTeams.map((team, index) => (
-            <TeamsList
-              key={team.team_name}
-              open={openTeam === index}
-              onClick={() => handleTeamToggle(index)}
-              team={team}
-            />
-          ))
-        ) : (
-          <Typography
-            variant="h2"
-            sx={{
-              color: 'white',
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
-            No teams found
-          </Typography>
-        )}
-      </div>
-      {showTeamCard && (
-        <CreateTeamCard
-          open={true}
-          onClose={handleCloseshowTeamCard}
-          onTeamCreated={handleAddTeam}
-        />
+            <Typography
+              variant="h2"
+              sx={{
+                color: 'white',
+                fontWeight: '500',
+              }}
+            >
+              My Teams
+            </Typography>
+
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                fontSize: '1.5rem',
+                textTransform: 'capitalize',
+                backgroundColor: '#3f51b5',
+                color: 'white',
+                borderRadius: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem',
+
+                '&:hover': {
+                  backgroundColor: '#303f9f',
+                },
+              }}
+              onClick={handleShowTeamCard}
+              disableRipple
+              disableElevation
+            >
+              <GroupAddOutlinedIcon
+                sx={{
+                  fontSize: '2.5rem',
+                }}
+              />
+              Create Team
+            </Button>
+          </div>
+          <div
+            style={
+              userTeams.length > 0
+                ? {
+                    display: 'grid',
+                    gridTemplateColumns:
+                      'repeat(auto-fill, minmax(40rem, 1fr))',
+                    padding: '3rem 0',
+                    gap: '3rem',
+                    placeItems: 'center',
+                  }
+                : {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }
+            }
+          >
+            {userTeams.length > 0 ? (
+              userTeams.map((team, index) => (
+                <TeamsList
+                  key={team.team_name}
+                  open={openTeam === index}
+                  onClick={() => handleTeamToggle(index)}
+                  team={team}
+                />
+              ))
+            ) : (
+              <Typography
+                variant="h2"
+                sx={{
+                  color: 'white',
+                }}
+              >
+                No teams found
+              </Typography>
+            )}
+          </div>
+          {showTeamCard && (
+            <CreateTeamCard
+              open={true}
+              onClose={handleCloseshowTeamCard}
+              onTeamCreated={handleAddTeam}
+            />
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 export default Teams;

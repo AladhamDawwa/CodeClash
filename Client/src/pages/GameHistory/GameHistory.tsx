@@ -54,7 +54,6 @@ const GameHistory = () => {
       },
     );
   }, [dispatch, username, jwtToken]);
-  console.log(gameHistory);
   return (
     <>
       {loading && <LoadingState />}
@@ -78,8 +77,16 @@ const GameHistory = () => {
                   startDate={match.start_time}
                   problemName={match.id}
                   oppImage="/assets/avatar.png"
-                  status={GAME_STATUS[match.user_a_result.status]}
-                  amount={match.user_a_result.delta}
+                  status={
+                    match?.user_b_result?.username === data?.username
+                      ? GAME_STATUS[match?.user_b_result?.status]
+                      : GAME_STATUS[match?.user_a_result?.status]
+                  }
+                  amount={
+                    match?.user_b_result?.username === data?.username
+                      ? match?.user_b_result?.delta
+                      : match?.user_a_result?.status
+                  }
                   key={index}
                   submissions={gameSubmissions[index]}
                 />
