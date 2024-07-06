@@ -19,6 +19,7 @@ import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
 import SubmissionStatus from '../../utils/submission_status';
 import language from '../../utils/languages.json';
+import { AvatarGroup } from '@mui/material';
 
 type MatchInfo = {
   problemName: string;
@@ -68,7 +69,7 @@ function formatDate(dateString: string): string {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
-export default function MatchCard({
+export default function LastManStanding({
   oppImage,
   status,
   amount,
@@ -106,7 +107,6 @@ export default function MatchCard({
     day: 'numeric',
   };
   const formattedDate = gameDate.toLocaleDateString('en-US', options);
-
   return (
     <div style={{ marginBottom: '5rem' }}>
       <List sx={{ padding: '0' }}>
@@ -123,15 +123,43 @@ export default function MatchCard({
             padding: '0 2rem',
           }}
         >
-          <div style={{ width: '15%' }}>
+          <div
+            style={{
+              width: '15%',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem',
+            }}
+          >
             <p className="level-p">{formattedDate}</p>
+            <p
+              className="level-p"
+              style={{ color: '#2cbb5d', fontStyle: 'italic' }}
+            >
+              Round 2
+            </p>
           </div>
           <div style={{ width: '15%' }}>
             <Stack direction="row" spacing={4} alignContent={'center'}>
               {user?.image === undefined ? (
-                <Avatar sx={{ width: '5rem', height: '5rem' }} />
+                <Avatar
+                  sx={{
+                    width: '4.5rem',
+                    height: '4.5rem',
+                    alignSelf: 'center',
+                  }}
+                />
               ) : (
-                <img src={user?.image} alt="user image" className="user-img" />
+                <img
+                  src={user?.image}
+                  alt="user image"
+                  className="user-img"
+                  style={{
+                    width: '4.5rem',
+                    height: '4.5rem',
+                    alignSelf: 'center',
+                  }}
+                />
               )}
               <p
                 style={{
@@ -142,11 +170,11 @@ export default function MatchCard({
               >
                 VS
               </p>
-              <img
-                src={oppImage}
-                alt="opponent image"
-                style={{ width: '5rem', height: '5rem', borderRadius: '100%' }}
-              />
+              <AvatarGroup max={2} sx={{ alignSelf: 'center' }}>
+                <Avatar alt="user 2" src={oppImage} className="user-img" />
+                <Avatar alt="user 3" />
+                <Avatar alt="user 4" />
+              </AvatarGroup>
             </Stack>
           </div>
           <p

@@ -19,7 +19,7 @@ import { RootState } from '../../store/store';
 import Avatar from '@mui/material/Avatar';
 import SubmissionStatus from '../../utils/submission_status';
 import language from '../../utils/languages.json';
-
+import GroupsIcon from '@mui/icons-material/Groups';
 type MatchInfo = {
   problemName: string;
   oppImage: string;
@@ -68,7 +68,7 @@ function formatDate(dateString: string): string {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
-export default function MatchCard({
+export default function TeamVSTeam({
   oppImage,
   status,
   amount,
@@ -128,25 +128,32 @@ export default function MatchCard({
           </div>
           <div style={{ width: '15%' }}>
             <Stack direction="row" spacing={4} alignContent={'center'}>
-              {user?.image === undefined ? (
-                <Avatar sx={{ width: '5rem', height: '5rem' }} />
-              ) : (
-                <img src={user?.image} alt="user image" className="user-img" />
-              )}
               <p
                 style={{
                   color: 'white',
-                  fontFamily: 'Rock Salt',
-                  fontSize: '2rem',
+                  fontSize: '2.3rem',
+                  alignSelf: 'center',
+                  fontStyle: 'italic',
                 }}
               >
-                VS
+                Team 1
               </p>
-              <img
-                src={oppImage}
-                alt="opponent image"
-                style={{ width: '5rem', height: '5rem', borderRadius: '100%' }}
+              <GroupsIcon
+                sx={{
+                  color: 'white',
+                  fontSize: '3.5rem',
+                }}
               />
+              <p
+                style={{
+                  color: 'white',
+                  fontSize: '2.3rem',
+                  alignSelf: 'center',
+                  fontStyle: 'italic',
+                }}
+              >
+                Team 2
+              </p>
             </Stack>
           </div>
           <p
