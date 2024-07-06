@@ -65,7 +65,7 @@ const Timer = () => {
     <Box
       display="flex"
       alignItems="center"
-      justifyContent="space-between"
+      justifyContent="center"
       width="60rem"
       px={3}
       py={2}

@@ -178,7 +178,7 @@ const GamePage = () => {
               boxShadow: 2,
             }}
           >
-            {/* <Timer /> */}
+            <Timer />
           </Box>
 
           {problem && (
