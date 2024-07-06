@@ -10,14 +10,22 @@ import { useSnackbar } from 'notistack';
 import SubmissionStatus from '../../utils/submission_status';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-const CodeEditor = ({ languageId, gameID }: any) => {
+import { useDispatch } from 'react-redux';
+import { getGameSubmissions } from '../../store/actions/userInfo';
+
+const CodeEditor = ({ languageId, gameID, onProblemSubmit }: any) => {
   const [language, setLanguage] = useState<string>('cpp');
   const [code, setCode] = useState(`// Write your ${language} code here`);
   const monaco = useMonaco();
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
   const userState = useSelector((state: RootState) => state.user);
+  const authState = useSelector((state: RootState) => state.auth);
+
   const { data: userData } = userState;
+
+  const jwtToken = authState.user?.token;
 
   useEffect(() => {
     setLanguage(
@@ -64,6 +72,16 @@ const CodeEditor = ({ languageId, gameID }: any) => {
       } else {
         enqueueSnackbar(message, { variant: 'error' });
       }
+
+      dispatch<any>(
+        getGameSubmissions({
+          gameId: gameID,
+          username: userData.username,
+          jwtToken,
+        }),
+      ).then((response: any) => {
+        onProblemSubmit(response.payload);
+      });
     });
 
     return () => {

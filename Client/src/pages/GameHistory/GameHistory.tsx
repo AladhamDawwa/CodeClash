@@ -27,7 +27,19 @@ const GameHistory = () => {
     dispatch<any>(getGameHistory({ username, jwtToken })).then(
       async (response: any) => {
         if (response.payload) {
-          setGameHistory(response.payload);
+          const sortedGameHistory = [...response.payload].sort(
+            (a: any, b: any) => {
+              const timeA =
+                a.start_time._seconds * 1000 +
+                a.start_time._nanoseconds / 1000000;
+              const timeB =
+                b.start_time._seconds * 1000 +
+                b.start_time._nanoseconds / 1000000;
+              return timeB - timeA;
+            },
+          );
+
+          setGameHistory(sortedGameHistory);
 
           await Promise.all(
             response.payload.map(async (match: any) => {

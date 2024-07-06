@@ -49,6 +49,7 @@ const GamePage = () => {
   const [problem, setProblem] = useState<any>();
   const [gameFinished, setGameFinished] = useState(false);
   const [gameResult, setGameResult] = useState<any>();
+  const [submissions, setSubmissions] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
 
   // useEffect(() => {
@@ -123,6 +124,10 @@ const GamePage = () => {
       socket.off(`${url}:send_game_result`);
     };
   }, [userData.gameInfo]);
+
+  const handleProblemSubmission = (submission: any) => {
+    setSubmissions(submission);
+  };
 
   return (
     <>
@@ -275,7 +280,9 @@ const GamePage = () => {
                         testCases={problem.test_cases}
                       />
                     )}
-                    {problemOption === 'submissions' && <ProblemSubmissions />}
+                    {problemOption === 'submissions' && (
+                      <ProblemSubmissions submissions={submissions} />
+                    )}
                   </Box>
                 </Box>
               </SplitterPanel>
@@ -354,7 +361,11 @@ const GamePage = () => {
                     </FormControl>
                   </Stack>
                 </Box>
-                <CodeEditor languageId={language} gameID={gameId} />
+                <CodeEditor
+                  languageId={language}
+                  gameID={gameId}
+                  onProblemSubmit={handleProblemSubmission}
+                />
               </SplitterPanel>
             </Splitter>
           )}
