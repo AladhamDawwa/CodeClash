@@ -1,32 +1,33 @@
-import React, { useState } from 'react';
-import Stack from '@mui/material/Stack';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import MemoryOutlinedIcon from '@mui/icons-material/MemoryOutlined';
+import Avatar from '@mui/material/Avatar';
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Collapse from '@mui/material/Collapse';
-import List from '@mui/material/List';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import MemoryOutlinedIcon from '@mui/icons-material/MemoryOutlined';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getGameSubmissions } from '../../store/actions/userInfo';
 import { RootState } from '../../store/store';
-import Avatar from '@mui/material/Avatar';
-import SubmissionStatus from '../../utils/submission_status';
 import language from '../../utils/languages.json';
+import SubmissionStatus from '../../utils/submission_status';
 
 type MatchInfo = {
   problemName: string;
   oppImage: string;
   status: string;
   amount: number;
-  submissions: Submission[];
   startDate: any;
+  gameHistory: any;
 };
 
 interface Submission {
@@ -72,10 +73,21 @@ export default function MatchCard({
   oppImage,
   status,
   amount,
-  submissions = [],
   startDate,
+  problemName,
+  gameHistory,
 }: MatchInfo) {
   const [open, setOpen] = useState(false);
+  const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
+  const { loading, data } = useSelector((state: RootState) => state.user);
+  const authState = useSelector((state: RootState) => state.auth);
+
+  const username = data?.username;
+  const gameSubmissions = data?.gameSubmissions;
+  // console.log('gameSubmissions', gameSubmissions);
+
+  const jwtToken = authState.user?.token;
+  const dispatch = useDispatch();
 
   let textColor: string;
   switch (status) {
@@ -90,8 +102,16 @@ export default function MatchCard({
       break;
   }
 
-  const handleExpandClick = () => {
+  const handleExpandClick = (gameId: string) => {
     setOpen(!open);
+
+    if (expandedGameId === gameId) {
+      setExpandedGameId(null);
+    } else {
+      setExpandedGameId(gameId);
+
+      dispatch<any>(getGameSubmissions({ gameId, username, jwtToken }));
+    }
   };
 
   const user = useSelector((state: RootState) => state.user.data);
@@ -188,19 +208,19 @@ export default function MatchCard({
           {open ? (
             <ExpandLessIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
-              onClick={handleExpandClick}
+              onClick={() => handleExpandClick(gameHistory.id)}
             />
           ) : (
             <ExpandMoreIcon
               style={{ color: 'white', fontSize: '5rem', cursor: 'pointer' }}
-              onClick={handleExpandClick}
+              onClick={() => handleExpandClick(gameHistory.id)}
             />
           )}
         </Stack>
       </List>
       <div>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          {submissions.length === 0 ? (
+          {gameSubmissions && gameSubmissions[gameHistory.id]?.length === 0 ? (
             <div
               style={{
                 padding: '2rem',
@@ -269,67 +289,82 @@ export default function MatchCard({
                 </TableHead>
 
                 <TableBody>
-                  {submissions.map((row, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        '& td': {
-                          border: 'none',
-                          color: 'white',
-                          fontSize: '2rem',
-                        },
-                        backgroundColor:
-                          index % 2 === 0 ? '#24243E' : '#1E1E36',
-                      }}
-                    >
-                      <TableCell align="left">
-                        <Stack
-                          direction="column"
-                          spacing={1}
-                          sx={{ fontSize: '1.3rem' }}
-                        >
-                          <div
-                            style={{
-                              color:
-                                SubmissionStatus[row.status] === 'Wrong Answer'
-                                  ? '#e33c37'
-                                  : SubmissionStatus[row.status] === 'Accepted'
-                                    ? '#2cbb5d'
-                                    : '#E3BD37',
+                  {gameSubmissions &&
+                    gameSubmissions[gameHistory.id]?.map(
+                      (row: any, index: number) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            '& td': {
+                              border: 'none',
+                              color: 'white',
                               fontSize: '2rem',
-                            }}
+                            },
+                            backgroundColor:
+                              index % 2 === 0 ? '#24243E' : '#1E1E36',
+                          }}
+                        >
+                          <TableCell align="left">
+                            <Stack
+                              direction="column"
+                              spacing={1}
+                              sx={{ fontSize: '1.3rem' }}
+                            >
+                              <div
+                                style={{
+                                  color:
+                                    SubmissionStatus[row.status] ===
+                                    'Wrong Answer'
+                                      ? '#e33c37'
+                                      : SubmissionStatus[row.status] ===
+                                          'Accepted'
+                                        ? '#2cbb5d'
+                                        : '#E3BD37',
+                                  fontSize: '2rem',
+                                }}
+                              >
+                                {SubmissionStatus[row.status]}
+                              </div>
+                              <div style={{ color: '#999' }}>
+                                {formatDate(row.submission_time)}
+                              </div>
+                            </Stack>
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            sx={{ textTransform: 'capitalize' }}
                           >
-                            {SubmissionStatus[row.status]}
-                          </div>
-                          <div style={{ color: '#999' }}>
-                            {formatDate(row.submission_time)}
-                          </div>
-                        </Stack>
-                      </TableCell>
-                      <TableCell
-                        align="left"
-                        sx={{ textTransform: 'capitalize' }}
-                      >
-                        {
-                          language.find(lang => lang.id === row.language_id)
-                            ?.name
-                        }
-                      </TableCell>
-                      <TableCell>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <AccessTimeOutlinedIcon sx={{ fontSize: '2.5rem' }} />
-                          <div>{row.time * 1000} ms</div>
-                        </Stack>
-                      </TableCell>
-                      <TableCell>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />
-                          <div>{`${row.memory} KB`}</div>
-                        </Stack>
-                      </TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  ))}
+                            {
+                              language.find(lang => lang.id === row.language_id)
+                                ?.name
+                            }
+                          </TableCell>
+                          <TableCell>
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              alignItems="center"
+                            >
+                              <AccessTimeOutlinedIcon
+                                sx={{ fontSize: '2.5rem' }}
+                              />
+                              <div>{row.time * 1000} ms</div>
+                            </Stack>
+                          </TableCell>
+                          <TableCell>
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              alignItems="center"
+                            >
+                              <MemoryOutlinedIcon sx={{ fontSize: '2.5rem' }} />
+                              <div>{`${row.memory} KB`}</div>
+                            </Stack>
+                          </TableCell>
+                          <TableCell></TableCell>
+                        </TableRow>
+                      ),
+                    )}
                 </TableBody>
               </Table>
             </TableContainer>

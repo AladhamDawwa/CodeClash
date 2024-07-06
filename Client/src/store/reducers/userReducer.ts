@@ -59,7 +59,7 @@ const userSlice = createSlice({
         ...state.data,
         ...action.payload,
       };
-    }
+    },
   },
   extraReducers: builder => {
     builder
@@ -89,16 +89,21 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        getGameSubmissions.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = {
-            ...state.data,
-          };
-          state.error = null;
-        },
-      )
+      .addCase(getGameSubmissions.fulfilled, (state, action: any) => {
+        const gameId = action.meta.arg.gameId;
+        const submissions = action.payload;
+
+        state.data = {
+          ...state.data,
+          gameSubmissions: {
+            ...state.data.gameSubmissions,
+            [gameId]: submissions,
+          },
+        };
+
+        state.loading = false;
+        state.error = null;
+      })
       .addCase(
         getGameSubmissions.rejected,
         (state, action: PayloadAction<any>) => {
@@ -225,6 +230,11 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearUserData, clearUserState, foundMatch, updateGameResult, activateTeam } =
-  userSlice.actions;
+export const {
+  clearUserData,
+  clearUserState,
+  foundMatch,
+  updateGameResult,
+  activateTeam,
+} = userSlice.actions;
 export default userSlice.reducer;

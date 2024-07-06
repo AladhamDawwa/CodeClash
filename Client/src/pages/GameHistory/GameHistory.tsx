@@ -19,7 +19,6 @@ const GameHistory = () => {
 
   const username = data?.username;
   const [gameHistory, setGameHistory] = useState<any[]>([]);
-  const [gameSubmissions, setGameSubmissions] = useState<any[]>([]);
 
   const jwtToken = authState.user?.token;
 
@@ -27,37 +26,15 @@ const GameHistory = () => {
     dispatch<any>(getGameHistory({ username, jwtToken })).then(
       async (response: any) => {
         if (response.payload) {
-          const sortedGameHistory = [...response.payload].sort(
-            (a: any, b: any) => {
-              const timeA =
-                a.start_time._seconds * 1000 +
-                a.start_time._nanoseconds / 1000000;
-              const timeB =
-                b.start_time._seconds * 1000 +
-                b.start_time._nanoseconds / 1000000;
-              return timeB - timeA;
-            },
-          );
-
-          setGameHistory(sortedGameHistory);
-
-          await Promise.all(
-            response.payload.map(async (match: any) => {
-              dispatch<any>(
-                getGameSubmissions({ gameId: match?.id, username, jwtToken }),
-              ).then((response: any) => {
-                setGameSubmissions(prev => [...prev, response.payload]);
-              });
-            }),
-          );
+          setGameHistory(response.payload);
         }
       },
     );
   }, [dispatch, username, jwtToken]);
   return (
     <>
-      {loading && <LoadingState />}
-      {!loading && gameHistory && (
+      {loading && gameHistory.length === 0 && <LoadingState />}
+      {gameHistory && (
         <div
           style={{
             width: '100%',
@@ -88,7 +65,7 @@ const GameHistory = () => {
                       : match?.user_a_result?.status
                   }
                   key={index}
-                  submissions={gameSubmissions[index]}
+                  gameHistory={match}
                 />
               ))}
             </Stack>
