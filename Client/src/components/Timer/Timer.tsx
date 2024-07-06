@@ -26,7 +26,7 @@ const Timer = () => {
       if (newTimeLeft < 0) {
         clearInterval(intervalId);
         // socket.disconnect();
-        navigate('/home');
+        // navigate('/home');
       } else {
         setTimeLeft(newTimeLeft);
       }

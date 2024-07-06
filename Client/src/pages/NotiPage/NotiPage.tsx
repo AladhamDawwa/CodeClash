@@ -102,6 +102,18 @@ const NotiPage = () => {
           }}
         />
       ))}
+      {notifications.length === 0 && (
+        <p
+          style={{
+            fontSize: '3rem',
+            color: 'white',
+            alignSelf: 'center',
+            marginTop: '5rem',
+          }}
+        >
+          No notifications
+        </p>
+      )}
     </div>
   );
 };

@@ -102,12 +102,25 @@ export class UsersController {
     }
   }
 
+  static async get_user_in_game_status(req: Request, res: Response) {
+    const username = req.params.username
+    const user = await Users.get_by_username(username)
+    if (!user.status) {
+      return res.json({ in_game: false })
+    }
+    res.json({
+      in_game: user.status!.in_game,
+      game_id: user.status!.game_id, game_type: user.status!.game_type,
+      game_mode: user.status!.game_mode
+    })
+  }
+
   static routes(app: express.Application) {
     app.post("/users/signup", this.signup);
     app.post("/users/login", this.login);
     app.put("/users", authenticate, this.update);
     app.get("/users/:username", authenticate, this.get_by_username)
     app.put("/users/profile_picture", [upload.single('image'), authenticate], this.upload_profile_picture)
-
+    app.get("/users/in_game/:username", authenticate, this.get_user_in_game_status)
   }
 }

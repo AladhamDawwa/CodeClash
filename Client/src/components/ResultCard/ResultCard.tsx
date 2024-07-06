@@ -1,5 +1,5 @@
 import { Box, Button, Grow, Paper, Slide, Stack, Zoom } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Avatar from '@mui/material/Avatar';
@@ -8,12 +8,15 @@ import './styles.css';
 import { useNavigate } from 'react-router-dom';
 import LevelStar from '../LevelStar/LevelStar';
 import ranks from '../../utils/ranks';
+import { updateGameResult } from '../../store/reducers/userReducer';
+import { useEffect } from 'react';
 
 interface ResultCardParams {
   status: string;
   rank: number;
   level: number;
   rankPoints: number;
+  updatedResult: any;
 }
 
 export default function ResultCard({
@@ -21,10 +24,19 @@ export default function ResultCard({
   rank,
   rankPoints,
   level,
+  updatedResult,
 }: ResultCardParams) {
   const showCard = true;
   const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch<any>(updateGameResult(updatedResult));
+      navigate('/home');
+    };
+  }, []);
 
   return (
     <>
@@ -230,6 +242,7 @@ export default function ResultCard({
               <Button
                 variant="contained"
                 onClick={() => {
+                  dispatch<any>(updateGameResult(updatedResult));
                   navigate('/home');
                 }}
                 sx={{

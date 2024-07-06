@@ -21,7 +21,7 @@ import ResultCard from '../../components/ResultCard';
 import '../../index.css';
 import socket from '../../socket';
 import { getProblemInfo } from '../../store/actions/userInfo';
-import { foundMatch, updateGameResult } from '../../store/reducers/userReducer';
+import { foundMatch } from '../../store/reducers/userReducer';
 import { RootState } from '../../store/store';
 import GAME_STATUS from '../../utils/game_status';
 import languages from '../../utils/languages.json';
@@ -51,6 +51,7 @@ const GamePage = () => {
   const [gameFinished, setGameFinished] = useState(false);
   const [gameResult, setGameResult] = useState<any>();
   const [submissions, setSubmissions] = useState<any>();
+  const [updatedResult, setUpdatedResult] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
 
   // useEffect(() => {
@@ -114,7 +115,7 @@ const GamePage = () => {
           : {
               user_level: data.new_level,
             };
-      dispatch<any>(updateGameResult(updatedResult));
+      setUpdatedResult(updatedResult);
       setGameFinished(true);
       setGameResult(data);
     });
@@ -154,7 +155,7 @@ const GamePage = () => {
               gap: '0.5rem',
             }}
             onClick={() => {
-              socket.disconnect();
+              // socket.disconnect();
               navigate('/home');
             }}
           >
@@ -378,6 +379,7 @@ const GamePage = () => {
           rank={gameResult.new_tier}
           rankPoints={gameResult.delta}
           level={gameResult.new_level.level}
+          updatedResult={updatedResult}
         />
       )}
     </>
