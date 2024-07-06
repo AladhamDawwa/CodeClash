@@ -76,6 +76,7 @@ export default function MatchCard({
   startDate,
 }: MatchInfo) {
   const [open, setOpen] = useState(false);
+
   let textColor: string;
   switch (status) {
     case 'loser':
