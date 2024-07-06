@@ -29,8 +29,8 @@ const converter = {
       game_type: data.game_type,
       problem_id: data.problem_id,
       duration: data.duration,
-      start_time: data.start_time.toDate(),
-      end_time: data.end_time.toDate(),
+      start_time: data.start_time,
+      end_time: data.end_time,
       user_a_result: data.user_a_result,
       user_b_result: data.user_b_result
     };
