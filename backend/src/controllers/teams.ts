@@ -39,7 +39,7 @@ export class TeamsController {
   static async invite_user(req: Request, res: Response) {
     const team_name = req.body.team_name;
     const username = req.body.user;
-    const team = await Teams.invite_user(team_name, username);
+    const team = await Teams.invite_user(req.body.username, team_name, username);
     if (team == null) {
       res.status(400).json({ error: "user does not exist or is already a member" });
       return;

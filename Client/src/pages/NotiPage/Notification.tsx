@@ -19,19 +19,35 @@ const Notification: React.FC<NotificationProps> = ({
   return (
     <Paper
       sx={{
-        width: '120rem',
+        width: '80rem',
         height: 'auto',
         backgroundColor: '#0f0c29cc',
         borderRadius: '7px',
         marginBottom: '2rem',
         padding: '2rem',
+        boxShadow: '0 0 10px 0px #0f0c29cc',
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <p style={{ color: 'white', fontSize: '3rem', marginBottom: '1rem' }}>
+        <p
+          style={{
+            color: 'darkgray',
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            textTransform: 'capitalize',
+            letterSpacing: '1px',
+          }}
+        >
           {title}
         </p>
-        <p style={{ color: 'white', fontSize: '2rem', marginBottom: '1rem' }}>
+        <p
+          style={{
+            color: 'white',
+            fontSize: '2rem',
+            letterSpacing: '1px',
+            wordSpacing: '2px',
+          }}
+        >
           {content}
         </p>
         <Box
@@ -39,7 +55,6 @@ const Notification: React.FC<NotificationProps> = ({
             display: 'flex',
             justifyContent: 'flex-end',
             gap: '2rem',
-            marginTop: '1rem',
           }}
         >
           <div

@@ -73,7 +73,7 @@ export class GameCreationService {
     lms_game_state.id = game_id
     // this.remove_problems_from_unsolved_problems(users, problem?.id!, problem?.rating!)
     setTimeout(() => { LMSGameService.end_round(lms_game_state) }, lms_game_state.end_time!.getTime()! - Date.now())
-    // this.remove_problems_from_unsolved_problems(users, problem!.id!, problem!.rating!)
+    this.remove_problems_from_unsolved_problems(users, problem!.id!, problem!.rating!)
     // a set time out
     this.update_users_statuses(game_id as string, users, GameType.LastManStanding, game_mode)
     return lms_game_state

@@ -3,6 +3,7 @@ import { db } from "../firebase";
 import { RankTier } from "../utils/definitions/rank_tier";
 import dotenv from "dotenv";
 import { Users } from "./users";
+import { NotificationType, Notifications } from "./notifications";
 dotenv.config();
 
 export type Team = {
@@ -82,7 +83,7 @@ export class Teams {
     return team;
   }
 
-  static async invite_user(team_name: string, username: string): Promise<Team | null> {
+  static async add_user_to_team(team_name: string, username: string): Promise<Team | null> {
     if (await Users.user_exists(username) === false) {
       return null;
     }
@@ -97,6 +98,16 @@ export class Teams {
     team.members.push(username);
     await teams_collection.doc(team_doc.id).update({ members: team.members });
     return team;
+  }
+
+  static async invite_user(inviteUser: string, team_name: string, invitedUser: string): Promise<Team | null> {
+    Notifications.add_notification(
+      inviteUser,
+      invitedUser,
+      NotificationType.TeamInvitation,
+      team_name
+    );
+    return this.get_by_team_name(team_name);
   }
 
   static async remove_user(team_name: string, username: string): Promise<Team | null> {

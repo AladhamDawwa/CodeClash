@@ -14,6 +14,7 @@ import { UvUGameSocketController } from './socket_controllers/uvu_game'
 import { LMSGameSocketController } from './socket_controllers/lms_game'
 import { TvTGameSocketController } from './socket_controllers/tvt_game'
 import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
+import { NotificationsController } from './controllers/notifications'
 
 dotenv.config()
 
@@ -35,6 +36,7 @@ ProblemsController.routes(app)
 TeamsController.routes(app)
 SubmissionsController.routes(app)
 GameHistoryController.routes(app)
+NotificationsController.routes(app)
 
 // websockets
 const server = createServer(app)

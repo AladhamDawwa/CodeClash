@@ -63,7 +63,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const [open, setOpen] = React.useState(false);
-  const hasNotification = true;
+  const hasNotification = false;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -379,7 +379,8 @@ export default function MiniDrawer() {
                   sx={{
                     '& .MuiBadge-badge': {
                       bgcolor: 'red',
-                      height: '20px',
+                      height: '5px',
+                      width: '5px',
                     },
                   }}
                 >

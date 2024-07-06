@@ -115,6 +115,8 @@ export class MatchMakerSocketController {
   register_events() {
     this.socket.on("match_maker_server:find_match", this.find_match);
     this.socket.on("disconnect", () => {
+      console.log("User disconnected");
+
       MatchMakerService.handle_disconnection(this.socket.data.username)
       ConnectedUsers.remove_user(this.socket.data.username);
     });

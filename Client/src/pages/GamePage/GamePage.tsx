@@ -76,6 +76,13 @@ const GamePage = () => {
 
   useEffect(() => {
     if (!userData.gameInfo) return;
+    if (userData.gameInfo.round > 1) {
+      dispatch<any>(getProblemInfo({ problemId, jwtToken })).then(
+        (res: any) => {
+          setProblem(res.payload);
+        },
+      );
+    }
     const url =
       userData.gameInfo?.game_type == 0
         ? 'uvu_game_client'
@@ -89,7 +96,7 @@ const GamePage = () => {
 
     socket.on(`${url}:new_round`, (data: any) => {
       dispatch(foundMatch(data));
-      location.reload();
+      // location.reload();
       // navigate('/gameSession');
     });
 
@@ -115,7 +122,7 @@ const GamePage = () => {
       socket.off(`${url}:new_round`);
       socket.off(`${url}:send_game_result`);
     };
-  }, [userData.gameInfo?.game_mode]);
+  }, [userData.gameInfo]);
 
   return (
     <>
