@@ -66,8 +66,8 @@ const GameHistory = () => {
                   startDate={match.start_time}
                   problemName={match.id}
                   oppImage="/assets/avatar.png"
-                  status={GAME_STATUS[match.user_a_result.status]}
-                  amount={match.user_a_result.delta}
+                  status={GAME_STATUS[match.user_b_result.status]}
+                  amount={match.user_b_result.delta}
                   key={index}
                   submissions={gameSubmissions[index]}
                 />
