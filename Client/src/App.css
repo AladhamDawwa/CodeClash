@@ -17,6 +17,7 @@
   width: 5rem;
   border-radius: 100%;
   cursor: pointer;
+  object-fit: cover;
 }
 
 html {
