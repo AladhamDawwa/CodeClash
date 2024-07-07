@@ -90,7 +90,7 @@ export class GameCreationService {
     const problem = await ProblemPickerService.pick_problem(users)
     const game_duration = await ProblemLevels.get_game_duration(problem!.rating!)
     this.update_lms_game_state(problem!, game_duration, lms_game_state)
-    this.game_lms_store.update(lms_game_state, lms_game_state.id!)
+    await this.game_lms_store.update(lms_game_state, lms_game_state.id!)
     setTimeout(() => { LMSGameService.end_round(lms_game_state, lms_game_state.round) }, lms_game_state.end_time!.getTime()! - Date.now())
   }
 
