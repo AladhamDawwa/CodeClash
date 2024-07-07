@@ -76,12 +76,12 @@ const ProfilePage = () => {
       <Paper
         sx={{
           width: '55rem',
-          height: '66rem',
+          height: '45rem',
           background: '#0f0c29',
           display: 'flex',
           flexDirection: 'column',
           gap: '2rem',
-          padding: '3rem',
+          padding: '4rem',
           borderRadius: '1rem',
         }}
       >
@@ -128,12 +128,20 @@ const ProfilePage = () => {
                   onChange={e => setName(e.target.value)}
                   className="profile-edit"
                 />
-                <input
+                <p
+                  style={{
+                    color: '#999',
+                    fontSize: '2rem',
+                  }}
+                >
+                  {`#${user?.username}`}
+                </p>
+                {/* <input
                   type="text"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   className="profile-edit"
-                />
+                /> */}
               </>
             ) : (
               <>
@@ -189,8 +197,7 @@ const ProfilePage = () => {
                   textTransform: 'capitalize',
                   letterSpacing: '0.5px',
                   overflow: 'hidden',
-                  minWidth: '50rem',
-                  minHeight: '10rem',
+                  minHeight: '7rem',
                   fontWeight: '500',
                   resize: 'none',
                   overflowY: 'auto',
@@ -207,12 +214,12 @@ const ProfilePage = () => {
             )}
           </p>
         </div>
-        <Typography variant="h2" sx={{ color: 'white' }}>
+        {/* <Typography variant="h2" sx={{ color: 'white' }}>
           Languages
-        </Typography>
-        <div className="language">
-          {/* {userLanguages.length === 0 ? ( */}
-          <p
+        </Typography> */}
+        {/* <div className="language"> */}
+        {/* {userLanguages.length === 0 ? ( */}
+        {/* <p
             style={{
               color: 'white',
               textTransform: 'capitalize',
@@ -221,8 +228,8 @@ const ProfilePage = () => {
             }}
           >
             No languages detected yet!
-          </p>
-          {/* ) : (
+          </p> */}
+        {/* ) : (
               userLanguages.map(lang => {
                 let langColor;
                 switch (lang) {
@@ -253,7 +260,7 @@ const ProfilePage = () => {
                 );
               })
             )} */}
-        </div>
+        {/* </div> */}
 
         {isEditing ? (
           <Button

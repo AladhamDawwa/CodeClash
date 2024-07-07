@@ -49,6 +49,22 @@ function CircularProgressWithLabel(
 const RankFlag = () => {
   const user = useSelector((state: RootState) => state.user.data);
   const [hover, setHover] = useState(false);
+  const [delayTimeout, setDelayTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (delayTimeout) {
+      clearTimeout(delayTimeout);
+      setDelayTimeout(null);
+    }
+    setHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setHover(false);
+    }, 100);
+    setDelayTimeout(timeout);
+  };
 
   // white purple blue green yellow
   const color = '#4B0082';
@@ -120,8 +136,8 @@ const RankFlag = () => {
                 position: 'relative',
                 height: '5rem',
               }}
-              onMouseEnter={() => setHover(true)}
-              onMouseOut={() => setHover(false)}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
               {!hover ? (
                 <LevelStar level={user?.user_level.level} />
