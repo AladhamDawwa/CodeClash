@@ -27,16 +27,23 @@ import CreateProblem from './pages/CreateProblem/CreateProblem';
 import { SnackbarProvider } from 'notistack';
 import { NavigationProvider, useNavigation } from './NavigationContext';
 import NotiPage from './pages/NotiPage/NotiPage';
+import AdminAuth from './pages/AdminAuth/AdminAuth';
 interface PrivateRouteProps {
   children: JSX.Element;
 }
 
 function PrivateRoute({ children }: PrivateRouteProps) {
-  const isAuthenticated = useSelector(
+  const userAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
+  const adminState = useSelector((state: RootState) => state.admin);
+  const adminAuthenticated = adminState?.isAuthenticated;
 
-  return isAuthenticated ? children : <Navigate to="/signIn" replace />;
+  return userAuthenticated || adminAuthenticated ? (
+    children
+  ) : (
+    <Navigate to="/signIn" replace />
+  );
 }
 
 interface ProtectedRouteProps {
@@ -55,17 +62,23 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
 const App: React.FC = () => {
   const authState = useSelector((state: RootState) => state.auth);
+  const adminState = useSelector((state: RootState) => state.admin);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!authState.isAuthenticated) {
+    if (!authState.isAuthenticated && !adminState.isAuthenticated) {
       const currentPath = location.pathname;
       if (currentPath !== '/signUp') {
         navigate('/signIn');
       }
     }
-  }, [authState.isAuthenticated, location.pathname, navigate]);
+  }, [
+    authState.isAuthenticated,
+    location.pathname,
+    navigate,
+    adminState.isAuthenticated,
+  ]);
 
   return (
     <Routes>
@@ -101,14 +114,6 @@ const App: React.FC = () => {
           element={
             <PrivateRoute>
               <Teams />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/createProblem"
-          element={
-            <PrivateRoute>
-              <CreateProblem />
             </PrivateRoute>
           }
         />
@@ -178,6 +183,17 @@ const App: React.FC = () => {
           )
         }
       />
+      <Route
+        path="/admin"
+        element={
+          useSelector((state: RootState) => state.auth.isAuthenticated) ? (
+            <Navigate to="/home" />
+          ) : (
+            <AdminAuth />
+          )
+        }
+      />
+      <Route path="/createProblem" element={<CreateProblem />} />
       <Route path="*" element={<_404 />} />
     </Routes>
   );

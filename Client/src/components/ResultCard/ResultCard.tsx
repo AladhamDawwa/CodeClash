@@ -205,11 +205,19 @@ export default function ResultCard({
                                 color: `  ${status === 'winner' ? '#2CBB5D' : status === 'loser' ? '#E33C37' : '#918f8f'}`,
                               }}
                             />
-                            <img
-                              src={`assets/${ranks[user.data.rank_tier + 1]}.svg`}
-                              alt="tier image"
-                              style={{ width: '6rem', height: '6rem' }}
-                            />
+                            {rank > user.data.rank_tier ? (
+                              <img
+                                src={`assets/${ranks[user.data.rank_tier + 1]}.svg`}
+                                alt="tier image"
+                                style={{ width: '6rem', height: '6rem' }}
+                              />
+                            ) : (
+                              <img
+                                src={`assets/${ranks[user.data.rank_tier - 1]}.svg`}
+                                alt="tier image"
+                                style={{ width: '6rem', height: '6rem' }}
+                              />
+                            )}
                           </>
                         )}
                       </Stack>

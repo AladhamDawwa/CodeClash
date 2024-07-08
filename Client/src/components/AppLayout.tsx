@@ -1,6 +1,5 @@
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
-import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {
@@ -348,6 +347,7 @@ export default function MiniDrawer() {
           </ListItem>
 
           {/* Create Problem */}
+          {/*           
           <ListItem
             key={'Create Problem'}
             disablePadding
@@ -384,7 +384,7 @@ export default function MiniDrawer() {
                 }}
               />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
 
           {/* notification */}
 

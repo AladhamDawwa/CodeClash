@@ -18,6 +18,7 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import userReducer from './reducers/userReducer';
+import adminReducer from './reducers/adminReducer';
 
 const authPersistConfig = {
   key: 'auth',
@@ -29,9 +30,15 @@ const userPresistConfig = {
   storage: storage,
 };
 
+const adminPresistConfig = {
+  key: 'admin',
+  storage: storage,
+};
+
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   user: persistReducer(userPresistConfig, userReducer),
+  admin: persistReducer(adminPresistConfig, adminReducer),
 });
 
 const store = configureStore({

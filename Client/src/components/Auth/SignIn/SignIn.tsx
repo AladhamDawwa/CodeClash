@@ -24,10 +24,13 @@ import { store, RootState } from '../../../store/store';
 import './style.css';
 import { getUserByUsername } from '../../../store/actions/userInfo';
 import { clearUserData } from '../../../store/reducers/userReducer';
+import { clearAdminState } from '../../../store/reducers/adminReducer';
+import { loginAdmin } from '../../../store/actions/adminInfo';
 
-const SignIn = () => {
+const SignIn = ({ admin }: any) => {
   const dispatch = useDispatch();
   const authState = useSelector((state: RootState) => state.auth);
+  const adminState = useSelector((state: RootState) => state.admin);
   const navigate = useNavigate();
 
   const { loading, error } = authState;
@@ -82,6 +85,11 @@ const SignIn = () => {
 
     if (username && password) {
       try {
+        if (admin) {
+          await dispatch<any>(loginAdmin({ username, password }));
+          navigate('/createProblem');
+          return;
+        }
         await dispatch<any>(signInAction({ username, password }));
         const state = store.getState();
 
@@ -119,13 +127,15 @@ const SignIn = () => {
 
   return (
     <div className="container">
-      <div id="logo">
-        <img src="./assets/logo.svg" alt="logo"></img>
-      </div>
+      {!admin && (
+        <div id="logo">
+          <img src="./assets/logo.svg" alt="logo"></img>
+        </div>
+      )}
       <div id="logInCard">
         <Card id="card" variant="outlined">
           <div id="title">
-            <h1>Sign In</h1>
+            {admin ? <h1>Admin Sign In</h1> : <h1>Sign In</h1>}
           </div>
           <TextField
             value={username}
