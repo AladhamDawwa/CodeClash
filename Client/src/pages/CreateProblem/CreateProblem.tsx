@@ -48,6 +48,7 @@ const styleInput = {
 };
 
 const CreateProblem = () => {
+  const apiUrL = import.meta.env.VITE_API_URL;
   const [value, setValue] = useState(0);
   const [numberOfExtraTC, setNumberOfExtraTC] = useState(0);
   const [open, setOpen] = useState(false);
@@ -74,7 +75,7 @@ const CreateProblem = () => {
     data.rating = String.fromCharCode(64 + rating).toLowerCase();
     console.log(auth.token);
     axios
-      .post('http://localhost:5000/problems/create', [data], {
+      .post(`${apiUrL}/problems/create`, [data], {
         headers: {
           Authorization: `Bearer ${auth.token}`,
           'Content-Type': 'application/json',
