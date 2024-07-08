@@ -23,6 +23,7 @@ export const db = {
   lms_games: firestore.collection("lms_games"),
   notifications: firestore.collection("notifications"),
   users_notifications: firestore.collection("users_notifications"),
+  admins: firestore.collection("admins"),
 }
 
 

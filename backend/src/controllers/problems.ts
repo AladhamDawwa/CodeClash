@@ -5,6 +5,7 @@ import { firestore } from '../firebase'
 import dotenv from "dotenv";
 import { UsersUnsolvedProblems } from "../models/users_unsolved_problems";
 import { JudgeZeroService } from "../services/judge/judge_zero_service";
+import { admin_authenticate } from "../middlewares/admin_authentication";
 dotenv.config();
 
 export type ProblemAndTestCases = {
@@ -116,7 +117,7 @@ export class ProblemsController {
   }
 
   static routes(app: express.Application) {
-    app.post('/problems/create', this.create_problems)
+    app.post('/problems/create', admin_authenticate, this.create_problems)
     app.get('/problems/:problem_id', this.get_problem)
     app.get('/problems/remove/:problem_id', this.remove_unsolved_problem_from_all_users)
   }
