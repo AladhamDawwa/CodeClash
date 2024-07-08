@@ -16,6 +16,8 @@ import { TvTGameSocketController } from './socket_controllers/tvt_game'
 import { UsersUnsolvedProblems } from './models/users_unsolved_problems'
 import { NotificationsController } from './controllers/notifications'
 import { Users } from './models/users'
+import { Admins } from './models/admin'
+import { AdminController } from './controllers/admin'
 
 dotenv.config()
 
@@ -38,7 +40,7 @@ TeamsController.routes(app)
 SubmissionsController.routes(app)
 GameHistoryController.routes(app)
 NotificationsController.routes(app)
-
+AdminController.routes(app)
 // websockets
 const server = createServer(app)
 const io = new Server(server, {
@@ -65,3 +67,9 @@ UsersUnsolvedProblems.init('hossam22');
 server.listen(port, () => {
   console.log(`Listening on port : ${port}`)
 })
+
+// const create_admin = async () => {
+//   const admin = await Admins.create("shehabgad", "password123")
+//   console.log(admin)
+// }
+// create_admin()
