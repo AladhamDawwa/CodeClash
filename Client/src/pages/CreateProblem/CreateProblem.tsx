@@ -12,7 +12,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { encode } from 'js-base64';
+import { decode, encode } from 'js-base64';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -73,7 +73,6 @@ const CreateProblem = () => {
     data.input_format = encode(data.input_format);
     data.output_format = encode(data.output_format);
     data.rating = String.fromCharCode(64 + rating).toLowerCase();
-    console.log(auth.token);
     axios
       .post(`${apiUrL}/problems/create`, [data], {
         headers: {

@@ -69,7 +69,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!authState.isAuthenticated && !adminState.isAuthenticated) {
       const currentPath = location.pathname;
-      if (currentPath !== '/signUp') {
+      if (currentPath !== '/signUp' && currentPath !== '/admin') {
         navigate('/signIn');
       }
     }

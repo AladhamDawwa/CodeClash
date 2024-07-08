@@ -29,6 +29,7 @@ import ProblemDescription from './ProblemDescription';
 import ProblemSubmissions from './ProblemSubmissions';
 import './styles.css';
 import Timer from '../../components/Timer';
+import { decode } from 'js-base64';
 
 const GamePage = () => {
   const authState = useSelector((state: RootState) => state.auth);

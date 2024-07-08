@@ -2,7 +2,17 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { decode } from 'js-base64';
 
-export default function ProblemDescription({ problem, testCases } : any) {
+const wordStyling: any = {
+  whiteSpace: 'pre-wrap',
+  wordWrap: 'break-word',
+  color: 'white',
+  fontSize: '1.7rem',
+  // fontWeight: '600',
+  wordSpacing: '-4px',
+  lineHeight: '1.5',
+};
+
+export default function ProblemDescription({ problem, testCases }: any) {
   return (
     <Stack
       direction={'column'}
@@ -19,16 +29,7 @@ export default function ProblemDescription({ problem, testCases } : any) {
       >
         {problem.title}
       </p>
-      <p
-        style={{
-          color: 'white',
-          fontSize: '1.5rem',
-          letterSpacing: '0.3px',
-          lineHeight: '1.4',
-        }}
-      >
-        {decode(problem.description)}
-      </p>
+      <pre style={wordStyling}>{decode(problem.description)}</pre>
       <p style={{ color: 'white', fontWeight: '600', fontSize: '2.3rem' }}>
         Input Format :
       </p>
@@ -46,9 +47,9 @@ export default function ProblemDescription({ problem, testCases } : any) {
           borderRadius: '2rem',
         }}
       >
-        <p>{decode(problem.input_format)}</p>
+        <pre style={wordStyling}>{decode(problem.input_format)}</pre>
       </Box>
-      <p style={{ color:'white', fontWeight: '600', fontSize: '2.3rem' }}>
+      <p style={{ color: 'white', fontWeight: '600', fontSize: '2.3rem' }}>
         Output Format :
       </p>
       <Box
@@ -65,9 +66,9 @@ export default function ProblemDescription({ problem, testCases } : any) {
           borderRadius: '2rem',
         }}
       >
-        <p>{decode(problem.output_format)}</p>
+        <pre style={wordStyling}>{decode(problem.output_format)}</pre>
       </Box>
-      <p style={{ color:'white', fontWeight: '600', fontSize: '2.3rem' }}>
+      <p style={{ color: 'white', fontWeight: '600', fontSize: '2.3rem' }}>
         Sample Test Cases:
       </p>
       <Box
@@ -84,14 +85,10 @@ export default function ProblemDescription({ problem, testCases } : any) {
           borderRadius: '2rem',
         }}
       >
-        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
-          Input :
-        </p>
-        <p>{decode(testCases[0].input)}</p>
-        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>
-          Output :
-        </p>
-        <p>{decode(testCases[0].expected_output)}</p>
+        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>Input :</p>
+        <pre style={wordStyling}>{decode(testCases[0].input)}</pre>
+        <p style={{ fontWeight: '600', fontSize: '2.3rem' }}>Output :</p>
+        <pre style={wordStyling}>{decode(testCases[0].expected_output)}</pre>
       </Box>
     </Stack>
   );
